@@ -1,134 +1,95 @@
-<app-add-expenses *ngIf="isAddExpenseModalOpen" (close)="toggleModal()"
-    (created)="onExpenseCreated()"></app-add-expenses>
+<app-data-page-layout [pageTitle]="'Expenses & Fuel Logging'"
+    [pageSubtitle]="'Manage and audit fuel costs across your fleet in real-time.'"
+    [searchPlaceholder]="'Search by Log ID or Vehicle...'" [searchTerm]="searchTerm"
+    (searchTermChange)="searchTerm = $event; onFiltersChanged()" [filterOptions]="vehicleOptions"
+    [filterValue]="selectedVehicleId" (filterChange)="onVehicleChange($event)" [sortOptions]="sortOptions"
+    [sortValue]="sortBy" (sortChange)="sortBy = $event; onFiltersChanged()" [actionLabel]="'Add Fuel Expense'"
+    [actionIcon]="'add'" (actionClick)="toggleModal()" [pageSizeOptions]="pageSizeOptions" [isLoading]="isLoading"
+    [totalCount]="fuelTotalCount" [pageNumber]="fuelPageNumber" [pageSize]="fuelPageSize" [totalPages]="fuelTotalPages"
+    [recordLabel]="'entries'" (pageChange)="changeFuelPage($event)" (pageSizeChange)="onFuelPageSizeChanged($event)"
+    [columns]="columns" [data]="filteredLogs">
 
-<div class="expenses-layout view-expenses">
-    <app-header></app-header>
-
-    <main class="main-content">
-        <div class="page-header">
-            <div class="breadcrumbs">
-                <span>Logistics</span>
-                <span class="material-symbols-outlined icon-chevron">chevron_right</span>
-                <span class="current">Expenses</span>
-            </div>
-            <div class="title-row">
-                <div class="header-text">
-                    <h2 class="heading-font">Expenses & Fuel Logging</h2>
-                    <p>Manage and audit fuel costs across your fleet in real-time.</p>
+    <!-- Summary Cards -->
+    <div topContent class="summary-cards-grid">
+        <div class="metric-card accent-blue">
+            <div class="card-header">
+                <span class="card-title">Total Fuel Cost</span>
+                <div class="card-icon primary">
+                    <span class="material-symbols-outlined">gas_meter</span>
                 </div>
-                <button class="btn-primary" (click)="toggleModal()">
-                    <span class="material-symbols-outlined">add</span>
-                    <span>Add Fuel Expense</span>
-                </button>
             </div>
+            <div class="card-body">
+                <h3>{{ totalFuelCost | inrCurrency }}</h3>
+            </div>
+            <p class="card-footer">All logged fuel entries</p>
         </div>
 
-        <div class="controls-card">
-            <div class="controls-row">
-                <div class="search-box">
-                    <app-searchable-select [options]="vehicleOptions" [ngModel]="selectedVehicleId"
-                        (ngModelChange)="selectedVehicleId = $event; onVehicleChange()" [placeholder]="'Select vehicle'"
-                        [searchPlaceholder]="'Search vehicle...'">
-                    </app-searchable-select>
+        <div class="metric-card accent-amber">
+            <div class="card-header">
+                <span class="card-title">Total Misc Expense</span>
+                <div class="card-icon warning">
+                    <span class="material-symbols-outlined">receipt_long</span>
                 </div>
             </div>
+            <div class="card-body">
+                <h3>{{ totalMiscExpense | inrCurrency }}</h3>
+            </div>
+            <p class="card-footer">Tolls, parking, etc.</p>
         </div>
 
-        <div class="data-table-container">
-            <div class="table-wrapper">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Log ID</th>
-                            <th>Vehicle</th>
-                            <th>Fuel Date</th>
-                            <th class="text-right">Liters</th>
-                            <th class="text-right">Cost</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <ng-container *ngIf="isLoading">
-                            <tr>
-                                <td colspan="6" style="text-align: center; padding: 2rem;">Loading fuel logs...</td>
-                            </tr>
-                        </ng-container>
-                        <ng-container *ngIf="!isLoading">
-                            <tr *ngFor="let log of fuelLogs">
-                                <td class="td-id">{{ log.id.substring(0,8) | uppercase }}</td>
-                                <td>{{ getVehicleName(log.vehicleId) }}</td>
-                                <td class="td-text">{{ log.fuelDate }}</td>
-                                <td class="td-cost-sm text-right">{{ log.liters | number:'1.2-2' }} L</td>
-                                <td class="td-cost-lg text-right">{{ log.cost | inrCurrency }}</td>
-                                <td class="td-actions text-right">
-                                    <button class="ff-action-icon-btn"><span
-                                            class="material-symbols-outlined">more_vert</span></button>
-                                </td>
-                            </tr>
-                            <tr *ngIf="fuelLogs.length === 0">
-                                <td colspan="6" style="text-align: center; padding: 2rem;">No fuel logs found for this
-                                    vehicle.</td>
-                            </tr>
-                        </ng-container>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="table-footer ff-table-footer">
-                <div class="pagination-left">
-                    <span class="ff-count-text">Showing {{ startRecord }}-{{ endRecord }} of {{ fuelTotalCount }}
-                        entries</span>
-                    <app-searchable-select class="ff-page-size" [options]="pageSizeOptions"
-                        [ngModel]="fuelPageSize.toString()" (ngModelChange)="onFuelPageSizeChanged($event)">
-                    </app-searchable-select>
-                </div>
-                <div class="ff-pagination">
-                    <button class="ff-page-button" (click)="changeFuelPage(fuelPageNumber - 1)"
-                        [disabled]="fuelPageNumber <= 1">
-                        <span class="material-symbols-outlined">chevron_left</span>
-                    </button>
-                    <span class="page-info">Page {{ fuelPageNumber }} of {{ fuelTotalPages }}</span>
-                    <button class="ff-page-button" (click)="changeFuelPage(fuelPageNumber + 1)"
-                        [disabled]="fuelPageNumber >= fuelTotalPages">
-                        <span class="material-symbols-outlined">chevron_right</span>
-                    </button>
+        <div class="metric-card accent-emerald">
+            <div class="card-header">
+                <span class="card-title">Trips Tracked</span>
+                <div class="card-icon success">
+                    <span class="material-symbols-outlined">local_shipping</span>
                 </div>
             </div>
+            <div class="card-body">
+                <h3>{{ tripsCount }}</h3>
+            </div>
+            <p class="card-footer">Unique trips logged</p>
         </div>
-
-        <div class="summary-cards">
-            <div class="summary-card">
-                <div class="card-header">
-                    <h3 class="heading-font">Total Fuel Cost</h3>
-                    <span class="material-symbols-outlined icon-primary">gas_meter</span>
-                </div>
-                <p class="card-value">{{ totalFuelCost | inrCurrency }}</p>
-            </div>
-
-            <div class="summary-card">
-                <div class="card-header">
-                    <h3 class="heading-font">Total Entries</h3>
-                    <span class="material-symbols-outlined icon-amber">receipt_long</span>
-                </div>
-                <p class="card-value">{{ fuelLogs.length }}</p>
-            </div>
-
-            <div class="summary-card">
-                <div class="card-header">
-                    <h3 class="heading-font">Vehicles Tracked</h3>
-                    <span class="material-symbols-outlined icon-green">local_shipping</span>
-                </div>
-                <p class="card-value">{{ vehicles.length }}</p>
-            </div>
+    </div>
+    <ng-template appCustomCell let-row let-col="column">
+        @switch (col.key) {
+        @case ('tripId') {
+        <span class="td-id">#{{ (row.tripId || 'N/A').substring(0,8) | uppercase }}</span>
+        }
+        @case ('driverName') {
+        <span>{{ getDriverName(row) }}</span>
+        }
+        @case ('vehicleName') {
+        <span>{{ getVehicleName(row.vehicleId) }}</span>
+        }
+        @case ('distance') {
+        <span class="td-text">{{ row.distance | number:'1.2-2' }} km</span>
+        }
+        @case ('cost') {
+        <span class="td-cost">{{ row.cost | inrCurrency }}</span>
+        }
+        @case ('miscExpense') {
+        <span class="td-cost">{{ row.miscExpense | inrCurrency }}</span>
+        }
+        @case ('status') {
+        <span class="status-badge" [class]="(row.status || 'Completed').toLowerCase()">
+            {{ row.status || 'Completed' }}
+        </span>
+        }
+        @case ('actions') {
+        <div class="action-group">
+            <button class="action-icon-button" title="Edit expense" (click)="openEditModal(row)">
+                <span class="material-symbols-outlined">edit_square</span>
+            </button>
+            <button class="action-icon-button danger" title="Delete expense">
+                <span class="material-symbols-outlined">delete</span>
+            </button>
         </div>
-    </main>
+        }
+        }
+    </ng-template>
 
-    <footer class="bottom-meta">
-        <div class="meta-inner">
-            <div class="footer-links">
-                <a href="#">Help Center</a>
-                <a href="#">Privacy Policy</a>
-            </div>
-        </div>
-    </footer>
-</div>
+    <ng-container modals>
+        <app-add-expenses *ngIf="isAddExpenseModalOpen" [logToEdit]="editingLog" (close)="toggleModal()"
+            (created)="onExpenseCreated()"></app-add-expenses>
+    </ng-container>
+</app-data-page-layout>

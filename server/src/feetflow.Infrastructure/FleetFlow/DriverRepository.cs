@@ -4,6 +4,7 @@ using feetflow.Domain.Enums;
 using feetflow.Domain.Interfaces;
 using feetflow.Infrastructure.FleetFlow;
 using Npgsql;
+using NpgsqlTypes;
 
 namespace feetflow.Infrastructure.Repositories;
 
@@ -35,7 +36,7 @@ public class DriverRepository : IDriverRepository
         try
         {
             await using var cmd = new NpgsqlCommand(
-                @"SELECT driver_id, full_name, license_number, license_category, license_expiry, status::text, is_deleted, created_at, (xmin)::text::integer
+                @"SELECT driver_id, full_name, license_number, license_category, license_expiry, status::text, is_deleted, created_at, (xmin)::text::integer, completion_rate, safety_score, complaints
                   FROM drivers WHERE driver_id = @driver_id AND is_deleted = FALSE", connection);
             cmd.Transaction = GetTransaction();
             cmd.Parameters.AddWithValue("driver_id", id);
@@ -57,7 +58,7 @@ public class DriverRepository : IDriverRepository
         var fromUow = _unitOfWork.GetConnection() != null;
         try
         {
-            var sql = @"SELECT driver_id, full_name, license_number, license_category, license_expiry, status::text, is_deleted, created_at, (xmin)::text::integer
+            var sql = @"SELECT driver_id, full_name, license_number, license_category, license_expiry, status::text, is_deleted, created_at, (xmin)::text::integer, completion_rate, safety_score, complaints
                         FROM drivers";
             if (!includeDeleted)
                 sql += " WHERE is_deleted = FALSE";
@@ -84,7 +85,7 @@ public class DriverRepository : IDriverRepository
         var fromUow = _unitOfWork.GetConnection() != null;
         try
         {
-            var sql = @"SELECT driver_id, full_name, license_number, license_category, license_expiry, status::text, is_deleted, created_at, (xmin)::text::integer
+            var sql = @"SELECT driver_id, full_name, license_number, license_category, license_expiry, status::text, is_deleted, created_at, (xmin)::text::integer, completion_rate, safety_score, complaints
                         FROM drivers";
             if (!includeDeleted)
                 sql += " WHERE is_deleted = FALSE";
@@ -137,8 +138,8 @@ public class DriverRepository : IDriverRepository
         try
         {
             await using var cmd = new NpgsqlCommand(
-                @"INSERT INTO drivers (driver_id, full_name, license_number, license_category, license_expiry, status)
-                  VALUES (@driver_id, @full_name, @license_number, @license_category, @license_expiry, @status::driver_status)
+                @"INSERT INTO drivers (driver_id, full_name, license_number, license_category, license_expiry, status, completion_rate, safety_score, complaints)
+                  VALUES (@driver_id, @full_name, @license_number, @license_category, @license_expiry, @status::driver_status, @completion_rate, @safety_score, @complaints)
                   RETURNING driver_id", connection);
             cmd.Transaction = GetTransaction();
             cmd.Parameters.AddWithValue("driver_id", driver.Id);
@@ -147,6 +148,9 @@ public class DriverRepository : IDriverRepository
             cmd.Parameters.AddWithValue("license_category", driver.LicenseCategory);
             cmd.Parameters.AddWithValue("license_expiry", driver.LicenseExpiry);
             cmd.Parameters.AddWithValue("status", FleetFlowEnumMapper.ToDb(driver.Status));
+            cmd.Parameters.AddWithValue("completion_rate", driver.CompletionRate);
+            cmd.Parameters.AddWithValue("safety_score", driver.SafetyScore);
+            cmd.Parameters.AddWithValue("complaints", driver.Complaints);
             var result = await cmd.ExecuteScalarAsync(cancellationToken);
             return (Guid)result!;
         }
@@ -164,7 +168,8 @@ public class DriverRepository : IDriverRepository
         try
         {
             await using var cmd = new NpgsqlCommand(
-                @"UPDATE drivers SET full_name = @full_name, license_number = @license_number, license_category = @license_category, license_expiry = @license_expiry, status = @status::driver_status
+                @"UPDATE drivers SET full_name = @full_name, license_number = @license_number, license_category = @license_category, license_expiry = @license_expiry, status = @status::driver_status,
+                                     completion_rate = @completion_rate, safety_score = @safety_score, complaints = @complaints
                   WHERE driver_id = @driver_id AND xmin = @xmin AND is_deleted = FALSE", connection);
             cmd.Transaction = GetTransaction();
             cmd.Parameters.AddWithValue("full_name", driver.FullName);
@@ -172,8 +177,11 @@ public class DriverRepository : IDriverRepository
             cmd.Parameters.AddWithValue("license_category", driver.LicenseCategory);
             cmd.Parameters.AddWithValue("license_expiry", driver.LicenseExpiry);
             cmd.Parameters.AddWithValue("status", FleetFlowEnumMapper.ToDb(driver.Status));
+            cmd.Parameters.AddWithValue("completion_rate", driver.CompletionRate);
+            cmd.Parameters.AddWithValue("safety_score", driver.SafetyScore);
+            cmd.Parameters.AddWithValue("complaints", driver.Complaints);
             cmd.Parameters.AddWithValue("driver_id", driver.Id);
-            cmd.Parameters.AddWithValue("xmin", (uint)driver.Xmin);
+            cmd.Parameters.Add(new NpgsqlParameter("xmin", NpgsqlDbType.Xid) { Value = (uint)driver.Xmin });
             return await cmd.ExecuteNonQueryAsync(cancellationToken);
         }
         finally
@@ -194,7 +202,7 @@ public class DriverRepository : IDriverRepository
             cmd.Transaction = GetTransaction();
             cmd.Parameters.AddWithValue("status", FleetFlowEnumMapper.ToDb(status));
             cmd.Parameters.AddWithValue("driver_id", id);
-            cmd.Parameters.AddWithValue("xmin", xmin);
+            cmd.Parameters.Add(new NpgsqlParameter("xmin", NpgsqlDbType.Xid) { Value = xmin });
             return await cmd.ExecuteNonQueryAsync(cancellationToken);
         }
         finally
@@ -216,7 +224,10 @@ public class DriverRepository : IDriverRepository
             Status = FleetFlowEnumMapper.ToDriverStatus(reader.GetString(5)),
             IsDeleted = reader.GetBoolean(6),
             CreatedAt = reader.GetDateTime(7),
-            Xmin = reader.IsDBNull(8) ? 0u : (uint)reader.GetInt32(8)
+            Xmin = reader.IsDBNull(8) ? 0u : (uint)reader.GetInt32(8),
+            CompletionRate = reader.IsDBNull(9) ? 100.00m : reader.GetDecimal(9),
+            SafetyScore = reader.IsDBNull(10) ? 100.00m : reader.GetDecimal(10),
+            Complaints = reader.IsDBNull(11) ? 0 : reader.GetInt32(11)
         };
     }
 }

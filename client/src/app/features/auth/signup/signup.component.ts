@@ -4,10 +4,10 @@ import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { RouterModule } from '@angular/router';
-import { NavigationService } from '../../../services/navigation.service';
+import { NavigationService } from '../../../services/shared/navigation.service';
 import { ApiService } from '../../../services/api/api.service';
 import { API } from '../../../core/config/api.config';
-import { AppConfigService } from '../../../services/app-config.service';
+import { AppConfigService } from '../../../services/shared/app-config.service';
 import {
   LoginRole,
   RoleOption,
@@ -81,6 +81,42 @@ export class CustomSignupComponent {
     return this.user.password === this.user.confirmPassword;
   }
 
+  public get passwordRequirements() {
+    const pwd = this.user.password || '';
+    return {
+      length: pwd.length >= 8,
+      uppercase: /[A-Z]/.test(pwd),
+      lowercase: /[a-z]/.test(pwd),
+      number: /\d/.test(pwd),
+      special: /[\W_]/.test(pwd),
+    };
+  }
+
+  public get passwordStrengthScore(): number {
+    const reqs = this.passwordRequirements;
+    let score = 0;
+    if (this.user.password?.length > 0) {
+      if (reqs.length) score++;
+      if (reqs.lowercase) score++;
+      if (reqs.uppercase) score++;
+      if (reqs.number) score++;
+      if (reqs.special) score++;
+    }
+    return score; // 0 to 5
+  }
+
+  public get passwordStrengthLabel(): string {
+    const score = this.passwordStrengthScore;
+    if (!this.user.password) return '';
+    if (score <= 2) return 'Weak';
+    if (score <= 4) return 'Good';
+    return 'Strong';
+  }
+
+  public get passwordStrong(): boolean {
+    return this.passwordStrengthScore === 5;
+  }
+
   public setRole(role: LoginRole): void {
     this.user.role = role;
   }
@@ -101,6 +137,12 @@ export class CustomSignupComponent {
     if (!this.passwordsMatch) {
       this.signupRequestProcessing = false;
       this.signupError = 'Password and confirm password must match.';
+      return;
+    }
+
+    if (!this.passwordStrong) {
+      this.signupRequestProcessing = false;
+      this.signupError = 'Password does not meet complexity requirements.';
       return;
     }
 

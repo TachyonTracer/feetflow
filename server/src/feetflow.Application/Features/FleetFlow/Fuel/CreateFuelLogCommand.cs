@@ -6,7 +6,16 @@ using FluentValidation;
 
 namespace feetflow.Application.Features.FleetFlow.Fuel;
 
-public record CreateFuelLogCommand(Guid VehicleId, Guid? TripId, decimal Liters, decimal Cost, DateOnly FuelDate) : IRequest<Result<FuelLog>>;
+public record CreateFuelLogCommand(
+    Guid VehicleId, 
+    Guid? TripId, 
+    Guid? DriverId, 
+    decimal Liters, 
+    decimal Cost, 
+    decimal Distance, 
+    decimal MiscExpense, 
+    string Status, 
+    DateOnly FuelDate) : IRequest<Result<FuelLog>>;
 
 public class CreateFuelLogCommandValidator : AbstractValidator<CreateFuelLogCommand>
 {
@@ -41,8 +50,12 @@ public class CreateFuelLogCommandHandler : IRequestHandler<CreateFuelLogCommand,
             Id = Guid.NewGuid(),
             VehicleId = request.VehicleId,
             TripId = request.TripId,
+            DriverId = request.DriverId,
             Liters = request.Liters,
             Cost = request.Cost,
+            Distance = request.Distance,
+            MiscExpense = request.MiscExpense,
+            Status = request.Status,
             FuelDate = request.FuelDate,
             CreatedAt = DateTime.UtcNow
         };

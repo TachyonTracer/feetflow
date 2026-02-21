@@ -2,7 +2,12 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from '../api/api.service';
 import { API } from '../../core/config/api.config';
-import { FuelLog, CreateFuelLogRequest } from '../../core/models/fuel.model';
+import {
+  FuelLog,
+  CreateFuelLogRequest,
+  UpdateFuelLogRequest,
+  FuelLogPagedResponse,
+} from '../../core/models/fuel.model';
 import { PagedResult } from '../../core/models/paged-result.model';
 
 @Injectable({ providedIn: 'root' })
@@ -14,12 +19,20 @@ export class FuelApiService {
   }
 
   public getFuelLogsByVehicle(
-    vehicleId: string,
+    vehicleId?: string,
     pageNumber: number = 1,
     pageSize: number = 10,
-  ): Observable<PagedResult<FuelLog>> {
-    return this.apiService.get<PagedResult<FuelLog>>(API.fuel.base, {
-      queryParams: { vehicleId, pageNumber, pageSize },
+  ): Observable<FuelLogPagedResponse> {
+    const params: any = { pageNumber, pageSize };
+    if (vehicleId) {
+      params.vehicleId = vehicleId;
+    }
+    return this.apiService.get<FuelLogPagedResponse>(API.fuel.base, {
+      queryParams: params,
     });
+  }
+
+  public updateFuelLog(id: string, request: UpdateFuelLogRequest): Observable<FuelLog> {
+    return this.apiService.put<FuelLog>(`${API.fuel.base}/${id}`, request);
   }
 }

@@ -1,35 +1,50 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HeaderComponent } from '../../shared/components/header/header.component';
+import { AlertService } from '../../services/shared/alert.service';
+import { AddNewTrip } from './add-new-trip/add-new-trip';
 import { TripsApiService } from '../../services/controllers/trips-api.service';
 import { VehiclesApiService } from '../../services/controllers/vehicles-api.service';
 import { DriversApiService } from '../../services/controllers/drivers-api.service';
 import { Trip, CreateTripRequest, TripStatus } from '../../core/models/trip.model';
 import { Vehicle } from '../../core/models/vehicle.model';
 import { Driver } from '../../core/models/driver.model';
-import {
-  SearchableSelectComponent,
-  SearchableSelectOption,
-} from '../../shared/components/searchable-select/searchable-select.component';
+import { SearchableSelectOption } from '../../shared/components/searchable-select/searchable-select.component';
+import { CustomCellDirective } from '../../shared/directives/custom-cell.directive';
+import { COMMON_PAGE_SIZE_OPTIONS, TRIP_SORT_OPTIONS } from '../../core/constants/ui.constants';
 import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
+import {
+  DataPageLayout,
+  TableColumn,
+} from '../../shared/components/data-page-layout/data-page-layout';
+import {
+  EntityDetailModalComponent,
+  DetailSection,
+} from '../../shared/components/entity-detail-modal/entity-detail-modal.component';
 
 @Component({
   selector: 'app-vehicle-trip-dispatcher',
   standalone: true,
-  imports: [CommonModule, FormsModule, HeaderComponent, SearchableSelectComponent, InrCurrencyPipe],
+  imports: [
+    CommonModule,
+    FormsModule,
+    DataPageLayout,
+    InrCurrencyPipe,
+    AddNewTrip,
+    EntityDetailModalComponent,
+    CustomCellDirective,
+  ],
   templateUrl: './vehicle-trip-dispatcher.html',
   styleUrl: './vehicle-trip-dispatcher.scss',
 })
 export class VehicleTripDispatcher implements OnInit {
-  activeTab: 'log' | 'add' = 'log';
+  isAddTripModalOpen = false;
 
   trips: Trip[] = [];
   vehicles: Vehicle[] = [];
   drivers: Driver[] = [];
 
   isLoadingLogs = false;
-  isSubmitting = false;
 
   searchTerm: string = '';
   currentStatus: string = '';
@@ -43,39 +58,35 @@ export class VehicleTripDispatcher implements OnInit {
     { value: 'Cancelled', label: 'Cancelled' },
   ];
 
-  readonly sortOptions: SearchableSelectOption[] = [
-    { value: '', label: 'Sort By' },
-    { value: 'status', label: 'Status' },
-    { value: 'id', label: 'Trip ID' },
-    { value: 'cargoWeightKg', label: 'Cargo Weight' },
-    { value: 'revenue', label: 'Revenue' },
-  ];
+  readonly sortOptions = TRIP_SORT_OPTIONS;
 
-  readonly pageSizeOptions: SearchableSelectOption[] = [
-    { value: '10', label: '10 per page' },
-    { value: '25', label: '25 per page' },
-    { value: '50', label: '50 per page' },
-  ];
-
-  newTrip: CreateTripRequest = {
-    vehicleId: '',
-    driverId: '',
-    cargoWeightKg: 0,
-  };
-
-  uiOrigin = '';
-  uiDestination = '';
-  uiEstimatedFuelCost = 0;
+  readonly pageSizeOptions = COMMON_PAGE_SIZE_OPTIONS;
 
   completeTripId = '';
   completeEndOdometer = 0;
   completeRevenue = 0;
   showCompleteModal = false;
 
+  // Detail modal
+  selectedTrip: Trip | null = null;
+  showTripDetail = false;
+
+  columns: TableColumn[] = [
+    { key: 'tripId', title: 'Trip ID', align: 'center', type: 'custom' },
+    { key: 'vehicleName', title: 'Vehicle', align: 'left', type: 'custom' },
+    { key: 'driverName', title: 'Driver', align: 'left', type: 'custom' },
+    { key: 'cargoWeightKg', title: 'Cargo (kg)', align: 'center', type: 'custom' },
+    { key: 'route', title: 'Route', align: 'center', type: 'custom' },
+    { key: 'revenue', title: 'Revenue', align: 'left', type: 'custom' },
+    { key: 'status', title: 'Status', align: 'center', type: 'custom' },
+    { key: 'actions', title: 'Actions', align: 'center', type: 'actions' },
+  ];
+
   constructor(
     private tripsService: TripsApiService,
     private vehiclesService: VehiclesApiService,
     private driversService: DriversApiService,
+    private alertService: AlertService,
   ) {}
 
   ngOnInit() {
@@ -92,7 +103,8 @@ export class VehicleTripDispatcher implements OnInit {
         (t) =>
           t.id.toLowerCase().includes(term) ||
           (t.vehicleName && t.vehicleName.toLowerCase().includes(term)) ||
-          (t.driverName && t.driverName.toLowerCase().includes(term)),
+          (t.driverName && t.driverName.toLowerCase().includes(term)) ||
+          (t.destinationState && t.destinationState.toLowerCase().includes(term)),
       );
     }
 
@@ -138,7 +150,7 @@ export class VehicleTripDispatcher implements OnInit {
         this.isLoadingLogs = false;
       },
       error: (err) => {
-        console.error('Failed to load trips', err);
+        this.alertService.showApiError(err);
         this.isLoadingLogs = false;
       },
     });
@@ -200,51 +212,115 @@ export class VehicleTripDispatcher implements OnInit {
   getDriverOptions(): SearchableSelectOption[] {
     return [
       { value: '', label: 'Assign a driver' },
-      ...this.drivers.map((driver) => ({
-        value: driver.id,
-        label: `${driver.fullName} (${driver.licenseNumber})`,
-      })),
+      ...this.drivers
+        .filter((d) => d.status === 'OnDuty') // only available drivers
+        .map((driver) => ({
+          value: driver.id,
+          label: `${driver.fullName} (${driver.licenseNumber})`,
+        })),
     ];
   }
 
-  submitNewTrip() {
-    if (
-      !this.newTrip.vehicleId ||
-      !this.newTrip.driverId ||
-      !this.uiOrigin ||
-      !this.uiDestination
-    ) {
-      alert('Please fill in all required fields.');
-      return;
-    }
+  openTripDetail(trip: Trip): void {
+    this.selectedTrip = trip;
+    this.showTripDetail = true;
+  }
 
-    this.isSubmitting = true;
-    this.tripsService.createTrip(this.newTrip).subscribe({
-      next: () => {
-        this.isSubmitting = false;
-        this.loadActiveTrips();
-        this.activeTab = 'log';
-        this.newTrip = { vehicleId: '', driverId: '', cargoWeightKg: 0 };
-        this.uiOrigin = '';
-        this.uiDestination = '';
-        this.uiEstimatedFuelCost = 0;
+  closeTripDetail(): void {
+    this.showTripDetail = false;
+    this.selectedTrip = null;
+  }
+
+  buildTripSections(trip: Trip): DetailSection[] {
+    const statusClasses: Record<string, string> = {
+      Draft: 'status-draft',
+      Dispatched: 'status-dispatched',
+      Completed: 'status-completed',
+      Cancelled: 'status-cancelled',
+    };
+    return [
+      {
+        title: 'Trip Overview',
+        fields: [
+          { label: 'Trip ID', value: trip.id.toUpperCase() },
+          {
+            label: 'Status',
+            value: trip.status,
+            type: 'badge',
+            badgeClass: statusClasses[trip.status] ?? '',
+          },
+          {
+            label: 'Route',
+            type: 'route',
+            value: '',
+            routeOrigin: trip.originState,
+            routeDest: trip.destinationState,
+          },
+          { label: 'Cargo Weight', value: `${trip.cargoWeightKg} kg` },
+        ],
       },
-      error: (err) => {
-        console.error('Failed to create trip', err);
-        alert('Failed to submit trip.');
-        this.isSubmitting = false;
+      {
+        title: 'Assignment',
+        fields: [
+          { label: 'Vehicle', value: trip.vehicleName ?? this.getVehicleName(trip.vehicleId) },
+          { label: 'Driver', value: trip.driverName ?? this.getDriverName(trip.driverId) },
+        ],
       },
-    });
+      {
+        title: 'Financials & Odometer',
+        fields: [
+          { label: 'Revenue', value: trip.revenue ?? null, type: 'currency' },
+          {
+            label: 'Start Odometer',
+            value: trip.startOdometer != null ? `${trip.startOdometer} km` : null,
+          },
+          {
+            label: 'End Odometer',
+            value: trip.endOdometer != null ? `${trip.endOdometer} km` : null,
+          },
+          {
+            label: 'Completed At',
+            value: trip.completedAt ? new Date(trip.completedAt).toLocaleDateString('en-IN') : null,
+          },
+        ],
+      },
+    ];
+  }
+
+  openAddTripModal(): void {
+    this.isAddTripModalOpen = true;
+  }
+
+  closeAddTripModal(): void {
+    this.isAddTripModalOpen = false;
+  }
+
+  onTripCreated(): void {
+    this.loadActiveTrips();
   }
 
   dispatchTrip(tripId: string) {
-    this.tripsService.dispatchTrip(tripId).subscribe({
-      next: () => this.loadActiveTrips(),
-      error: (err) => {
-        console.error('Failed to dispatch trip', err);
-        alert('Failed to dispatch trip.');
-      },
-    });
+    this.alertService
+      .confirm({
+        title: 'Dispatch Trip?',
+        text: 'Are you sure you want to dispatch this trip now?',
+        confirmButtonText: 'Yes, dispatch',
+        cancelButtonText: 'No',
+        confirmButtonColor: '#1e3fae',
+      })
+      .then((result: any) => {
+        if (!result.isConfirmed) return;
+
+        this.tripsService.dispatchTrip(tripId).subscribe({
+          next: () => {
+            this.alertService.success('Dispatched!', 'Trip has been successfully dispatched.');
+            this.loadActiveTrips();
+          },
+          error: (err) => {
+            this.alertService.showApiError(err);
+          },
+        });
+      });
   }
 
   openCompleteModal(tripId: string) {
@@ -256,7 +332,10 @@ export class VehicleTripDispatcher implements OnInit {
 
   confirmCompleteTrip() {
     if (this.completeEndOdometer <= 0 || this.completeRevenue < 0) {
-      alert('Please enter valid end odometer and revenue values.');
+      this.alertService.warning(
+        'Invalid Values',
+        'Please enter valid end odometer and revenue values.',
+      );
       return;
     }
     this.tripsService
@@ -271,20 +350,32 @@ export class VehicleTripDispatcher implements OnInit {
         },
         error: (err) => {
           console.error('Failed to complete trip', err);
-          alert('Failed to complete trip.');
         },
       });
   }
 
   cancelTrip(tripId: string) {
-    if (!confirm('Are you sure you want to cancel this trip?')) return;
-    this.tripsService.cancelTrip(tripId).subscribe({
-      next: () => this.loadActiveTrips(),
-      error: (err) => {
-        console.error('Failed to cancel trip', err);
-        alert('Failed to cancel trip.');
-      },
-    });
+    this.alertService
+      .confirm({
+        title: 'Cancel Trip?',
+        text: 'Are you sure you want to cancel this trip? This action cannot be undone.',
+        confirmButtonText: 'Yes, cancel it',
+        cancelButtonText: 'No',
+        confirmButtonColor: '#dc2626',
+      })
+      .then((result: any) => {
+        if (!result.isConfirmed) return;
+
+        this.tripsService.cancelTrip(tripId).subscribe({
+          next: () => {
+            this.alertService.success('Cancelled!', 'Trip has been successfully cancelled.');
+            this.loadActiveTrips();
+          },
+          error: (err) => {
+            this.alertService.showApiError(err);
+          },
+        });
+      });
   }
 
   getVehicleName(vehicleId: string): string {

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 // Missing CookieService, jwtDecode, pako
 // Replacing with simple localstorage fallback or stub since we are stripping down UI/auth libs
-import { AppConfigService } from '../app-config.service';
+import { AppConfigService } from '../shared/app-config.service';
 
 export interface GetUserResponseModel {
   [key: string]: any;
@@ -51,6 +51,7 @@ export class JwtHelperService {
         document.cookie = `AuthorizationHeaderSignature=${tokenType} ${setvalue[0]}..${setvalue[2]}; expires=${expireDateTime.toUTCString()}; path=/; ${window.location.protocol === 'https:' ? 'secure;' : ''}`;
         document.cookie = `ExpireTime=${expireDateTime.getTime().toString()}; expires=${expireDateTime.toUTCString()}; path=/; ${window.location.protocol === 'https:' ? 'secure;' : ''}`;
         localStorage.setItem('payload', setvalue[1].toString());
+        localStorage.setItem('raw_jwt_token', tokenString);
       }
     } catch (error) {
       console.error(error);

@@ -12,8 +12,8 @@ export const environment = {
       login: '/api/Auth/login',
       signup: '/api/Auth/signup',
       refresh: '/api/Auth/refresh',
-      getAccessToken: '/api/get_access_token',
-      resetPassword: '/api/custom/public/accounts/reset_password',
+      forgotPassword: '/api/Auth/forgot-password',
+      resetPassword: '/api/Auth/reset-password',
     },
     users: {
       getAll: '/api/users',

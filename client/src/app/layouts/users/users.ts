@@ -3,16 +3,27 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UsersApiService } from '../../services/controllers/users-api.service';
 import { User, UpdateUserRequest } from '../../core/models/user.model';
-import { HeaderComponent } from '../../shared/components/header/header.component';
+import {
+  DataPageLayout,
+  TableColumn,
+} from '../../shared/components/data-page-layout/data-page-layout';
 import {
   SearchableSelectComponent,
   SearchableSelectOption,
 } from '../../shared/components/searchable-select/searchable-select.component';
+import { CustomCellDirective } from '../../shared/directives/custom-cell.directive';
+import { COMMON_PAGE_SIZE_OPTIONS, USER_SORT_OPTIONS } from '../../core/constants/ui.constants';
 
 @Component({
   selector: 'app-users',
   standalone: true,
-  imports: [CommonModule, FormsModule, HeaderComponent, SearchableSelectComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    DataPageLayout,
+    SearchableSelectComponent,
+    CustomCellDirective,
+  ],
   templateUrl: './users.html',
   styleUrl: './users.scss',
 })
@@ -33,6 +44,14 @@ export class Users implements OnInit {
   public totalCount = 0;
   public totalPages = 1;
 
+  readonly columns: TableColumn[] = [
+    { key: 'fullName', title: 'Name' },
+    { key: 'email', title: 'Email' },
+    { key: 'role', title: 'Role' },
+    { key: 'createdAt', title: 'Joined', type: 'date' },
+    { key: 'actions', title: 'ACTIONS', type: 'custom', align: 'center' },
+  ];
+
   readonly roleOptions: SearchableSelectOption[] = [
     { value: '', label: 'All Roles' },
     { value: 'Manager', label: 'Manager' },
@@ -41,19 +60,9 @@ export class Users implements OnInit {
     { value: 'FinancialAnalyst', label: 'Financial Analyst' },
   ];
 
-  readonly sortOptions: SearchableSelectOption[] = [
-    { value: '', label: 'Sort By' },
-    { value: 'name', label: 'Name' },
-    { value: 'email', label: 'Email' },
-    { value: 'role', label: 'Role' },
-    { value: 'joinedDate', label: 'Joined Date' },
-  ];
+  readonly sortOptions = USER_SORT_OPTIONS;
 
-  readonly pageSizeOptions: SearchableSelectOption[] = [
-    { value: '10', label: '10 per page' },
-    { value: '25', label: '25 per page' },
-    { value: '50', label: '50 per page' },
-  ];
+  readonly pageSizeOptions = COMMON_PAGE_SIZE_OPTIONS;
 
   constructor(private usersApiService: UsersApiService) {}
 
@@ -118,16 +127,6 @@ export class Users implements OnInit {
     return this.filteredUsers.slice(startIndex, startIndex + this.pageSize);
   }
 
-  get startRecord(): number {
-    if (this.totalCount === 0) return 0;
-    return (this.pageNumber - 1) * this.pageSize + 1;
-  }
-
-  get endRecord(): number {
-    if (this.totalCount === 0) return 0;
-    return Math.min(this.pageNumber * this.pageSize, this.totalCount);
-  }
-
   public onFiltersChanged(): void {
     this.pageNumber = 1;
     this.recalculatePagination();
@@ -144,18 +143,6 @@ export class Users implements OnInit {
   public changePage(pageNumber: number): void {
     if (pageNumber < 1 || pageNumber > this.totalPages) return;
     this.pageNumber = pageNumber;
-  }
-
-  public getPageNumbers(): number[] {
-    const pages: number[] = [];
-    const maxVisiblePages = 5;
-    const startPage = Math.max(1, this.pageNumber - 2);
-    const endPage = Math.min(this.totalPages, startPage + maxVisiblePages - 1);
-
-    for (let page = startPage; page <= endPage; page += 1) {
-      pages.push(page);
-    }
-    return pages;
   }
 
   private recalculatePagination(): void {

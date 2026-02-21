@@ -13,4 +13,5 @@ public interface IVehicleRepository
     Task<int> SoftDeleteAsync(Guid id, CancellationToken cancellationToken = default);
     Task<int> SetStatusAsync(Guid id, VehicleStatus status, uint xmin, CancellationToken cancellationToken = default);
     Task<int> SetOdometerAndStatusAsync(Guid id, decimal odometerKm, VehicleStatus status, uint xmin, CancellationToken cancellationToken = default);
+    Task<(decimal TotalFuel, decimal TotalMaintenance, decimal TotalMisc)> GetOperationalCostsAsync(Guid id, CancellationToken cancellationToken = default);
 }

@@ -12,6 +12,9 @@ public record UpdateDriverCommand(
     string LicenseNumber,
     string LicenseCategory,
     DateOnly LicenseExpiry,
+    decimal CompletionRate,
+    decimal SafetyScore,
+    int Complaints,
     uint Xmin) : IRequest<Result<Driver>>;
 
 public class UpdateDriverCommandValidator : AbstractValidator<UpdateDriverCommand>
@@ -45,6 +48,9 @@ public class UpdateDriverCommandHandler : IRequestHandler<UpdateDriverCommand, R
         driver.LicenseNumber = request.LicenseNumber;
         driver.LicenseCategory = request.LicenseCategory;
         driver.LicenseExpiry = request.LicenseExpiry;
+        driver.CompletionRate = request.CompletionRate;
+        driver.SafetyScore = request.SafetyScore;
+        driver.Complaints = request.Complaints;
         driver.Xmin = request.Xmin;
 
         var updated = await _driverRepository.UpdateAsync(driver, cancellationToken);

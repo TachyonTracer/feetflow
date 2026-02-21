@@ -10,7 +10,7 @@ namespace feetflow.API.Controllers.FleetFlow;
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]
-public class VehiclesController : ControllerBase
+public class VehiclesController : FleetControllerBase
 {
     private readonly IMediator _mediator;
 
@@ -36,7 +36,7 @@ public class VehiclesController : ControllerBase
         var result = await _mediator.Send(new CreateVehicleCommand(
             request.Name, request.LicensePlate, request.VehicleType, request.MaxCapacityKg, request.AcquisitionCost, request.OdometerKm), cancellationToken);
         if (!result.IsSuccess)
-            return StatusCode(result.StatusCode, new ProblemDetails { Status = result.StatusCode, Detail = result.Error });
+            return StatusCode(result.StatusCode, result.Error);
         return CreatedAtAction(nameof(GetById), new { id = result.Value!.Id }, result.Value);
     }
 
@@ -62,12 +62,6 @@ public class VehiclesController : ControllerBase
         return ToActionResult(result);
     }
 
-    private IActionResult ToActionResult<T>(Result<T> result)
-    {
-        if (result.IsSuccess)
-            return result.StatusCode == 201 ? StatusCode(201, result.Value) : Ok(result.Value);
-        return StatusCode(result.StatusCode, new ProblemDetails { Status = result.StatusCode, Detail = result.Error });
-    }
 }
 
 public record CreateVehicleRequest(string Name, string LicensePlate, string VehicleType, decimal MaxCapacityKg, decimal AcquisitionCost, decimal OdometerKm = 0);

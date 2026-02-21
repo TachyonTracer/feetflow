@@ -36,3 +36,4 @@ bin/*
 client/public/*.html
 server/src/feetflow.API/appsettings.Development.json
 server/src/feetflow.API/appsettings.json
+server/.tmp-build-api/

@@ -1,5 +1,7 @@
 # Fleet Flow
 
+🚀 **Live App:** [fleetflow.tachyontracer.in](https://fleetflow.tachyontracer.in)
+
 A comprehensive fleet management system built with **Angular 17+** frontend and **.NET** backend. Fleet Flow allows managers to track vehicles, dispatch trips, monitor driver performance, and log maintenance and expenses all in one unified, real-time dashboard.
 
 ## Key Capabilities
@@ -19,7 +21,6 @@ A comprehensive fleet management system built with **Angular 17+** frontend and 
 - **Real-Time** — SignalR for live updates
 - **PostgreSQL** — ADO.NET + Npgsql + Dapper for high-performance queries
 - **Docker** — Multi-stage builds, docker-compose with all services
-- **CI/CD** — GitHub Actions with build, test, deploy, and automatic rollback
 - **AI Config** — AGENTS.md, Antigravity settings, Copilot instructions
 
 ## Quick Start
@@ -96,7 +97,6 @@ code frontend.code-workspace   # or backend / fullstack
 │   ├── tests/
 │   ├── migrations/
 │   └── Dockerfile
-├── .github/workflows/         # CI/CD pipelines
 ├── docker-compose.yml
 ├── AGENTS.md                  # AI assistant context
 └── README.md

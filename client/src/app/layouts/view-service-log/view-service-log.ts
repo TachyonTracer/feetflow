@@ -1,16 +1,40 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HeaderComponent } from '../../shared/components/header/header.component';
+import { AlertService } from '../../services/shared/alert.service';
+import {
+  DataPageLayout,
+  TableColumn,
+} from '../../shared/components/data-page-layout/data-page-layout';
+import {
+  SearchableSelectComponent,
+  SearchableSelectOption,
+} from '../../shared/components/searchable-select/searchable-select.component';
+import { CustomCellDirective } from '../../shared/directives/custom-cell.directive';
 import { MaintenanceApiService } from '../../services/controllers/maintenance-api.service';
 import { VehiclesApiService } from '../../services/controllers/vehicles-api.service';
 import { MaintenanceLog, CreateMaintenanceRequest } from '../../core/models/maintenance.model';
 import { Vehicle } from '../../core/models/vehicle.model';
+import {
+  COMMON_PAGE_SIZE_OPTIONS,
+  MAINTENANCE_SORT_OPTIONS,
+} from '../../core/constants/ui.constants';
+import {
+  EntityDetailModalComponent,
+  DetailSection,
+} from '../../shared/components/entity-detail-modal/entity-detail-modal.component';
 
 @Component({
   selector: 'app-view-service-log',
   standalone: true,
-  imports: [CommonModule, FormsModule, HeaderComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    DataPageLayout,
+    EntityDetailModalComponent,
+    SearchableSelectComponent,
+    CustomCellDirective,
+  ],
   templateUrl: './view-service-log.html',
   styleUrl: './view-service-log.scss',
 })
@@ -18,63 +42,37 @@ export class ViewServiceLog implements OnInit {
   logs: MaintenanceLog[] = [];
   isLoading = true;
 
+  // Detail modal
+  selectedLog: MaintenanceLog | null = null;
+  showLogDetail = false;
+
   searchTerm: string = '';
   currentStatus: string = '';
   sortBy: string = '';
 
-  isStatusDropdownOpen = signal(false);
-  isSortDropdownOpen = signal(false);
-
-  statusOptions = [
+  readonly statusOptions: SearchableSelectOption[] = [
     { value: '', label: 'All Statuses' },
     { value: 'Completed', label: 'Completed' },
-    { value: 'In Progress', label: 'In Progress' }
+    { value: 'In Progress', label: 'In Progress' },
   ];
 
-  sortOptions = [
-    { value: '', label: 'Sort By...' },
-    { value: 'date-desc', label: 'Date (Newest First)' },
-    { value: 'date-asc', label: 'Date (Oldest First)' },
-    { value: 'cost-desc', label: 'Cost (High to Low)' },
-    { value: 'cost-asc', label: 'Cost (Low to High)' }
-  ];
+  readonly sortOptions = MAINTENANCE_SORT_OPTIONS;
 
-  get currentStatusLabel(): string {
-    return this.statusOptions.find(o => o.value === this.currentStatus)?.label || 'All Statuses';
+  readonly pageSizeOptions = COMMON_PAGE_SIZE_OPTIONS;
+
+  onFiltersChanged(): void {
+    this.pageNumber = 1;
+    // If the backend supported filtering, we would pass these to loadLogs.
+    // However, the current component applies filtering client-side on the paginated result list:
+    // This is retained from the original behavior.
   }
 
-  get currentSortLabel(): string {
-    return this.sortOptions.find(o => o.value === this.sortBy)?.label || 'Sort By...';
-  }
-
-  toggleStatusDropdown(event: Event) {
-    event.stopPropagation();
-    this.isSortDropdownOpen.set(false);
-    this.isStatusDropdownOpen.set(!this.isStatusDropdownOpen());
-  }
-
-  toggleSortDropdown(event: Event) {
-    event.stopPropagation();
-    this.isStatusDropdownOpen.set(false);
-    this.isSortDropdownOpen.set(!this.isSortDropdownOpen());
-  }
-
-  selectStatus(value: string) {
-    this.currentStatus = value;
-    this.isStatusDropdownOpen.set(false);
-  }
-
-  selectSort(value: string) {
-    this.sortBy = value;
-    this.isSortDropdownOpen.set(false);
-  }
-
-  checkClickOutside(event: Event) {
-    const target = event.target as HTMLElement;
-    if (!target.closest('.custom-select-container')) {
-      this.isStatusDropdownOpen.set(false);
-      this.isSortDropdownOpen.set(false);
-    }
+  onPageSizeChanged(pageSize: string): void {
+    const parsedPageSize = Number(pageSize);
+    if (!Number.isFinite(parsedPageSize) || parsedPageSize <= 0) return;
+    this.pageSize = parsedPageSize;
+    this.pageNumber = 1;
+    this.loadLogs();
   }
 
   get filteredLogs(): MaintenanceLog[] {
@@ -122,24 +120,37 @@ export class ViewServiceLog implements OnInit {
     serviceDate: '',
   };
 
+  columns: TableColumn[] = [
+    { key: 'maintenanceId', title: 'Log ID', align: 'center', type: 'custom' },
+    { key: 'vehicleInfo', title: 'Vehicle', align: 'left', type: 'custom' },
+    { key: 'description', title: 'Issue/Service', align: 'left', type: 'string' },
+    { key: 'serviceDate', title: 'Date', align: 'center', type: 'date' },
+    { key: 'cost', title: 'Cost', align: 'right', type: 'currency' },
+    { key: 'status', title: 'Status', align: 'center', type: 'custom' },
+    { key: 'actions', title: 'ACTIONS', align: 'center', type: 'actions' },
+  ];
+
   constructor(
     private maintenanceService: MaintenanceApiService,
     private vehiclesService: VehiclesApiService,
-  ) { }
+    private alertService: AlertService,
+  ) {}
 
   ngOnInit() {
     this.loadLogs();
     this.loadVehicles();
-    document.addEventListener('click', this.checkClickOutside.bind(this));
-  }
-
-  ngOnDestroy(): void {
-    document.removeEventListener('click', this.checkClickOutside.bind(this));
   }
 
   pageNumber = 1;
   pageSize = 10;
   totalCount = 0;
+
+  getVehicleOptions(): SearchableSelectOption[] {
+    return this.vehicles().map((v) => ({
+      value: v.id,
+      label: `${v.name} (${v.licensePlate})`,
+    }));
+  }
   totalPages = 0;
 
   loadLogs() {
@@ -171,10 +182,24 @@ export class ViewServiceLog implements OnInit {
     this.loadLogs();
   }
 
-  closeLog(id: string) {
+  async closeLog(id: string) {
+    const confirmed = await this.alertService.confirm({
+      title: 'Complete Maintenance?',
+      text: 'Are you sure you want to mark this maintenance log as completed?',
+      confirmButtonText: 'Yes, complete it',
+      cancelButtonText: 'Cancel',
+      confirmButtonColor: '#1e3fae',
+    });
+    if (!confirmed.isConfirmed) return;
+
     this.maintenanceService.closeMaintenance(id).subscribe({
-      next: () => this.loadLogs(),
-      error: (err) => console.error('Failed to close log', err),
+      next: () => {
+        this.alertService.success('Success', 'Maintenance log closed successfully.');
+        this.loadLogs();
+      },
+      error: (err) => {
+        this.alertService.showApiError(err);
+      },
     });
   }
 
@@ -199,6 +224,7 @@ export class ViewServiceLog implements OnInit {
       next: () => {
         this.isSubmitting.set(false);
         this.showCreateModal.set(false);
+        this.alertService.success('Success', 'Maintenance log created successfully.');
         this.loadLogs();
       },
       error: (err) => {
@@ -206,5 +232,46 @@ export class ViewServiceLog implements OnInit {
         this.formError.set(err.error?.errorMessage || 'Failed to create maintenance log.');
       },
     });
+  }
+
+  openLogDetail(log: MaintenanceLog): void {
+    this.selectedLog = log;
+    this.showLogDetail = true;
+  }
+
+  closeLogDetail(): void {
+    this.showLogDetail = false;
+    this.selectedLog = null;
+  }
+
+  buildLogSections(log: MaintenanceLog): DetailSection[] {
+    return [
+      {
+        title: 'Service Details',
+        fields: [
+          { label: 'Log ID', value: log.maintenanceId.substring(0, 8).toUpperCase() },
+          {
+            label: 'Status',
+            value: log.isClosed ? 'Completed' : 'In Progress',
+            type: 'badge',
+            badgeClass: log.isClosed ? 'status-completed' : 'status-progress',
+          },
+          { label: 'Description', value: log.description },
+          { label: 'Service Date', value: new Date(log.serviceDate).toLocaleDateString('en-IN') },
+        ],
+      },
+      {
+        title: 'Vehicle & Cost',
+        fields: [
+          {
+            label: 'Vehicle',
+            value: log.vehicleName || log.vehicleId.substring(0, 8).toUpperCase(),
+          },
+          { label: 'License Plate', value: log.licensePlate },
+          { label: 'Cost', value: log.cost, type: 'currency' },
+          { label: 'Logged At', value: new Date(log.createdAt).toLocaleDateString('en-IN') },
+        ],
+      },
+    ];
   }
 }

@@ -1,4 +1,10 @@
-export type VehicleStatus = 'Available' | 'Active' | 'OnTrip' | 'InShop' | 'InMaintenance' | 'Retired';
+export type VehicleStatus =
+  | 'Available'
+  | 'Active'
+  | 'OnTrip'
+  | 'InShop'
+  | 'InMaintenance'
+  | 'Retired';
 
 export interface Vehicle {
   id: string;
@@ -13,6 +19,14 @@ export interface Vehicle {
   createdAt: string;
   updatedAt?: string;
   xmin: number;
+
+  activeTripOriginState?: string;
+  activeTripDestinationState?: string;
+
+  totalFuelCost?: number;
+  totalMaintenanceCost?: number;
+  totalMiscExpense?: number;
+  totalOperationalCost?: number;
 }
 
 export interface CreateVehicleRequest {

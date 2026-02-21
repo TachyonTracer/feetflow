@@ -19,6 +19,14 @@ public class GetVehicleByIdQueryHandler : IRequestHandler<GetVehicleByIdQuery, R
     public async Task<Result<Vehicle>> Handle(GetVehicleByIdQuery request, CancellationToken cancellationToken)
     {
         var vehicle = await _vehicleRepository.GetByIdAsync(request.Id, cancellationToken);
-        return vehicle == null ? Result<Vehicle>.NotFound("Vehicle not found.") : Result<Vehicle>.Success(vehicle);
+        if (vehicle == null)
+            return Result<Vehicle>.NotFound("Vehicle not found.");
+
+        var costs = await _vehicleRepository.GetOperationalCostsAsync(request.Id, cancellationToken);
+        vehicle.TotalFuelCost = costs.TotalFuel;
+        vehicle.TotalMaintenanceCost = costs.TotalMaintenance;
+        vehicle.TotalMiscExpense = costs.TotalMisc;
+
+        return Result<Vehicle>.Success(vehicle);
     }
 }

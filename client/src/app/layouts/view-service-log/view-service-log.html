@@ -1,200 +1,100 @@
-<div class="service-layout">
-    <!-- Top Navigation Bar -->
-    <app-header></app-header>
+<app-data-page-layout [pageTitle]="'Maintenance & Service Logs'"
+    [pageSubtitle]="'Manage and track your vehicle service history and upcoming repairs.'"
+    [actionLabel]="'Create New Service'" [actionIcon]="'add'" (actionClick)="openCreateModal()"
+    [searchPlaceholder]="'Search by Vehicle, Log ID, or Service Type...'" [(searchTerm)]="searchTerm"
+    (searchTermChange)="onFiltersChanged()" [filterOptions]="statusOptions" [filterValue]="currentStatus"
+    (filterChange)="currentStatus = $event; onFiltersChanged()" [sortOptions]="sortOptions" [sortValue]="sortBy"
+    (sortChange)="sortBy = $event; onFiltersChanged()" [pageNumber]="pageNumber" [pageSize]="pageSize"
+    (sortChange)="sortBy = $event; onFiltersChanged()" [pageNumber]="pageNumber" [pageSize]="pageSize"
+    [pageSizeOptions]="pageSizeOptions" [totalCount]="totalCount" (pageChange)="changePage($event)"
+    (pageSizeChange)="onPageSizeChanged($event)" [columns]="columns" [data]="filteredLogs">
 
-    <main class="main-content">
-        <!-- Page Title & Primary Action -->
-        <div class="page-header">
-            <div class="header-text">
-                <h2>Maintenance & Service Logs</h2>
-                <p>Manage and track your vehicle service history and upcoming repairs.</p>
+    <ng-template appCustomCell let-row let-col="column">
+        @switch (col.key) {
+        @case ('maintenanceId') {
+        <button class="td-id td-id-link" (click)="openLogDetail(row)">{{ row.maintenanceId.substring(0,8) | uppercase
+            }}</button>
+        }
+        @case ('vehicleInfo') {
+        <div class="vehicle-info">
+            <div class="vehicle-icon">
+                <span class="material-symbols-outlined">directions_car</span>
             </div>
-            <button class="btn-primary" (click)="openCreateModal()">
-                <span class="material-symbols-outlined icon-small">add</span>
-                <span>Create New Service</span>
+            <div class="vehicle-details">
+                <span class="vehicle-name">{{ row.vehicleName || 'Vehicle ' + row.vehicleId.substring(0,5) }}</span>
+            </div>
+        </div>
+        }
+        @case ('status') {
+        <span class="status-badge" [ngClass]="row.isClosed ? 'status-completed' : 'status-progress'">
+            {{ row.isClosed ? 'Completed' : 'In Progress' }}
+        </span>
+        }
+        @case ('actions') {
+        <div class="action-group">
+            <button class="action-icon-button" *ngIf="!row.isClosed" (click)="closeLog(row.maintenanceId)"
+                title="Mark as Closed">
+                <span class="material-symbols-outlined">check_circle</span>
             </button>
         </div>
+        }
+        }
+    </ng-template>
 
-        <!-- Utility Bar: Search, Filter, Group, Sort -->
-        <div class="filters-card">
-            <div class="filters-row">
-                <!-- Search -->
-                <div class="search-box">
-                    <span class="material-symbols-outlined search-icon">search</span>
-                    <input class="search-input" placeholder="Search by Vehicle, Log ID, or Service Type..." type="text"
-                        [(ngModel)]="searchTerm" />
-                </div>
-                <!-- Controls Group -->
-                <div class="filter-actions">
-                    <!-- Status Dropdown -->
-                    <div class="custom-select-container status-select">
-                        <div class="selected-trigger" (click)="toggleStatusDropdown($event)">
-                            <span class="selected-text">{{ currentStatusLabel }}</span>
-                            <span class="material-symbols-outlined icon-chevron"
-                                [class.rotated]="isStatusDropdownOpen()">expand_more</span>
-                        </div>
 
-                        <div class="dropdown-menu" *ngIf="isStatusDropdownOpen()">
-                            <ul class="options-list">
-                                <li class="option-item" *ngFor="let opt of statusOptions"
-                                    [class.active]="currentStatus === opt.value" (click)="selectStatus(opt.value)">
-                                    <span class="vehicle-name">{{ opt.label }}</span>
-                                    <span class="material-symbols-outlined check-icon"
-                                        *ngIf="currentStatus === opt.value">check</span>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
 
-                    <!-- Sort Dropdown -->
-                    <div class="custom-select-container sort-select">
-                        <div class="selected-trigger" (click)="toggleSortDropdown($event)">
-                            <span class="selected-text" [class.placeholder]="!sortBy">{{ currentSortLabel }}</span>
-                            <span class="material-symbols-outlined icon-chevron"
-                                [class.rotated]="isSortDropdownOpen()">expand_more</span>
-                        </div>
-
-                        <div class="dropdown-menu" *ngIf="isSortDropdownOpen()">
-                            <ul class="options-list">
-                                <li class="option-item" *ngFor="let opt of sortOptions"
-                                    [class.active]="sortBy === opt.value" (click)="selectSort(opt.value)">
-                                    <span class="vehicle-name">{{ opt.label }}</span>
-                                    <span class="material-symbols-outlined check-icon"
-                                        *ngIf="sortBy === opt.value">check</span>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Table Container -->
-        <div class="data-table-container">
-            <div class="table-wrapper">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Log ID</th>
-                            <th>Vehicle</th>
-                            <th>Issue/Service</th>
-                            <th>Date</th>
-                            <th class="text-right">Cost</th>
-                            <th class="text-center">Status</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <ng-container *ngIf="isLoading; else logsList">
-                            <tr>
-                                <td colspan="7" style="text-align: center; padding: 2rem;">Loading maintenance logs...
-                                </td>
-                            </tr>
-                        </ng-container>
-                        <ng-template #logsList>
-                            <tr *ngFor="let log of filteredLogs">
-                                <td class="td-id">#{{ log.maintenanceId.substring(0,8) | uppercase }}</td>
-                                <td>
-                                    <div class="vehicle-info">
-                                        <div class="vehicle-icon">
-                                            <span class="material-symbols-outlined">directions_car</span>
-                                        </div>
-                                        <div class="vehicle-details">
-                                            <p class="vehicle-name">{{ log.vehicleName || 'Vehicle ' +
-                                                log.vehicleId.substring(0,5) }}</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <p class="service-name">{{ log.description }}</p>
-                                </td>
-                                <td class="td-date">{{ log.serviceDate | date:'mediumDate' }}</td>
-                                <td class="td-cost">{{ log.cost | currency }}</td>
-                                <td class="td-status">
-                                    <span class="status-badge"
-                                        [ngClass]="log.isClosed ? 'status-completed' : 'status-progress'">
-                                        <span class="dot"></span> {{ log.isClosed ? 'Completed' : 'In Progress' }}
-                                    </span>
-                                </td>
-                                <td class="td-actions">
-                                    <button class="action-btn-sm" *ngIf="!log.isClosed"
-                                        (click)="closeLog(log.maintenanceId)" title="Mark as Closed">
-                                        <span class="material-symbols-outlined">check_circle</span>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr *ngIf="filteredLogs.length === 0">
-                                <td colspan="7" style="text-align: center; padding: 2rem;">No maintenance logs found.
-                                </td>
-                            </tr>
-                        </ng-template>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Pagination -->
-            <div class="table-footer" *ngIf="!isLoading">
-                <span class="pagination-text">Showing {{ logs.length }} of {{ totalCount }} logs</span>
-                <div class="pagination">
-                    <button class="page-nav" (click)="changePage(pageNumber - 1)" [disabled]="pageNumber <= 1">
-                        <span class="material-symbols-outlined">chevron_left</span>
-                    </button>
-                    <span class="page-info">Page {{ pageNumber }} of {{ totalPages || 1 }}</span>
-                    <button class="page-nav" (click)="changePage(pageNumber + 1)" [disabled]="pageNumber >= totalPages || totalPages === 0">
-                        <span class="material-symbols-outlined">chevron_right</span>
+    <ng-container modals>
+        <!-- Create Maintenance Modal -->
+        @if (showCreateModal()) {
+        <div class="modal-overlay" (click)="closeCreateModal()">
+            <div class="modal-container" (click)="$event.stopPropagation()">
+                <div class="modal-header">
+                    <h2 class="modal-title">Create Maintenance Log</h2>
+                    <button class="modal-close-btn" (click)="closeCreateModal()">
+                        <span class="material-symbols-outlined">close</span>
                     </button>
                 </div>
-            </div>
-        </div>
-
-    </main>
-</div>
-
-<!-- Create Maintenance Modal -->
-@if (showCreateModal()) {
-<div class="modal-overlay" (click)="closeCreateModal()">
-    <div class="modal-container" (click)="$event.stopPropagation()">
-        <div class="modal-header">
-            <h2 class="modal-title">Create Maintenance Log</h2>
-            <button class="modal-close-btn" (click)="closeCreateModal()">
-                <span class="material-symbols-outlined">close</span>
-            </button>
-        </div>
-        <div class="modal-body">
-            @if (formError()) {
-            <div class="error-banner">{{ formError() }}</div>
-            }
-            <div class="form-group">
-                <label class="form-label">Vehicle *</label>
-                <select class="form-select" [(ngModel)]="newLog.vehicleId">
-                    <option value="">Select Vehicle</option>
-                    <option *ngFor="let v of vehicles()" [value]="v.id">
-                        {{ v.name }} ({{ v.licensePlate }})
-                    </option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label class="form-label">Description *</label>
-                <input class="form-input" type="text" placeholder="e.g. Oil change, brake repair"
-                    [(ngModel)]="newLog.description" />
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label class="form-label">Cost</label>
-                    <input class="form-input" type="number" placeholder="0.00" [(ngModel)]="newLog.cost" />
+                <div class="modal-body">
+                    @if (formError()) {
+                    <div class="error-banner">{{ formError() }}</div>
+                    }
+                    <div class="form-group">
+                        <label class="form-label">Vehicle *</label>
+                        <app-searchable-select [options]="getVehicleOptions()" [(ngModel)]="newLog.vehicleId"
+                            [searchPlaceholder]="'Search vehicle by name or plate...'">
+                        </app-searchable-select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Description *</label>
+                        <input class="form-input" type="text" placeholder="e.g. Oil change, brake repair"
+                            [(ngModel)]="newLog.description" />
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Cost (₹)</label>
+                            <input class="form-input" type="number" min="0" placeholder="0.00"
+                                [(ngModel)]="newLog.cost" />
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Service Date *</label>
+                            <input class="form-input" type="date" [(ngModel)]="newLog.serviceDate" />
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Service Date *</label>
-                    <input class="form-input" type="date" [(ngModel)]="newLog.serviceDate" />
+                <div class="modal-footer">
+                    <button class="button-primary" (click)="submitNewLog()" [disabled]="isSubmitting()">
+                        <span class="material-symbols-outlined icon-small">save</span>
+                        {{ isSubmitting() ? 'Saving...' : 'Save Log' }}
+                    </button>
+                    <button class="button-secondary" (click)="closeCreateModal()">Cancel</button>
                 </div>
             </div>
         </div>
-        <div class="modal-footer">
-            <button class="btn-cancel" (click)="closeCreateModal()">Cancel</button>
-            <button class="btn-primary" (click)="submitNewLog()" [disabled]="isSubmitting()">
-                {{ isSubmitting() ? 'Saving...' : 'Save Log' }}
-            </button>
-        </div>
-    </div>
-</div>
-}
+        }
+        <!-- Detail Modal -->
+        <app-entity-detail-modal *ngIf="showLogDetail && selectedLog"
+            [title]="'Maintenance #' + (selectedLog.maintenanceId.substring(0,8) | uppercase)"
+            [subtitle]="selectedLog.vehicleName" [sections]="buildLogSections(selectedLog)" (close)="closeLogDetail()">
+        </app-entity-detail-modal>
+    </ng-container>
+</app-data-page-layout>

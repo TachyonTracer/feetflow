@@ -147,11 +147,54 @@
                                 }}</span>
                         </button>
                     </div>
-                    <div *ngIf="passwordInput.invalid && (passwordInput.dirty || passwordInput.touched)"
+                    <!-- Password Strength UI -->
+                    <div class="password-strength-container" *ngIf="user.password">
+                        <div class="strength-meter">
+                            <div class="strength-bar" [ngClass]="['strength-' + passwordStrengthScore]"></div>
+                        </div>
+                        <div class="strength-header">
+                            <span class="strength-text">Password Strength:</span>
+                            <span class="strength-label" [ngClass]="['text-strength-' + passwordStrengthScore]">{{
+                                passwordStrengthLabel }}</span>
+                        </div>
+                        <ul class="strength-checklist">
+                            <li [class.valid]="passwordRequirements.length"
+                                [class.invalid]="!passwordRequirements.length">
+                                <span class="material-symbols-outlined icon">{{ passwordRequirements.length ?
+                                    'check_circle' : 'cancel' }}</span>
+                                At least 8 characters
+                            </li>
+                            <li [class.valid]="passwordRequirements.uppercase"
+                                [class.invalid]="!passwordRequirements.uppercase">
+                                <span class="material-symbols-outlined icon">{{ passwordRequirements.uppercase ?
+                                    'check_circle' : 'cancel' }}</span>
+                                Uppercase letter
+                            </li>
+                            <li [class.valid]="passwordRequirements.lowercase"
+                                [class.invalid]="!passwordRequirements.lowercase">
+                                <span class="material-symbols-outlined icon">{{ passwordRequirements.lowercase ?
+                                    'check_circle' : 'cancel' }}</span>
+                                Lowercase letter
+                            </li>
+                            <li [class.valid]="passwordRequirements.number"
+                                [class.invalid]="!passwordRequirements.number">
+                                <span class="material-symbols-outlined icon">{{ passwordRequirements.number ?
+                                    'check_circle' : 'cancel' }}</span>
+                                Number
+                            </li>
+                            <li [class.valid]="passwordRequirements.special"
+                                [class.invalid]="!passwordRequirements.special">
+                                <span class="material-symbols-outlined icon">{{ passwordRequirements.special ?
+                                    'check_circle' : 'cancel' }}</span>
+                                Special character (e.g. !@#$)
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div *ngIf="passwordInput.invalid && (passwordInput.dirty || passwordInput.touched) && !user.password"
                         class="field-error">
                         <span class="material-symbols-outlined">error</span>
                         <span *ngIf="passwordInput.errors?.['required']">Password is required.</span>
-                        <span *ngIf="passwordInput.errors?.['minlength']">Min 6 characters.</span>
                     </div>
                 </div>
 
@@ -191,7 +234,7 @@
 
                 <!-- Signup Button -->
                 <button class="submit-btn signup-btn" type="submit"
-                    [disabled]="!form.valid || !passwordsMatch || signupRequestProcessing">
+                    [disabled]="!form.valid || !passwordsMatch || !passwordStrong || signupRequestProcessing">
                     <ng-container *ngIf="!signupRequestProcessing">
                         <span class="material-symbols-outlined">person_add</span>
                         <span>Create Account</span>
@@ -217,7 +260,7 @@
 
         <!-- Footer -->
         <div class="page-footer">
-            © 2024 FleetFlow Inc. All rights reserved.
+            © 2026 FleetFlow Inc. All rights reserved.
         </div>
     </div>
 </div>

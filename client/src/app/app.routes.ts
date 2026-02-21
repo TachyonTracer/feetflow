@@ -21,14 +21,14 @@ export const routes: Routes = [
           import('./layouts/dashboard/dashboard.component').then((m) => m.Dashboard),
       },
       {
-        path: 'register',
+        path: 'register-vehicles',
         loadComponent: () =>
           import('./layouts/view-registered-vehicles/view-registered-vehicles').then(
             (m) => m.VehicleRegister,
           ),
       },
       {
-        path: 'dispatcher',
+        path: 'view-trips',
         loadComponent: () =>
           import('./layouts/vehicle-trip-dispatcher/vehicle-trip-dispatcher').then(
             (m) => m.VehicleTripDispatcher,

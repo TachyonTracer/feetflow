@@ -9,7 +9,7 @@ import {
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { JwtHelperService } from '../helpers/jwt-helper.service';
-import { AppConfigService } from '../app-config.service';
+import { AppConfigService } from '../shared/app-config.service';
 @Injectable({
   providedIn: 'root',
 })

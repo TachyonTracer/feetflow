@@ -2,7 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
-import { AppConfigService } from '../../../services/app-config.service';
+import { AppConfigService } from '../../../services/shared/app-config.service';
+import { ApiService } from '../../../services/api/api.service';
+import { API } from '../../../core/config/api.config';
 
 class ResetPasswordNgModel {
   public password?: string;
@@ -17,52 +19,95 @@ class ResetPasswordNgModel {
   templateUrl: './reset-password.component.html',
 })
 export class CustomResetPasswordComponent implements OnInit {
-  public redirectDelay = 0;
-  public showMessages: any = {};
-  public strategy = '';
   public submitted = false;
   public errors: string[] = [];
-  public messages: string[] = [];
   public resetPasswordNgModel: ResetPasswordNgModel = new ResetPasswordNgModel();
-  public userName: any;
+
+  public email = '';
+  private token?: string;
+  public mode: 'request' | 'reset' = 'request';
+  public feedback = '';
 
   constructor(
     private appConfigService: AppConfigService,
     protected router: Router,
     private activatedRoute: ActivatedRoute,
-  ) {
-    this.redirectDelay = 0;
-    this.showMessages = {};
-    this.strategy = '';
-  }
+    private apiService: ApiService,
+  ) {}
 
   public ngOnInit(): void {
     this.resetPasswordNgModel = new ResetPasswordNgModel();
 
-    this.activatedRoute.queryParams.subscribe(async (params) => {
-      this.userName = params['userName'];
+    this.activatedRoute.queryParams.subscribe((params) => {
+      this.token = params['token'];
+      if (this.token) {
+        this.mode = 'reset';
+      }
     });
   }
 
-  public async resetPass(): Promise<void> {
-    this.errors = this.messages = [];
-    this.submitted = true;
+  public async submit(): Promise<void> {
     this.errors = [];
-    this.messages = ['Sending reset password'];
+    this.feedback = '';
+    this.submitted = true;
 
+    if (this.mode === 'request') {
+      if (!this.email) {
+        this.errors.push('Email is required.');
+        this.submitted = false;
+        return;
+      }
+
+      try {
+        await this.apiService
+          .post(API.auth.forgotPassword, { email: this.email }, { rawResponse: true })
+          .toPromise();
+        this.feedback =
+          'If an account with that email exists, you will receive a reset link shortly. Redirecting to login...';
+        setTimeout(() => this.router.navigate(['/auth/login']), 2000);
+      } catch (err) {
+        this.errors.push('Unable to send reset email. Please try again later.');
+      } finally {
+        this.submitted = false;
+      }
+      return;
+    }
+
+    // reset mode
     if (this.resetPasswordNgModel.password !== this.resetPasswordNgModel.confirmPassword) {
+      this.errors.push('Passwords do not match.');
       this.submitted = false;
       return;
     }
-    console.log('Skipping forgotpassword processing relative to missing service.');
-    this.submitted = false;
-  }
+    if (!this.token) {
+      this.errors.push('Invalid reset token.');
+      this.submitted = false;
+      return;
+    }
+    if (this.resetPasswordNgModel.password && this.resetPasswordNgModel.password.length < 8) {
+      this.errors.push('Password must be at least 8 characters long.');
+      this.submitted = false;
+      return;
+    }
 
-  public async resetPassword(): Promise<void> {
-    console.log('Skipping resetpassword processing relative to missing service.');
-  }
-
-  public getConfigValue(key: string): any {
-    return null;
+    try {
+      await this.apiService
+        .post(
+          API.auth.resetPassword,
+          { token: this.token, newPassword: this.resetPasswordNgModel.password },
+          { rawResponse: true },
+        )
+        .toPromise();
+      this.feedback = 'Password has been reset successfully! Redirecting to login...';
+      setTimeout(() => this.router.navigate(['/auth/login']), 2000);
+    } catch (err: any) {
+      if (err.error?.errorMessage) {
+        this.errors.push(err.error.errorMessage);
+      } else {
+        this.errors.push('Unable to reset password. Token may be invalid or expired.');
+      }
+    } finally {
+      this.submitted = false;
+    }
   }
 }

@@ -9,48 +9,40 @@
 
         <div class="modal-body">
             @if (errorMessage()) {
-                <div class="error-banner">{{ errorMessage() }}</div>
+            <div class="error-banner">{{ errorMessage() }}</div>
             }
 
             <div class="form-group">
                 <label class="form-label">Vehicle Name *</label>
-                <input class="form-input" placeholder="e.g. Volvo FH16 #01" type="text"
-                       [(ngModel)]="formData.name" />
+                <input class="form-input" placeholder="e.g. Volvo FH16 #01" type="text" [(ngModel)]="formData.name" />
             </div>
 
             <div class="form-group">
                 <label class="form-label">License Plate *</label>
                 <input class="form-input" placeholder="Enter license plate number" type="text"
-                       [(ngModel)]="formData.licensePlate" />
+                    [(ngModel)]="formData.licensePlate" />
             </div>
 
             <div class="form-row">
                 <div class="form-group">
                     <label class="form-label">Vehicle Type *</label>
-                    <div class="select-wrapper">
-                        <select class="form-select" [(ngModel)]="formData.vehicleType">
-                            <option value="">Select Type</option>
-                            <option value="Heavy Truck">Heavy Truck</option>
-                            <option value="Delivery Van">Delivery Van</option>
-                            <option value="Trailer">Trailer</option>
-                            <option value="Pickup">Pickup</option>
-                        </select>
-                        <span class="material-symbols-outlined select-arrow">expand_more</span>
-                    </div>
+                    <app-searchable-select [options]="vehicleTypeOptions" [(ngModel)]="formData.vehicleType"
+                        name="vehicleType">
+                    </app-searchable-select>
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">Acquisition Cost</label>
-                    <input class="form-input" placeholder="e.g. 50000" type="number"
-                           [(ngModel)]="formData.acquisitionCost" />
+                    <input class="form-input" placeholder="e.g. 50000" type="number" min="0"
+                        [(ngModel)]="formData.acquisitionCost" />
                 </div>
             </div>
 
             <div class="form-group">
                 <label class="form-label">Max Payload Capacity</label>
                 <div class="input-group">
-                    <input class="form-input group-input" placeholder="e.g. 15000" type="number"
-                           [(ngModel)]="formData.maxCapacityKg" />
+                    <input class="form-input group-input" placeholder="e.g. 15000" type="number" min="0"
+                        [(ngModel)]="formData.maxCapacityKg" />
                     <div class="input-addon">kg</div>
                 </div>
             </div>
@@ -58,19 +50,19 @@
             <div class="form-group">
                 <label class="form-label">Initial Odometer Reading</label>
                 <div class="input-group">
-                    <input class="form-input group-input" placeholder="e.g. 1200" type="number"
-                           [(ngModel)]="formData.odometerKm" />
+                    <input class="form-input group-input" placeholder="e.g. 1200" type="number" min="0"
+                        [(ngModel)]="formData.odometerKm" />
                     <div class="input-addon">km</div>
                 </div>
             </div>
         </div>
 
         <div class="modal-footer">
-            <button class="btn-cancel" (click)="closeModal()">Cancel</button>
-            <button class="btn-primary" (click)="submitVehicle()" [disabled]="isSubmitting()">
+            <button class="button-primary" (click)="submitVehicle()" [disabled]="isSubmitting()">
                 <span class="material-symbols-outlined icon-small">save</span>
                 {{ isSubmitting() ? 'Saving...' : 'Save Vehicle' }}
             </button>
+            <button class="button-secondary" (click)="closeModal()">Cancel</button>
         </div>
     </div>
 </div>

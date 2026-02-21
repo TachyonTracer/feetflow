@@ -1,181 +1,176 @@
-<div class="performance-layout">
-    <app-header></app-header>
-    <main class="main-content">
-        <div class="page-title-section">
-            <div>
-                <h2 class="heading-font">Driver Management</h2>
-                <p class="subtitle">Manage drivers, licensing status, and performance.</p>
-            </div>
-            <button class="btn-primary" (click)="openCreateModal()">
-                <span class="material-symbols-outlined icon-small">person_add</span>
-                Add Driver
-            </button>
-        </div>
+<app-data-page-layout [pageTitle]="'Driver Management'"
+    [pageSubtitle]="'Manage drivers, licensing status, and performance.'" [searchPlaceholder]="'Search drivers...'"
+    [searchTerm]="searchTerm" (searchTermChange)="searchTerm = $event; onFiltersChanged()"
+    [filterOptions]="statusOptions" [filterValue]="currentStatus"
+    (filterChange)="currentStatus = $event; onFiltersChanged()" [sortOptions]="sortOptions" [sortValue]="sortBy"
+    (sortChange)="sortBy = $event; onFiltersChanged()" [actionLabel]="'Add Driver'" [actionIcon]="'person_add'"
+    (actionClick)="openCreateModal()" [pageSizeOptions]="pageSizeOptions" [isLoading]="isLoading()"
+    [totalCount]="totalCount" [pageNumber]="pageNumber" [pageSize]="pageSize" [totalPages]="totalPages"
+    [recordLabel]="'drivers'" (pageChange)="changePage($event)" (pageSizeChange)="onPageSizeChanged($event)"
+    [columns]="columns" [data]="paginatedDrivers">
 
-        <div class="controls-row">
-            <div class="search-box">
-                <span class="material-symbols-outlined search-icon">search</span>
-                <input class="search-input" placeholder="Search drivers..." type="text" [(ngModel)]="searchTerm"
-                    (ngModelChange)="onFiltersChanged()" />
+    <ng-template appCustomCell let-row let-col="column">
+        @switch (col.key) {
+        @case ('driverInfo') {
+        <div class="driver-info">
+            <div class="driver-avatar-placeholder">
+                <span class="material-symbols-outlined">person</span>
             </div>
-            <div class="action-filters">
-                <app-searchable-select [options]="statusOptions" [ngModel]="currentStatus"
-                    (ngModelChange)="currentStatus = $event; onFiltersChanged()">
-                </app-searchable-select>
-                <app-searchable-select [options]="sortOptions" [ngModel]="sortBy"
-                    (ngModelChange)="sortBy = $event; onFiltersChanged()">
-                </app-searchable-select>
+            <div class="driver-details">
+                <div class="driver-name">{{ row.fullName }}</div>
             </div>
         </div>
-
-        <div class="data-table-container">
-            <div class="table-wrapper">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Driver Name</th>
-                            <th>License Number</th>
-                            <th>Category</th>
-                            <th>License Expiry</th>
-                            <th>Status</th>
-                            <th class="text-right">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if (isLoading()) {
-                        <tr>
-                            <td colspan="6" class="text-center">Loading drivers...</td>
-                        </tr>
-                        } @else if (paginatedDrivers.length === 0) {
-                        <tr>
-                            <td colspan="6" class="text-center">No drivers found.</td>
-                        </tr>
-                        } @else {
-                        @for (driver of paginatedDrivers; track driver.id) {
-                        <tr>
-                            <td>
-                                <div class="driver-info">
-                                    <div class="driver-avatar-placeholder">
-                                        <span class="material-symbols-outlined">person</span>
-                                    </div>
-                                    <div class="driver-details">
-                                        <div class="driver-name">{{ driver.fullName }}</div>
-                                        <div class="driver-status-sub">{{ driver.status }}</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="font-mono">{{ driver.licenseNumber }}</td>
-                            <td>{{ driver.licenseCategory }}</td>
-                            <td>
-                                <div class="expiry-cell">
-                                    <span>{{ driver.licenseExpiry }}</span>
-                                    @if (isLicenseExpired(driver.licenseExpiry)) {
-                                    <span class="expiring-warning expired">
-                                        <span class="material-symbols-outlined">error</span>
-                                        EXPIRED
-                                    </span>
-                                    } @else if (isLicenseExpiringSoon(driver.licenseExpiry)) {
-                                    <span class="expiring-warning">
-                                        <span class="material-symbols-outlined">warning</span>
-                                        EXPIRING SOON
-                                    </span>
-                                    }
-                                </div>
-                            </td>
-                            <td>
-                                <span class="badge" [ngClass]="getStatusBadgeClass(driver.status)">
-                                    {{ driver.status }}
-                                </span>
-                            </td>
-                            <td class="text-right">
-                                @if (driver.status !== 'Suspended') {
-                                <button class="ff-action-icon-btn danger" (click)="suspendDriver(driver.id)"
-                                    title="Suspend driver">
-                                    <span class="material-symbols-outlined">block</span>
-                                </button>
-                                }
-                            </td>
-                        </tr>
-                        }
-                        }
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="table-footer ff-table-footer" *ngIf="!isLoading()">
-                <div class="pagination-left">
-                    <span class="ff-count-text">Showing {{ startRecord }}-{{ endRecord }} of {{ totalCount }} drivers</span>
-                    <app-searchable-select class="ff-page-size" [options]="pageSizeOptions"
-                        [ngModel]="pageSize.toString()" (ngModelChange)="onPageSizeChanged($event)">
-                    </app-searchable-select>
-                </div>
-                <div class="ff-pagination">
-                    <button class="ff-page-button" (click)="changePage(pageNumber - 1)" [disabled]="pageNumber <= 1">
-                        <span class="material-symbols-outlined">chevron_left</span>
-                    </button>
-                    <button *ngFor="let page of getPageNumbers()" class="ff-page-button"
-                        [class.active]="page === pageNumber" (click)="changePage(page)">
-                        {{ page }}
-                    </button>
-                    <button class="ff-page-button" (click)="changePage(pageNumber + 1)"
-                        [disabled]="pageNumber >= totalPages || totalPages === 0">
-                        <span class="material-symbols-outlined">chevron_right</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </main>
-</div>
-
-<!-- Create Driver Modal -->
-@if (showCreateModal()) {
-<div class="modal-overlay" (click)="closeCreateModal()">
-    <div class="modal-container" (click)="$event.stopPropagation()">
-        <div class="modal-header">
-            <h2 class="modal-title">Add New Driver</h2>
-            <button class="modal-close-btn" (click)="closeCreateModal()">
-                <span class="material-symbols-outlined">close</span>
-            </button>
-        </div>
-        <div class="modal-body">
-            @if (formError()) {
-            <div class="error-banner">{{ formError() }}</div>
+        }
+        @case ('licenseNumber') {
+        <span class="font-mono">{{ row.licenseNumber }}</span>
+        }
+        @case ('licenseExpiry') {
+        <div class="expiry-cell">
+            <span>{{ row.licenseExpiry }}</span>
+            @if (isLicenseExpired(row.licenseExpiry)) {
+            <span class="expiring-warning expired">
+                <span class="material-symbols-outlined">error</span>
+                EXPIRED
+            </span>
+            } @else if (isLicenseExpiringSoon(row.licenseExpiry)) {
+            <span class="expiring-warning">
+                <span class="material-symbols-outlined">warning</span>
+                EXPIRING SOON
+            </span>
             }
-            <div class="form-group">
-                <label class="form-label">Full Name *</label>
-                <input class="form-input" type="text" placeholder="Enter driver name"
-                    [(ngModel)]="newDriver.fullName" />
-            </div>
-            <div class="form-group">
-                <label class="form-label">License Number *</label>
-                <input class="form-input" type="text" placeholder="Enter license number"
-                    [(ngModel)]="newDriver.licenseNumber" />
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label class="form-label">License Category *</label>
-                    <app-searchable-select [options]="[
-                        { value: '', label: 'Select Category' },
-                        { value: 'A', label: 'A - Motorcycle' },
-                        { value: 'B', label: 'B - Car' },
-                        { value: 'C', label: 'C - Truck' },
-                        { value: 'D', label: 'D - Bus' },
-                        { value: 'CE', label: 'CE - Heavy Truck' }
-                    ]" [(ngModel)]="newDriver.licenseCategory" [searchPlaceholder]="'Search license category...'">
-                    </app-searchable-select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">License Expiry *</label>
-                    <input class="form-input" type="date" [(ngModel)]="newDriver.licenseExpiry" />
-                </div>
-            </div>
         </div>
-        <div class="modal-footer">
-            <button class="btn-cancel" (click)="closeCreateModal()">Cancel</button>
-            <button class="btn-primary" (click)="submitNewDriver()" [disabled]="isSubmitting()">
-                {{ isSubmitting() ? 'Saving...' : 'Save Driver' }}
+        }
+        @case ('completionRate') {
+        <div class="metric-cell">
+            <span class="metric-value">{{ row.completionRate }}%</span>
+        </div>
+        }
+        @case ('safetyScore') {
+        <div class="metric-cell">
+            <span class="metric-value" [class.text-red-500]="row.safetyScore < 80"
+                [class.text-green-500]="row.safetyScore >= 95">{{ row.safetyScore }}</span>
+        </div>
+        }
+        @case ('status') {
+        <span class="status-badge" [ngClass]="getStatusBadgeClass(row.status)">
+            {{ row.status === 'OffDuty' ? 'Taking a Break' : (row.status === 'OnDuty' ? 'On Duty' : row.status) }}
+        </span>
+        }
+        @case ('actions') {
+        <div class="action-group">
+            <button class="action-icon-button" (click)="openEditModal(row)" title="Edit driver">
+                <span class="material-symbols-outlined">edit_square</span>
+            </button>
+            <button *ngIf="row.status !== 'Suspended'" class="action-icon-button danger" (click)="suspendDriver(row.id)"
+                title="Suspend driver">
+                <span class="material-symbols-outlined">block</span>
             </button>
         </div>
-    </div>
-</div>
-}
+        }
+        }
+    </ng-template>
+
+
+
+    <ng-container modals>
+
+        <!-- Create Driver Modal -->
+        @if (showCreateModal()) {
+        <div class="modal-overlay" (click)="closeCreateModal()">
+            <div class="modal-container" (click)="$event.stopPropagation()">
+                <div class="modal-header">
+                    <h2 class="modal-title">Add New Driver</h2>
+                    <button class="modal-close-btn" (click)="closeCreateModal()">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    @if (formError()) {
+                    <div class="error-banner">{{ formError() }}</div>
+                    }
+                    <div class="form-group">
+                        <label class="form-label">Full Name *</label>
+                        <input class="form-input" type="text" placeholder="Enter driver name"
+                            [(ngModel)]="newDriver.fullName" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">License Number *</label>
+                        <input class="form-input" type="text" placeholder="Enter license number"
+                            [(ngModel)]="newDriver.licenseNumber" />
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">License Category *</label>
+                            <app-searchable-select [options]="licenseCategoryOptions"
+                                [(ngModel)]="newDriver.licenseCategory"
+                                [searchPlaceholder]="'Search license category...'" [dropup]="true">
+                            </app-searchable-select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">License Expiry *</label>
+                            <input class="form-input" type="date" [(ngModel)]="newDriver.licenseExpiry" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="button-primary" (click)="submitNewDriver()" [disabled]="isSubmitting()">
+                        <span class="material-symbols-outlined icon-small">save</span>
+                        {{ isSubmitting() ? 'Saving...' : 'Save Driver' }}
+                    </button>
+                    <button class="button-secondary" (click)="closeCreateModal()">Cancel</button>
+                </div>
+            </div>
+        </div>
+        }
+
+        <!-- Edit Driver Modal -->
+        @if (showEditModal()) {
+        <div class="modal-overlay" (click)="closeEditModal()">
+            <div class="modal-container" (click)="$event.stopPropagation()">
+                <div class="modal-header">
+                    <h2 class="modal-title">Edit Driver</h2>
+                    <button class="modal-close-btn" (click)="closeEditModal()">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    @if (editFormError()) {
+                    <div class="error-banner">{{ editFormError() }}</div>
+                    }
+                    <div class="form-group">
+                        <label class="form-label">Full Name *</label>
+                        <input class="form-input" type="text" placeholder="Enter driver name"
+                            [(ngModel)]="editingDriverData.fullName" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">License Number *</label>
+                        <input class="form-input" type="text" placeholder="Enter license number"
+                            [(ngModel)]="editingDriverData.licenseNumber" />
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">License Category *</label>
+                            <app-searchable-select [options]="licenseCategoryOptions"
+                                [(ngModel)]="editingDriverData.licenseCategory"
+                                [searchPlaceholder]="'Search license category...'" [dropup]="true">
+                            </app-searchable-select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">License Expiry *</label>
+                            <input class="form-input" type="date" [(ngModel)]="editingDriverData.licenseExpiry" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="button-primary" (click)="submitEditDriver()" [disabled]="isSubmittingEdit()">
+                        <span class="material-symbols-outlined icon-small">save</span>
+                        {{ isSubmittingEdit() ? 'Saving...' : 'Save Changes' }}
+                    </button>
+                    <button class="button-secondary" (click)="closeEditModal()">Cancel</button>
+                </div>
+            </div>
+        </div>
+        }
+
+    </ng-container>
+</app-data-page-layout>

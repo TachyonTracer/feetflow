@@ -4,9 +4,9 @@ import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { RouterModule, ActivatedRoute } from '@angular/router';
-import { NavigationService } from '../../../services/navigation.service';
+import { NavigationService } from '../../../services/shared/navigation.service';
 import { JwtHelperService } from '../../../services/helpers/jwt-helper.service';
-import { AppConfigService } from '../../../services/app-config.service';
+import { AppConfigService } from '../../../services/shared/app-config.service';
 import { ApiService } from '../../../services/api/api.service';
 import { API } from '../../../core/config/api.config';
 import {
@@ -151,7 +151,11 @@ export class CustomLoginComponent implements OnInit {
         }
 
         const fullNameFromResponse =
-          data.full_name ?? data.fullName ?? data.user?.full_name ?? data.user?.fullName ?? data.user?.name;
+          data.full_name ??
+          data.fullName ??
+          data.user?.full_name ??
+          data.user?.fullName ??
+          data.user?.name;
 
         const displayName =
           fullNameFromResponse ||

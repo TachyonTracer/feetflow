@@ -1,145 +1,268 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
-import { HeaderComponent } from '../../shared/components/header/header.component';
 import { AnalyticsApiService } from '../../services/controllers/analytics-api.service';
-import { TripsApiService } from '../../services/controllers/trips-api.service';
+import { VehiclesApiService } from '../../services/controllers/vehicles-api.service';
 import { DashboardMetrics } from '../../core/models/analytics.model';
-import { Trip, TripStatus } from '../../core/models/trip.model';
+import { Vehicle, VehicleStatus } from '../../core/models/vehicle.model';
 import { Observable } from 'rxjs';
+import { Router } from '@angular/router';
+import { AddNewTrip } from '../vehicle-trip-dispatcher/add-new-trip/add-new-trip';
+import { AddNewVehicle } from '../view-registered-vehicles/add-new-vehicle/add-new-vehicle';
+import { DriversApiService } from '../../services/controllers/drivers-api.service';
+import { Driver } from '../../core/models/driver.model';
 import {
-  SearchableSelectComponent,
-  SearchableSelectOption,
-} from '../../shared/components/searchable-select/searchable-select.component';
+  DataPageLayout,
+  TableColumn,
+} from '../../shared/components/data-page-layout/data-page-layout';
+import { CustomCellDirective } from '../../shared/directives/custom-cell.directive';
+import { SearchableSelectOption } from '../../shared/components/searchable-select/searchable-select.component';
+import { DASHBOARD_PAGE_SIZE_OPTIONS } from '../../core/constants/ui.constants';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [CommonModule, FormsModule, HeaderComponent, SearchableSelectComponent],
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    DataPageLayout,
+    AddNewTrip,
+    AddNewVehicle,
+    CustomCellDirective,
+  ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })
 export class Dashboard implements OnInit {
   metrics$?: Observable<DashboardMetrics>;
-  trips: Trip[] = [];
-  isLoadingTrips = true;
+  vehicles = signal<Vehicle[]>([]);
+  isLoadingVehicles = signal(true);
 
-  searchTerm: string = '';
-  currentStatus: string = '';
-  sortBy: string = '';
+  isAddTripModalOpen = signal(false);
+  isAddVehicleModalOpen = signal(false);
+  allVehicles: Vehicle[] = [];
+  allDrivers: Driver[] = [];
 
-  tripPageNumber = 1;
-  tripPageSize = 5;
-  tripTotalCount = 0;
-  tripTotalPages = 1;
+  searchTerm = signal('');
+  currentStatus = signal<string>('');
+  currentType = signal<string | string[]>('');
+  currentRegion = signal<string | string[]>('');
+
+  pageNumber = signal(1);
+  pageSize = signal(10);
+  totalCount = signal(0);
+  totalPages = signal(1);
 
   readonly statusOptions: SearchableSelectOption[] = [
     { value: '', label: 'All Statuses' },
-    { value: 'Draft', label: 'Draft' },
-    { value: 'Dispatched', label: 'Dispatched' },
-    { value: 'Completed', label: 'Completed' },
-    { value: 'Cancelled', label: 'Cancelled' },
+    { value: 'Available', label: 'Ready (Available)' },
+    { value: 'OnTrip', label: 'Busy (On Trip)' },
+    { value: 'InShop', label: 'In Shop (Maintenance)' },
   ];
 
-  readonly sortOptions: SearchableSelectOption[] = [
-    { value: '', label: 'Sort By' },
-    { value: 'status', label: 'Status' },
-    { value: 'id', label: 'Trip ID' },
-    { value: 'vehicle', label: 'Vehicle' },
-    { value: 'driver', label: 'Driver' },
+  readonly typeOptions: SearchableSelectOption[] = [
+    { value: '', label: 'All Vehicle Types' },
+    { value: 'TRUCK', label: 'Trucks' },
+    { value: 'VAN', label: 'Vans' },
+    { value: 'BIKE', label: 'Bikes' },
   ];
 
-  readonly pageSizeOptions: SearchableSelectOption[] = [
-    { value: '5', label: '5 per page' },
-    { value: '10', label: '10 per page' },
-    { value: '25', label: '25 per page' },
+  readonly regionOptions: SearchableSelectOption[] = [
+    { value: '', label: 'All Regions' },
+    { value: 'Andhra Pradesh', label: 'Andhra Pradesh' },
+    { value: 'Arunachal Pradesh', label: 'Arunachal Pradesh' },
+    { value: 'Assam', label: 'Assam' },
+    { value: 'Bihar', label: 'Bihar' },
+    { value: 'Chhattisgarh', label: 'Chhattisgarh' },
+    { value: 'Goa', label: 'Goa' },
+    { value: 'Gujarat', label: 'Gujarat' },
+    { value: 'Haryana', label: 'Haryana' },
+    { value: 'Himachal Pradesh', label: 'Himachal Pradesh' },
+    { value: 'Jharkhand', label: 'Jharkhand' },
+    { value: 'Karnataka', label: 'Karnataka' },
+    { value: 'Kerala', label: 'Kerala' },
+    { value: 'Madhya Pradesh', label: 'Madhya Pradesh' },
+    { value: 'Maharashtra', label: 'Maharashtra' },
+    { value: 'Manipur', label: 'Manipur' },
+    { value: 'Meghalaya', label: 'Meghalaya' },
+    { value: 'Mizoram', label: 'Mizoram' },
+    { value: 'Nagaland', label: 'Nagaland' },
+    { value: 'Odisha', label: 'Odisha' },
+    { value: 'Punjab', label: 'Punjab' },
+    { value: 'Rajasthan', label: 'Rajasthan' },
+    { value: 'Sikkim', label: 'Sikkim' },
+    { value: 'Tamil Nadu', label: 'Tamil Nadu' },
+    { value: 'Telangana', label: 'Telangana' },
+    { value: 'Tripura', label: 'Tripura' },
+    { value: 'Uttar Pradesh', label: 'Uttar Pradesh' },
+    { value: 'Uttarakhand', label: 'Uttarakhand' },
+    { value: 'West Bengal', label: 'West Bengal' },
   ];
+
+  readonly pageSizeOptions = DASHBOARD_PAGE_SIZE_OPTIONS;
+
+  readonly columns: TableColumn[] = [
+    { key: 'vehicleInfo', title: 'Vehicle', align: 'left', type: 'custom' },
+    { key: 'type', title: 'Vehicle Type', align: 'center', type: 'custom' },
+    { key: 'odometer', title: 'Odometer', align: 'center', type: 'custom' },
+    { key: 'route', title: 'Active Route', align: 'center', type: 'custom' },
+    { key: 'status', title: 'Status', align: 'center', type: 'custom' },
+  ];
+
+  readonly filteredVehicles = computed(() => {
+    let filtered = this.vehicles();
+
+    const term = this.searchTerm().toLowerCase();
+    if (term) {
+      filtered = filtered.filter(
+        (v) =>
+          v.name.toLowerCase().includes(term) ||
+          v.licensePlate.toLowerCase().includes(term) ||
+          v.vehicleType.toLowerCase().includes(term),
+      );
+    }
+
+    const type = this.currentType();
+    if (type) {
+      if (Array.isArray(type) && type.length > 0) {
+        filtered = filtered.filter((v) =>
+          type.some((t) => v.vehicleType.toLowerCase() === t.toLowerCase()),
+        );
+      } else if (typeof type === 'string') {
+        filtered = filtered.filter((v) => v.vehicleType.toLowerCase() === type.toLowerCase());
+      }
+    }
+
+    const region = this.currentRegion();
+    if (region) {
+      if (Array.isArray(region) && region.length > 0) {
+        filtered = filtered.filter((v) =>
+          region.some(
+            (r) =>
+              v.activeTripOriginState?.toLowerCase() === r.toLowerCase() ||
+              v.activeTripDestinationState?.toLowerCase() === r.toLowerCase(),
+          ),
+        );
+      } else if (typeof region === 'string') {
+        filtered = filtered.filter(
+          (v) =>
+            v.activeTripOriginState?.toLowerCase() === region.toLowerCase() ||
+            v.activeTripDestinationState?.toLowerCase() === region.toLowerCase(),
+        );
+      }
+    }
+
+    return filtered;
+  });
 
   constructor(
     private analyticsService: AnalyticsApiService,
-    private tripsService: TripsApiService,
+    private vehiclesService: VehiclesApiService,
+    private driversService: DriversApiService,
+    private router: Router,
   ) {}
+
+  onAddTrip(): void {
+    this.isAddTripModalOpen.set(true);
+  }
+
+  onAddVehicle(): void {
+    this.isAddVehicleModalOpen.set(true);
+  }
 
   ngOnInit() {
     this.metrics$ = this.analyticsService.getDashboard();
-    this.loadRecentTrips();
+    this.loadVehicles();
+    this.loadDropdownData();
   }
 
-  loadRecentTrips() {
-    this.isLoadingTrips = true;
-    const statusFilter = this.currentStatus ? (this.currentStatus as TripStatus) : undefined;
-
-    this.tripsService.getTrips(this.tripPageNumber, this.tripPageSize, statusFilter).subscribe({
+  loadDropdownData() {
+    this.vehiclesService.getVehicles(1, 100).subscribe({
       next: (res) => {
-        this.trips = res.items ?? [];
-        this.tripTotalCount = res.totalCount ?? 0;
-        this.tripTotalPages = res.totalPages || 1;
-        this.tripPageNumber = res.pageNumber || this.tripPageNumber;
-        this.tripPageSize = res.pageSize || this.tripPageSize;
-        this.isLoadingTrips = false;
+        this.allVehicles = res.items ?? [];
       },
-      error: (err) => {
-        console.error('Failed to load trips', err);
-        this.isLoadingTrips = false;
+    });
+
+    this.driversService.getDrivers(1, 100).subscribe({
+      next: (res) => {
+        this.allDrivers = res.items ?? [];
       },
     });
   }
 
-  get displayTrips(): Trip[] {
-    let filtered = this.trips;
-
-    if (this.searchTerm) {
-      const term = this.searchTerm.toLowerCase();
-      filtered = filtered.filter(
-        (t) =>
-          t.id.toLowerCase().includes(term) ||
-          (t.vehicleName && t.vehicleName.toLowerCase().includes(term)) ||
-          (t.driverName && t.driverName.toLowerCase().includes(term)),
-      );
-    }
-
-    if (this.sortBy) {
-      filtered = [...filtered].sort((a, b) => {
-        if (this.sortBy === 'status') return a.status.localeCompare(b.status);
-        if (this.sortBy === 'id') return a.id.localeCompare(b.id);
-        if (this.sortBy === 'vehicle')
-          return (a.vehicleName || '').localeCompare(b.vehicleName || '');
-        if (this.sortBy === 'driver') return (a.driverName || '').localeCompare(b.driverName || '');
-        return 0;
-      });
-    }
-
-    return filtered;
+  getVehicleOptions(): SearchableSelectOption[] {
+    return [
+      { value: '', label: 'Select a fleet unit' },
+      ...this.allVehicles.map((vehicle) => ({
+        value: vehicle.id,
+        label: `${vehicle.name} - ${vehicle.licensePlate}`,
+      })),
+    ];
   }
 
-  get startRecord(): number {
-    if (this.tripTotalCount === 0) return 0;
-    return (this.tripPageNumber - 1) * this.tripPageSize + 1;
+  getDriverOptions(): SearchableSelectOption[] {
+    return [
+      { value: '', label: 'Assign a driver' },
+      ...this.allDrivers.map((driver) => ({
+        value: driver.id,
+        label: driver.fullName,
+      })),
+    ];
   }
 
-  get endRecord(): number {
-    if (this.tripTotalCount === 0) return 0;
-    return Math.min(this.tripPageNumber * this.tripPageSize, this.tripTotalCount);
+  onTripCreated(): void {
+    // Refresh metrics on new trip created to show Active Trips increase
+    this.metrics$ = this.analyticsService.getDashboard();
   }
 
-  changeTripPage(newPage: number): void {
-    if (newPage < 1 || newPage > this.tripTotalPages || newPage === this.tripPageNumber) return;
-    this.tripPageNumber = newPage;
-    this.loadRecentTrips();
+  onVehicleCreated(): void {
+    this.loadVehicles();
+    this.loadDropdownData();
+    this.metrics$ = this.analyticsService.getDashboard();
   }
 
-  onStatusChanged(status: string): void {
-    this.currentStatus = status;
-    this.tripPageNumber = 1;
-    this.loadRecentTrips();
+  loadVehicles() {
+    this.isLoadingVehicles.set(true);
+    const statusFilter = this.currentStatus() ? (this.currentStatus() as VehicleStatus) : undefined;
+
+    this.vehiclesService.getVehicles(this.pageNumber(), this.pageSize(), statusFilter).subscribe({
+      next: (res) => {
+        this.vehicles.set(res.items ?? []);
+        this.totalCount.set(res.totalCount ?? 0);
+        this.totalPages.set(res.totalPages || 1);
+        this.pageNumber.set(res.pageNumber || this.pageNumber());
+        this.pageSize.set(res.pageSize || this.pageSize());
+        this.isLoadingVehicles.set(false);
+      },
+      error: (err) => {
+        console.error('Failed to load vehicles', err);
+        this.isLoadingVehicles.set(false);
+      },
+    });
   }
 
-  onPageSizeChanged(pageSize: string): void {
-    const parsedPageSize = Number(pageSize);
-    if (!Number.isFinite(parsedPageSize) || parsedPageSize <= 0) return;
-    this.tripPageSize = parsedPageSize;
-    this.tripPageNumber = 1;
-    this.loadRecentTrips();
+  changePage(newPage: number): void {
+    if (newPage < 1 || newPage > this.totalPages() || newPage === this.pageNumber()) return;
+    this.pageNumber.set(newPage);
+    this.loadVehicles();
+  }
+
+  onFilterStatusChanged(status: string): void {
+    this.currentStatus.set(status);
+    this.pageNumber.set(1);
+    this.loadVehicles();
+  }
+
+  onPageSizeChanged(size: string): void {
+    const parsed = Number(size);
+    if (!Number.isFinite(parsed) || parsed <= 0) return;
+    this.pageSize.set(parsed);
+    this.pageNumber.set(1);
+    this.loadVehicles();
+  }
+
+  calculateUtilization(metrics: DashboardMetrics): number {
+    if (!metrics || metrics.totalVehicles === 0) return 0;
+    return Math.round((metrics.activeTrips / metrics.totalVehicles) * 100);
   }
 }

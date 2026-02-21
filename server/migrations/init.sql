@@ -1,41 +1,48 @@
--- FleetFlow schema for feetflow (descriptive PKs, soft delete on users/vehicles/drivers/trips)
--- Run manually: psql -h <host> -U <user> -d <database> -f migrations/002_fleetflow_schema.sql
+-- =====================================================================================
+-- FleetFlow Squashed Initial Schema
+-- =====================================================================================
+-- Run manually: psql -h <host> -U <user> -d <database> -f migrations/init.sql
+-- =====================================================================================
 
--- ENUM types (idempotent)
-DO $$
-BEGIN
+-- -------------------------------------------------------------------------------------
+-- 1. ENUM TYPES
+-- -------------------------------------------------------------------------------------
+DO $$ BEGIN
     IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'vehicle_status') THEN
         CREATE TYPE vehicle_status AS ENUM ('available', 'on_trip', 'in_shop', 'retired');
     END IF;
 END$$;
 
-DO $$
-BEGIN
+DO $$ BEGIN
     IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'driver_status') THEN
         CREATE TYPE driver_status AS ENUM ('on_duty', 'on_trip', 'off_duty', 'suspended');
     END IF;
 END$$;
 
-DO $$
-BEGIN
+DO $$ BEGIN
     IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'trip_status') THEN
         CREATE TYPE trip_status AS ENUM ('draft', 'dispatched', 'completed', 'cancelled');
     END IF;
 END$$;
 
-DO $$
-BEGIN
+DO $$ BEGIN
     IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'user_role') THEN
         CREATE TYPE user_role AS ENUM ('manager', 'dispatcher', 'safety_officer', 'financial_analyst');
     END IF;
 END$$;
 
--- Tables (descriptive primary key column names; no hard DELETE – use soft delete only)
+
+-- -------------------------------------------------------------------------------------
+-- 2. TABLES
+-- -------------------------------------------------------------------------------------
+
 CREATE TABLE IF NOT EXISTS users (
     user_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     full_name VARCHAR(150) NOT NULL,
     email VARCHAR(150) UNIQUE NOT NULL,
     password_hash TEXT NOT NULL,
+    password_reset_token UUID NULL,
+    password_reset_expires_at TIMESTAMPTZ NULL,
     role user_role NOT NULL,
     is_deleted BOOLEAN NOT NULL DEFAULT FALSE,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
@@ -61,6 +68,9 @@ CREATE TABLE IF NOT EXISTS drivers (
     license_category VARCHAR(50) NOT NULL,
     license_expiry DATE NOT NULL,
     status driver_status NOT NULL DEFAULT 'on_duty',
+    completion_rate DECIMAL(5, 2) NOT NULL DEFAULT 100.00,
+    safety_score DECIMAL(5, 2) NOT NULL DEFAULT 100.00,
+    complaints INTEGER NOT NULL DEFAULT 0,
     is_deleted BOOLEAN NOT NULL DEFAULT FALSE,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
@@ -73,6 +83,8 @@ CREATE TABLE IF NOT EXISTS trips (
     start_odometer NUMERIC(12,2),
     end_odometer NUMERIC(12,2),
     revenue NUMERIC(12,2),
+    origin_state VARCHAR(50) NOT NULL DEFAULT 'NY',
+    destination_state VARCHAR(50) NOT NULL DEFAULT 'NY',
     status trip_status NOT NULL DEFAULT 'draft',
     is_deleted BOOLEAN NOT NULL DEFAULT FALSE,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -93,18 +105,27 @@ CREATE TABLE IF NOT EXISTS fuel_logs (
     fuel_log_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     vehicle_id UUID NOT NULL REFERENCES vehicles(vehicle_id),
     trip_id UUID REFERENCES trips(trip_id),
+    driver_id UUID REFERENCES drivers(driver_id),
+    distance DECIMAL(18, 2) NOT NULL DEFAULT 0,
     liters NUMERIC(10,2) NOT NULL,
     cost NUMERIC(12,2) NOT NULL,
+    misc_expense DECIMAL(18, 2) NOT NULL DEFAULT 0,
+    status VARCHAR(50) NOT NULL DEFAULT 'Completed',
     fuel_date DATE NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- Indexes
+
+-- -------------------------------------------------------------------------------------
+-- 3. INDEXES
+-- -------------------------------------------------------------------------------------
 CREATE INDEX IF NOT EXISTS idx_vehicle_status ON vehicles(status);
 CREATE INDEX IF NOT EXISTS idx_driver_status ON drivers(status);
 CREATE INDEX IF NOT EXISTS idx_trip_status ON trips(status);
 CREATE INDEX IF NOT EXISTS idx_trip_vehicle ON trips(vehicle_id);
 CREATE INDEX IF NOT EXISTS idx_fuel_vehicle ON fuel_logs(vehicle_id);
+
+-- Soft Delete Indexes
 CREATE INDEX IF NOT EXISTS idx_users_is_deleted ON users(is_deleted);
 CREATE INDEX IF NOT EXISTS idx_vehicles_is_deleted ON vehicles(is_deleted);
 CREATE INDEX IF NOT EXISTS idx_drivers_is_deleted ON drivers(is_deleted);

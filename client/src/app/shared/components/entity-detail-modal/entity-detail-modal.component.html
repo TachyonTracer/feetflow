@@ -1,0 +1,57 @@
+<div class="detail-modal-overlay" (click)="closeModal()">
+    <div class="detail-modal-container" (click)="$event.stopPropagation()">
+
+        <!-- Header -->
+        <div class="detail-modal-header">
+            <div class="detail-modal-title-group">
+                <h2 class="detail-modal-title">{{ title }}</h2>
+                <span *ngIf="subtitle" class="detail-modal-subtitle">{{ subtitle }}</span>
+            </div>
+            <button class="detail-modal-close" (click)="closeModal()" aria-label="Close">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+
+        <!-- Loading state -->
+        <div *ngIf="isLoading" class="detail-modal-loading">
+            <span class="material-symbols-outlined spinning">progress_activity</span>
+            <p>Loading details...</p>
+        </div>
+
+        <!-- Content -->
+        <div *ngIf="!isLoading" class="detail-modal-body">
+            <div *ngFor="let section of sections" class="detail-section">
+                <h3 *ngIf="section.title" class="section-title">{{ section.title }}</h3>
+                <div class="fields-grid">
+                    <div *ngFor="let field of section.fields" class="field-item">
+                        <span class="field-label">{{ field.label }}</span>
+
+                        <!-- Route type -->
+                        <span *ngIf="field.type === 'route'" class="field-value field-route">
+                            <span class="route-origin">{{ field.routeOrigin || '—' }}</span>
+                            <span class="material-symbols-outlined route-arrow">arrow_forward</span>
+                            <span class="route-dest">{{ field.routeDest || '—' }}</span>
+                        </span>
+
+                        <!-- Badge type -->
+                        <span *ngIf="field.type === 'badge'" class="field-value">
+                            <span class="status-badge" [ngClass]="field.badgeClass || ''">{{ formatValue(field)
+                                }}</span>
+                        </span>
+
+                        <!-- Currency type -->
+                        <span *ngIf="field.type === 'currency'" class="field-value field-currency">
+                            {{ field.value != null ? '₹ ' + (field.value | number:'1.2-2') : '—' }}
+                        </span>
+
+                        <!-- Default text -->
+                        <span *ngIf="!field.type || field.type === 'text'" class="field-value">
+                            {{ formatValue(field) }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

@@ -1,4 +1,11 @@
-export type TripStatus = 'Draft' | 'Dispatched' | 'Completed' | 'Cancelled' | 'OnTrip' | 'Delivered' | 'Pending';
+export type TripStatus =
+  | 'Draft'
+  | 'Dispatched'
+  | 'Completed'
+  | 'Cancelled'
+  | 'OnTrip'
+  | 'Delivered'
+  | 'Pending';
 
 export interface Trip {
   id: string;
@@ -6,6 +13,8 @@ export interface Trip {
   driverId: string;
   status: TripStatus;
   cargoWeightKg: number;
+  originState: string;
+  destinationState: string;
   startOdometer?: number;
   endOdometer?: number;
   revenue?: number;
@@ -22,6 +31,8 @@ export interface CreateTripRequest {
   vehicleId: string;
   driverId: string;
   cargoWeightKg: number;
+  originState: string;
+  destinationState: string;
 }
 
 export interface CompleteTripRequest {

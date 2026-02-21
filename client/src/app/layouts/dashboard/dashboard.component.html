@@ -1,159 +1,139 @@
-<div class="dashboard-layout">
-    <app-header></app-header>
-    <main class="dashboard-container">
-        <!-- 2. Search & Controls Row -->
-        <div class="controls-row">
-            <div class="search-box">
-                <div class="search-icon">
-                    <span class="material-symbols-outlined">search</span>
+<app-data-page-layout pageTitle="Fleet Dashboard"
+    pageSubtitle="Real-time overview of your fleet operations and active metrics."
+    searchPlaceholder="Search vehicles by name, plate, or type..." [searchTerm]="searchTerm()"
+    (searchTermChange)="searchTerm.set($event)" [filterOptions]="statusOptions" [filterValue]="currentStatus()"
+    (filterChange)="onFilterStatusChanged($event)" [secondaryFilterMultiple]="true"
+    [secondaryFilterOptions]="typeOptions" [secondaryFilterValue]="currentType()"
+    (secondaryFilterChange)="currentType.set($event)" [tertiaryFilterMultiple]="true"
+    [tertiaryFilterOptions]="regionOptions" [tertiaryFilterValue]="currentRegion()"
+    (tertiaryFilterChange)="currentRegion.set($event)" [columns]="columns" [data]="filteredVehicles()"
+    [isLoading]="isLoadingVehicles()" recordLabel="vehicles" [pageSizeOptions]="pageSizeOptions" [pageSize]="pageSize()"
+    (pageSizeChange)="onPageSizeChanged($event)" [pageNumber]="pageNumber()" [totalPages]="totalPages()"
+    [totalCount]="totalCount()" (pageChange)="changePage($event)" actionLabel="Add Trip" actionIcon="route"
+    (actionClick)="onAddTrip()" secondaryActionLabel="Add Vehicle" secondaryActionIcon="directions_car"
+    (secondaryActionClick)="onAddVehicle()">
+
+    <ng-container topContent>
+        <div class="dashboard-metrics-grid" *ngIf="metrics$ | async as metrics">
+            <!-- Card 1: Active Fleet -->
+            <div class="metric-card accent-blue">
+                <div class="card-header">
+                    <span class="card-title">Active Fleet</span>
+                    <div class="card-icon primary">
+                        <span class="material-symbols-outlined">directions_car</span>
+                    </div>
                 </div>
-                <input placeholder="Search vehicles, drivers, or trips..." type="text" [(ngModel)]="searchTerm" />
+                <div class="card-body">
+                    <h3>{{ metrics.activeTrips }}</h3>
+                </div>
+                <p class="card-footer">Vehicles out on the road</p>
             </div>
-            <div class="action-buttons">
-                <app-searchable-select [options]="statusOptions" [ngModel]="currentStatus"
-                    (ngModelChange)="onStatusChanged($event)">
-                </app-searchable-select>
-                <app-searchable-select [options]="sortOptions" [(ngModel)]="sortBy">
-                </app-searchable-select>
+
+            <!-- Card 2: Maintenance Alerts -->
+            <div class="metric-card accent-rose">
+                <div class="card-header">
+                    <span class="card-title">Maintenance Alerts</span>
+                    <div class="card-icon danger">
+                        <span class="material-symbols-outlined">build</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <h3>{{ metrics.maintenanceAlerts }}</h3>
+                </div>
+                <p class="card-footer">Stuck in the shop</p>
             </div>
-        </div>
-        <!-- 3. Summary Cards -->
-        <div class="summary-cards">
-            <ng-container *ngIf="metrics$ | async as metrics">
-                <div class="card">
-                    <div class="card-header">
-                        <span class="card-title">Total Vehicles</span>
-                        <div class="card-icon primary">
-                            <span class="material-symbols-outlined">directions_car</span>
-                        </div>
+
+            <!-- Card 3: Utilization Rate -->
+            <div class="metric-card accent-emerald">
+                <div class="card-header">
+                    <span class="card-title">Utilization Rate</span>
+                    <div class="card-icon success">
+                        <span class="material-symbols-outlined">trending_up</span>
                     </div>
-                    <div class="card-body">
-                        <h3>{{ metrics.totalVehicles }}</h3>
-                    </div>
-                    <p class="card-footer">Registered in fleet</p>
                 </div>
-                <div class="card">
-                    <div class="card-header">
-                        <span class="card-title">Available Vehicles</span>
-                        <div class="card-icon primary">
-                            <span class="material-symbols-outlined">check_circle</span>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <h3>{{ metrics.availableVehicles }}</h3>
-                    </div>
-                    <p class="card-footer">Ready for dispatch</p>
+                <div class="card-body">
+                    <h3>{{ calculateUtilization(metrics) }}%</h3>
                 </div>
-                <div class="card">
-                    <div class="card-header">
-                        <span class="card-title">Active Trips</span>
-                        <div class="card-icon warning">
-                            <span class="material-symbols-outlined">route</span>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <h3>{{ metrics.activeTrips }}</h3>
-                    </div>
-                    <p class="card-footer">Currently on road</p>
-                </div>
-                <div class="card">
-                    <div class="card-header">
-                        <span class="card-title">On Duty Drivers</span>
-                        <div class="card-icon primary">
-                            <span class="material-symbols-outlined">group</span>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <h3>{{ metrics.onDutyDrivers }}</h3>
-                    </div>
-                    <p class="card-footer">Active drivers</p>
-                </div>
-            </ng-container>
-        </div>
-        <!-- 4. Data Table -->
-        <div class="data-table-container">
-            <div class="table-header">
-                <h2>Fleet Operations</h2>
-                <button>View All Trips</button>
+                <p class="card-footer">Working vs Sitting empty</p>
             </div>
-            <div class="table-wrapper">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Trip</th>
-                            <th>Vehicle</th>
-                            <th>Driver</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <ng-container *ngIf="isLoadingTrips; else tripsList">
-                            <tr>
-                                <td colspan="4" style="text-align: center; padding: 2rem;">Loading fleet operations...
-                                </td>
-                            </tr>
-                        </ng-container>
-                        <ng-template #tripsList>
-                            <tr *ngFor="let trip of displayTrips">
-                                <td>
-                                    <div class="trip-id" style="text-transform: uppercase;">{{ trip.id.substring(0,8)
-                                        || 'TRIP' }}</div>
-                                    <div class="trip-route">Cross Country</div>
-                                </td>
-                                <td>
-                                    <div class="vehicle-info">
-                                        <span class="material-symbols-outlined vehicle-icon">front_loader</span>
-                                        <span class="vehicle-name">{{ trip.vehicleName || 'Vehicle ' +
-                                            trip.vehicleId.substring(0,4) }}</span>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="driver-info">
-                                        <div class="avatar"
-                                            style="display: flex; align-items: center; justify-content: center;">
-                                            <span class="material-symbols-outlined"
-                                                style="color: var(--text-secondary);">person</span>
-                                        </div>
-                                        <span class="name">{{ trip.driverName || 'Driver ' +
-                                            trip.driverId.substring(0,4)
-                                            }}</span>
-                                    </div>
-                                </td>
-                                <td>
-                                    <span class="status-badge" [ngClass]="{
-                                    'status-ontrip': trip.status === 'Dispatched',
-                                    'status-delivered': trip.status === 'Completed',
-                                    'status-pending': trip.status === 'Draft'
-                                }">{{ trip.status }}</span>
-                                </td>
-                            </tr>
-                            <tr *ngIf="displayTrips.length === 0">
-                                <td colspan="4" style="text-align: center; padding: 2rem;">No trips currently scheduled.
-                                </td>
-                            </tr>
-                        </ng-template>
-                    </tbody>
-                </table>
-            </div>
-            <div class="table-footer ff-table-footer">
-                <div class="footer-left">
-                    <p class="ff-count-text">Showing {{ startRecord }}-{{ endRecord }} of {{ tripTotalCount }} trips</p>
-                    <app-searchable-select class="ff-page-size" [options]="pageSizeOptions"
-                        [ngModel]="tripPageSize.toString()" (ngModelChange)="onPageSizeChanged($event)">
-                    </app-searchable-select>
+
+            <!-- Card 4: Pending Cargo -->
+            <div class="metric-card accent-amber">
+                <div class="card-header">
+                    <span class="card-title">Pending Cargo</span>
+                    <div class="card-icon warning">
+                        <span class="material-symbols-outlined">inventory_2</span>
+                    </div>
                 </div>
-                <div class="ff-pagination">
-                    <button class="ff-page-button" (click)="changeTripPage(tripPageNumber - 1)"
-                        [disabled]="tripPageNumber <= 1">
-                        <span class="material-symbols-outlined">chevron_left</span>
-                    </button>
-                    <span class="page-state">Page {{ tripPageNumber }} of {{ tripTotalPages }}</span>
-                    <button class="ff-page-button" (click)="changeTripPage(tripPageNumber + 1)"
-                        [disabled]="tripPageNumber >= tripTotalPages">
-                        <span class="material-symbols-outlined">chevron_right</span>
-                    </button>
+                <div class="card-body">
+                    <h3>{{ metrics.pendingCargo }}</h3>
                 </div>
+                <p class="card-footer">Waiting for a driver</p>
             </div>
         </div>
-    </main>
-</div>
+    </ng-container>
+
+    <!-- Custom Cell Rendering -->
+    <ng-template appCustomCell let-row let-col="column">
+        @switch (col.key) {
+        @case ('vehicleInfo') {
+        <div class="vehicle-info">
+            <div class="vehicle-icon">
+                <span class="material-symbols-outlined">directions_car</span>
+            </div>
+            <div class="details">
+                <div class="name" style="font-weight: 600; font-size: 0.875rem;">{{ row.name }}</div>
+                <div class="plate" style="font-size: 0.75rem; color: #64748b; font-family: monospace;">{{
+                    row.licensePlate }}</div>
+            </div>
+        </div>
+        }
+        @case ('type') {
+        <span class="vehicle-type">{{ row.vehicleType }}</span>
+        }
+        @case ('odometer') {
+        <span class="font-mono">{{ row.odometerKm | number:'1.0-0' }} km</span>
+        }
+        @case ('route') {
+        <div *ngIf="row.activeTripOriginState || row.activeTripDestinationState; else noRoute"
+            style="display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 4px; font-size: 0.875rem;">
+            <span *ngIf="row.activeTripOriginState" style="color: #334155; font-weight: 500;">
+                {{ row.activeTripOriginState }}
+            </span>
+            <span *ngIf="row.activeTripOriginState && row.activeTripDestinationState" class="material-symbols-outlined"
+                style="font-size: 1rem; color: #94a3b8;">
+                arrow_right_alt
+            </span>
+            <span *ngIf="row.activeTripDestinationState" style="color: #0369a1; font-weight: 500;">
+                {{ row.activeTripDestinationState }}
+            </span>
+        </div>
+        <ng-template #noRoute>
+            <span style="color: #cbd5e1; font-size: 0.875rem;">-</span>
+        </ng-template>
+        }
+        @case ('status') {
+        <span class="status-badge" [ngClass]="{
+                    'status-active': row.status === 'Available',
+                    'status-ontrip': row.status === 'OnTrip',
+                    'status-maintenance': row.status === 'InShop',
+                    'status-inactive': row.status === 'Retired'
+                }">
+            {{ row.status }}
+        </span>
+        }
+        }
+    </ng-template>
+
+    <ng-container modals>
+        <app-add-new-trip *ngIf="isAddTripModalOpen()" [vehicleOptions]="getVehicleOptions()"
+            [driverOptions]="getDriverOptions()" (close)="isAddTripModalOpen.set(false)"
+            (tripCreated)="onTripCreated()">
+        </app-add-new-trip>
+
+        <app-add-new-vehicle *ngIf="isAddVehicleModalOpen()" (close)="isAddVehicleModalOpen.set(false)"
+            (vehicleCreated)="onVehicleCreated()">
+        </app-add-new-vehicle>
+    </ng-container>
+
+</app-data-page-layout>

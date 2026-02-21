@@ -7,7 +7,7 @@ COPY src/feetflow.Application/feetflow.Application.csproj src/feetflow.Applicati
 COPY src/feetflow.Infrastructure/feetflow.Infrastructure.csproj src/feetflow.Infrastructure/
 COPY src/feetflow.API/feetflow.API.csproj src/feetflow.API/
 
-RUN dotnet restore feetflow.slnx
+RUN dotnet restore src/feetflow.API/feetflow.API.csproj
 
 COPY src/ src/
 WORKDIR /src/src/feetflow.API
@@ -24,11 +24,11 @@ RUN mkdir -p /app/feetflowLogs && chown -R appuser:appuser /app
 
 USER appuser
 
-EXPOSE 5000
-ENV ASPNETCORE_URLS=http://+:5000
+EXPOSE 5180
+ENV ASPNETCORE_URLS=http://+:5180
 ENV ASPNETCORE_ENVIRONMENT=Production
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD curl -f http://localhost:5000/health || exit 1
+    CMD curl -f http://localhost:5180/health || exit 1
 
 ENTRYPOINT ["dotnet", "feetflow.API.dll"]

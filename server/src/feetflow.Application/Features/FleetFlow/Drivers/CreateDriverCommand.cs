@@ -11,7 +11,10 @@ public record CreateDriverCommand(
     string FullName,
     string LicenseNumber,
     string LicenseCategory,
-    DateOnly LicenseExpiry) : IRequest<Result<Driver>>;
+    DateOnly LicenseExpiry,
+    decimal CompletionRate = 100.00m,
+    decimal SafetyScore = 100.00m,
+    int Complaints = 0) : IRequest<Result<Driver>>;
 
 public class CreateDriverCommandValidator : AbstractValidator<CreateDriverCommand>
 {
@@ -42,6 +45,9 @@ public class CreateDriverCommandHandler : IRequestHandler<CreateDriverCommand, R
             LicenseNumber = request.LicenseNumber,
             LicenseCategory = request.LicenseCategory,
             LicenseExpiry = request.LicenseExpiry,
+            CompletionRate = request.CompletionRate,
+            SafetyScore = request.SafetyScore,
+            Complaints = request.Complaints,
             Status = DriverStatus.OnDuty,
             IsDeleted = false,
             CreatedAt = DateTime.UtcNow,

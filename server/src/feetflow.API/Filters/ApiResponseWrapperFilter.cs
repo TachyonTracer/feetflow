@@ -15,9 +15,23 @@ public class ApiResponseWrapperFilter : IResultFilter
 
             var statusCode = objectResult.StatusCode ?? StatusCodes.Status200OK;
 
+            string errorMessage = "An error occurred.";
+            if (objectResult.Value is ValidationProblemDetails vpd && vpd.Errors.Any())
+            {
+                errorMessage = string.Join("; ", vpd.Errors.SelectMany(kvp => kvp.Value));
+            }
+            else if (objectResult.Value is ProblemDetails pd)
+            {
+                errorMessage = pd.Detail ?? pd.Title ?? "An error occurred.";
+            }
+            else if (objectResult.Value != null)
+            {
+                errorMessage = objectResult.Value.ToString() ?? "An error occurred.";
+            }
+
             objectResult.Value = statusCode is >= 200 and < 300
                 ? ApiResponse.Success<object>(objectResult.Value!, statusCode)
-                : ApiResponse.Fail(objectResult.Value?.ToString() ?? "An error occurred.", statusCode);
+                : ApiResponse.Fail(errorMessage, statusCode);
 
             objectResult.StatusCode = statusCode;
         }

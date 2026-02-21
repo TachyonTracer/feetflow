@@ -6,6 +6,9 @@ export interface Driver {
   licenseNumber: string;
   licenseCategory: string;
   licenseExpiry: string;
+  completionRate: number;
+  safetyScore: number;
+  complaints: number;
   status: DriverStatus;
   isDeleted: boolean;
   createdAt: string;
@@ -18,6 +21,9 @@ export interface CreateDriverRequest {
   licenseNumber: string;
   licenseCategory: string;
   licenseExpiry: string;
+  completionRate?: number;
+  safetyScore?: number;
+  complaints?: number;
 }
 
 export interface UpdateDriverRequest {
@@ -25,5 +31,8 @@ export interface UpdateDriverRequest {
   licenseNumber: string;
   licenseCategory: string;
   licenseExpiry: string;
+  completionRate: number;
+  safetyScore: number;
+  complaints: number;
   xmin: number;
 }

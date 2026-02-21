@@ -1,0 +1,94 @@
+<div class="modal-overlay">
+    <div class="modal-container">
+        <div class="modal-header">
+            <h2 class="modal-title">Add New Trip</h2>
+            <button class="modal-close-btn" aria-label="Close modal" (click)="closeModal()">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+
+        <div class="modal-body">
+            <form class="trip-form" (ngSubmit)="submitNewTrip()">
+                <div class="form-grid">
+
+                    <!-- Row 1: Vehicle | Cargo Weight -->
+                    <div class="form-group">
+                        <label class="form-label">Select Vehicle</label>
+                        <app-searchable-select [options]="vehicleOptions" [(ngModel)]="newTrip.vehicleId"
+                            name="vehicleId" placeholder="Select a fleet unit">
+                        </app-searchable-select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Cargo Weight (kg)</label>
+                        <div class="input-wrapper">
+                            <input class="form-input" placeholder="0" type="number" min="0" name="cargoWeight"
+                                [(ngModel)]="newTrip.cargoWeightKg" required />
+                            <span class="input-suffix">KG</span>
+                        </div>
+                    </div>
+
+                    <!-- Row 2: Driver | Est. Fuel Cost -->
+                    <div class="form-group">
+                        <label class="form-label">Select Driver</label>
+                        <app-searchable-select [options]="driverOptions" [(ngModel)]="newTrip.driverId" name="driverId"
+                            placeholder="Assign a driver">
+                        </app-searchable-select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Est. Fuel Cost</label>
+                        <div class="input-wrapper">
+                            <span class="input-prefix">₹</span>
+                            <input class="form-input pl-prefix" placeholder="0.00" type="number" min="0" name="estFuel"
+                                [(ngModel)]="uiEstimatedFuelCost" />
+                        </div>
+                    </div>
+
+                    <!-- Row 3: Origin State | Destination State -->
+                    <div class="form-group">
+                        <label class="form-label">Origin State *</label>
+                        <app-searchable-select [options]="stateOptions" [(ngModel)]="newTrip.originState"
+                            name="origState" placeholder="Select State" searchPlaceholder="Search state...">
+                        </app-searchable-select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Destination State *</label>
+                        <app-searchable-select [options]="stateOptions" [(ngModel)]="newTrip.destinationState"
+                            name="destState" placeholder="Select State" searchPlaceholder="Search state...">
+                        </app-searchable-select>
+                    </div>
+
+                    <!-- Row 4–5: Addresses (full width) -->
+                    <div class="form-group col-span-2">
+                        <label class="form-label">Origin Address</label>
+                        <div class="input-wrapper">
+                            <span class="material-symbols-outlined input-icon">location_on</span>
+                            <input class="form-input pl-icon" placeholder="Street, City, Zip Code" type="text"
+                                name="origin" [(ngModel)]="uiOrigin" />
+                        </div>
+                    </div>
+
+                    <div class="form-group col-span-2">
+                        <label class="form-label">Destination Address</label>
+                        <div class="input-wrapper">
+                            <span class="material-symbols-outlined input-icon">flag</span>
+                            <input class="form-input pl-icon" placeholder="Street, City, Zip Code" type="text"
+                                name="destination" [(ngModel)]="uiDestination" />
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+
+        <div class="modal-footer">
+            <button class="button-primary" (click)="submitNewTrip()" [disabled]="isSubmitting()">
+                <span class="material-symbols-outlined icon-small">send</span>
+                {{ isSubmitting() ? 'Dispatching...' : 'Confirm and Dispatch' }}
+            </button>
+            <button class="button-secondary" (click)="closeModal()">Cancel</button>
+        </div>
+    </div>
+</div>

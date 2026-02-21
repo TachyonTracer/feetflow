@@ -1,0 +1,129 @@
+<ng-content select="[modals]"></ng-content>
+
+<div class="page-layout">
+    <app-header></app-header>
+
+    <main class="main-content page-container">
+        <ng-content select="[topContent]"></ng-content>
+
+        <div class="page-title-actions-row">
+            <div class="page-header">
+                <h2>{{ pageTitle }}</h2>
+                <p>{{ pageSubtitle }}</p>
+            </div>
+            <div class="page-actions" style="display: flex; gap: 0.75rem; align-items: center;">
+                <button class="button-primary" *ngIf="secondaryActionLabel" (click)="onSecondaryActionClick()">
+                    <span class="material-symbols-outlined" style="font-size: 1.25rem;">{{ secondaryActionIcon }}</span>
+                    {{ secondaryActionLabel }}
+                </button>
+                <button class="button-primary" *ngIf="actionLabel" (click)="onActionClick()">
+                    <span class="material-symbols-outlined">{{ actionIcon }}</span>
+                    {{ actionLabel }}
+                </button>
+            </div>
+        </div>
+
+        <div class="filters-card search-filters-card">
+            <div class="search-box search-input-wrapper">
+                <div class="search-icon">
+                    <span class="material-symbols-outlined">search</span>
+                </div>
+                <input [placeholder]="searchPlaceholder" type="text" [ngModel]="searchTerm"
+                    (ngModelChange)="onSearchInput($event)" />
+            </div>
+            <div class="filter-dropdown-group"
+                *ngIf="filterOptions.length > 0 || secondaryFilterOptions.length > 0 || tertiaryFilterOptions.length > 0 || sortOptions.length > 0">
+                <app-searchable-select class="filter-select" *ngIf="filterOptions.length > 0" [options]="filterOptions"
+                    [multiple]="filterMultiple" [ngModel]="filterValue" (ngModelChange)="onFilterChanged($event)">
+                </app-searchable-select>
+                <app-searchable-select class="filter-select" *ngIf="secondaryFilterOptions.length > 0"
+                    [multiple]="secondaryFilterMultiple" [options]="secondaryFilterOptions"
+                    [ngModel]="secondaryFilterValue" (ngModelChange)="onSecondaryFilterChanged($event)">
+                </app-searchable-select>
+                <app-searchable-select class="filter-select" *ngIf="tertiaryFilterOptions.length > 0"
+                    [multiple]="tertiaryFilterMultiple" [options]="tertiaryFilterOptions"
+                    [ngModel]="tertiaryFilterValue" (ngModelChange)="onTertiaryFilterChanged($event)">
+                </app-searchable-select>
+                <app-searchable-select class="sort-select" *ngIf="sortOptions.length > 0" [options]="sortOptions"
+                    [ngModel]="sortValue" (ngModelChange)="onSortChanged($event)">
+                </app-searchable-select>
+            </div>
+        </div>
+
+        <div class="data-table-container data-table-card">
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th *ngFor="let col of columns" [ngClass]="col.align ? 'text-' + col.align : 'text-left'">
+                                {{ col.title }}
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <ng-container *ngIf="isLoading; else dataList">
+                            <tr>
+                                <td [attr.colspan]="columns.length" class="text-center" style="padding: 2rem;">Loading
+                                    {{ recordLabel }}...</td>
+                            </tr>
+                        </ng-container>
+                        <ng-template #dataList>
+                            <ng-container *ngIf="data.length > 0; else emptyState">
+                                <tr *ngFor="let row of data">
+                                    <td *ngFor="let col of columns"
+                                        [ngClass]="col.align ? 'text-' + col.align : 'text-left'">
+                                        <ng-container *ngIf="col.type === 'custom' || col.type === 'actions'">
+                                            <ng-container
+                                                *ngTemplateOutlet="customCellDirective!.template; context: { $implicit: row, column: col }"></ng-container>
+                                        </ng-container>
+                                        <ng-container *ngIf="col.type === 'currency'">
+                                            <span class="td-cost">{{ row[col.key] | currency:'INR':'symbol':'1.0-0'
+                                                }}</span>
+                                        </ng-container>
+                                        <ng-container *ngIf="col.type === 'date'">
+                                            <span class="td-text">{{ row[col.key] | date:'mediumDate' }}</span>
+                                        </ng-container>
+                                        <ng-container *ngIf="!col.type || col.type === 'string'">
+                                            <span class="td-text">{{ row[col.key] }}</span>
+                                        </ng-container>
+                                    </td>
+                                </tr>
+                            </ng-container>
+                            <ng-template #emptyState>
+                                <tr>
+                                    <td [attr.colspan]="columns.length" class="text-center" style="padding: 2rem;">{{
+                                        emptyMessage }}</td>
+                                </tr>
+                            </ng-template>
+                        </ng-template>
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-footer table-pagination-footer" *ngIf="!isLoading">
+                <div class="footer-left">
+                    <span class="record-count-text" *ngIf="totalCount > 0">
+                        Showing {{ startRecord }}-{{ endRecord }} of {{ totalCount }} {{ recordLabel }}
+                    </span>
+                    <span class="record-count-text" *ngIf="totalCount === 0">No {{ recordLabel }}</span>
+                    <app-searchable-select class="page-size-select" [options]="pageSizeOptions"
+                        [ngModel]="pageSize.toString()" (ngModelChange)="onPageSizeChanged($event)">
+                    </app-searchable-select>
+                </div>
+                <div class="pagination-controls">
+                    <button class="pagination-button" (click)="onPageChange(pageNumber - 1)"
+                        [disabled]="pageNumber <= 1">
+                        <span class="material-symbols-outlined">chevron_left</span>
+                    </button>
+                    <span class="page-info">Page {{ pageNumber }} of {{ totalPages || 1 }}</span>
+                    <button class="pagination-button" (click)="onPageChange(pageNumber + 1)"
+                        [disabled]="pageNumber >= totalPages || totalPages === 0">
+                        <span class="material-symbols-outlined">chevron_right</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <ng-content select="[extraContent]"></ng-content>
+    </main>
+    <app-footer></app-footer>
+</div>

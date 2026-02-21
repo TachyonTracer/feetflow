@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { LoadingService } from '../../../services/loading.service';
+import { LoadingService } from '../../../services/shared/loading.service';
 
 @Component({
   selector: 'app-global-loader',

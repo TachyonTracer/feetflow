@@ -7,7 +7,7 @@ using FluentValidation;
 
 namespace feetflow.Application.Features.FleetFlow.Trips;
 
-public record CreateTripCommand(Guid VehicleId, Guid DriverId, decimal CargoWeightKg) : IRequest<Result<Trip>>;
+public record CreateTripCommand(Guid VehicleId, Guid DriverId, decimal CargoWeightKg, string OriginState, string DestinationState) : IRequest<Result<Trip>>;
 
 public class CreateTripCommandValidator : AbstractValidator<CreateTripCommand>
 {
@@ -16,6 +16,8 @@ public class CreateTripCommandValidator : AbstractValidator<CreateTripCommand>
         RuleFor(x => x.VehicleId).NotEmpty();
         RuleFor(x => x.DriverId).NotEmpty();
         RuleFor(x => x.CargoWeightKg).GreaterThan(0);
+        RuleFor(x => x.OriginState).NotEmpty().MaximumLength(50);
+        RuleFor(x => x.DestinationState).NotEmpty().MaximumLength(50);
     }
 }
 
@@ -84,6 +86,8 @@ public class CreateTripCommandHandler : IRequestHandler<CreateTripCommand, Resul
                 VehicleId = request.VehicleId,
                 DriverId = request.DriverId,
                 CargoWeightKg = request.CargoWeightKg,
+                OriginState = request.OriginState,
+                DestinationState = request.DestinationState,
                 StartOdometer = vehicle.OdometerKm,
                 Status = TripStatus.Draft,
                 CreatedAt = DateTime.UtcNow

@@ -1,6 +1,7 @@
 using System.Text.Json;
 using FluentValidation;
 using feetflow.API.Models;
+using Npgsql;
 
 namespace feetflow.API.Middleware;
 
@@ -52,6 +53,18 @@ public class ExceptionHandlingMiddleware
             _logger.LogWarning("Resource not found: {Message}", ex.Message);
             await WriteResponse(context, StatusCodes.Status404NotFound, ex.Message);
         }
+        catch (PostgresException ex)
+        {
+            if (ex.SqlState == PostgresErrorCodes.UniqueViolation)
+            {
+                _logger.LogWarning("Database unique constraint violation: {ConstraintName}", ex.ConstraintName);
+                await WriteResponse(context, StatusCodes.Status409Conflict, MapUniqueConstraintMessage(ex.ConstraintName));
+                return;
+            }
+
+            _logger.LogError(ex, "Database exception with SQL state {SqlState}", ex.SqlState);
+            await WriteResponse(context, StatusCodes.Status500InternalServerError, "A database error occurred.");
+        }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Unhandled exception");
@@ -80,5 +93,14 @@ public class ExceptionHandlingMiddleware
         if (string.IsNullOrEmpty(name) || char.IsLower(name[0]))
             return name;
         return char.ToLowerInvariant(name[0]) + name[1..];
+    }
+
+    private static string MapUniqueConstraintMessage(string? constraintName)
+    {
+        return constraintName switch
+        {
+            "vehicles_license_plate_key" => "A vehicle with this license plate already exists.",
+            _ => "Duplicate value violates a uniqueness constraint."
+        };
     }
 }
