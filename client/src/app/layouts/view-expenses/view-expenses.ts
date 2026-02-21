@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HeaderComponent } from '../../shared/components/header/header.component';
 import { AddExpenses } from '../add-expenses/add-expenses';
 import { VehiclesApiService } from '../../services/controllers/vehicles-api.service';
 import { FuelApiService } from '../../services/controllers/fuel-api.service';
@@ -9,7 +10,7 @@ import { FuelLog } from '../../core/models/fuel.model';
 
 @Component({
   selector: 'app-view-expenses',
-  imports: [CommonModule, FormsModule, AddExpenses],
+  imports: [CommonModule, FormsModule, AddExpenses, HeaderComponent],
   templateUrl: './view-expenses.html',
   styleUrl: './view-expenses.scss',
 })

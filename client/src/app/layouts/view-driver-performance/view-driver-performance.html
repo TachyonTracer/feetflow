@@ -1,4 +1,5 @@
 <div class="performance-layout">
+    <app-header></app-header>
     <main class="main-content">
         <div class="page-title-section">
             <div>
@@ -14,8 +15,8 @@
         <div class="controls-row">
             <div class="search-box">
                 <span class="material-symbols-outlined search-icon">search</span>
-                <input class="search-input" placeholder="Search drivers..."
-                       type="text" [(ngModel)]="searchTerm" (ngModelChange)="filterDrivers()" />
+                <input class="search-input" placeholder="Search drivers..." type="text" [(ngModel)]="searchTerm"
+                    (ngModelChange)="filterDrivers()" />
             </div>
         </div>
 
@@ -34,62 +35,68 @@
                     </thead>
                     <tbody>
                         @if (isLoading()) {
-                            <tr><td colspan="6" class="text-center">Loading drivers...</td></tr>
+                        <tr>
+                            <td colspan="6" class="text-center">Loading drivers...</td>
+                        </tr>
                         } @else if (filteredDrivers().length === 0) {
-                            <tr><td colspan="6" class="text-center">No drivers found.</td></tr>
+                        <tr>
+                            <td colspan="6" class="text-center">No drivers found.</td>
+                        </tr>
                         } @else {
-                            @for (driver of filteredDrivers(); track driver.id) {
-                                <tr>
-                                    <td>
-                                        <div class="driver-info">
-                                            <div class="driver-avatar-placeholder">
-                                                <span class="material-symbols-outlined">person</span>
-                                            </div>
-                                            <div class="driver-details">
-                                                <div class="driver-name">{{ driver.fullName }}</div>
-                                                <div class="driver-status-sub">{{ driver.status }}</div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="font-mono">{{ driver.licenseNumber }}</td>
-                                    <td>{{ driver.licenseCategory }}</td>
-                                    <td>
-                                        <div class="expiry-cell">
-                                            <span>{{ driver.licenseExpiry }}</span>
-                                            @if (isLicenseExpired(driver.licenseExpiry)) {
-                                                <span class="expiring-warning expired">
-                                                    <span class="material-symbols-outlined">error</span>
-                                                    EXPIRED
-                                                </span>
-                                            } @else if (isLicenseExpiringSoon(driver.licenseExpiry)) {
-                                                <span class="expiring-warning">
-                                                    <span class="material-symbols-outlined">warning</span>
-                                                    EXPIRING SOON
-                                                </span>
-                                            }
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <span class="badge" [ngClass]="getStatusBadgeClass(driver.status)">
-                                            {{ driver.status }}
-                                        </span>
-                                    </td>
-                                    <td class="text-right">
-                                        @if (driver.status !== 'Suspended') {
-                                            <button class="btn-action btn-suspend" (click)="suspendDriver(driver.id)" title="Suspend driver">
-                                                <span class="material-symbols-outlined">block</span>
-                                            </button>
-                                        }
-                                    </td>
-                                </tr>
-                            }
+                        @for (driver of filteredDrivers(); track driver.id) {
+                        <tr>
+                            <td>
+                                <div class="driver-info">
+                                    <div class="driver-avatar-placeholder">
+                                        <span class="material-symbols-outlined">person</span>
+                                    </div>
+                                    <div class="driver-details">
+                                        <div class="driver-name">{{ driver.fullName }}</div>
+                                        <div class="driver-status-sub">{{ driver.status }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="font-mono">{{ driver.licenseNumber }}</td>
+                            <td>{{ driver.licenseCategory }}</td>
+                            <td>
+                                <div class="expiry-cell">
+                                    <span>{{ driver.licenseExpiry }}</span>
+                                    @if (isLicenseExpired(driver.licenseExpiry)) {
+                                    <span class="expiring-warning expired">
+                                        <span class="material-symbols-outlined">error</span>
+                                        EXPIRED
+                                    </span>
+                                    } @else if (isLicenseExpiringSoon(driver.licenseExpiry)) {
+                                    <span class="expiring-warning">
+                                        <span class="material-symbols-outlined">warning</span>
+                                        EXPIRING SOON
+                                    </span>
+                                    }
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge" [ngClass]="getStatusBadgeClass(driver.status)">
+                                    {{ driver.status }}
+                                </span>
+                            </td>
+                            <td class="text-right">
+                                @if (driver.status !== 'Suspended') {
+                                <button class="btn-action btn-suspend" (click)="suspendDriver(driver.id)"
+                                    title="Suspend driver">
+                                    <span class="material-symbols-outlined">block</span>
+                                </button>
+                                }
+                            </td>
+                        </tr>
+                        }
                         }
                     </tbody>
                 </table>
             </div>
 
             <div class="table-footer">
-                <span class="pagination-text">Showing {{ filteredDrivers().length }} of {{ drivers().length }} drivers</span>
+                <span class="pagination-text">Showing {{ filteredDrivers().length }} of {{ drivers().length }}
+                    drivers</span>
             </div>
         </div>
     </main>
@@ -107,15 +114,17 @@
         </div>
         <div class="modal-body">
             @if (formError()) {
-                <div class="error-banner">{{ formError() }}</div>
+            <div class="error-banner">{{ formError() }}</div>
             }
             <div class="form-group">
                 <label class="form-label">Full Name *</label>
-                <input class="form-input" type="text" placeholder="Enter driver name" [(ngModel)]="newDriver.fullName" />
+                <input class="form-input" type="text" placeholder="Enter driver name"
+                    [(ngModel)]="newDriver.fullName" />
             </div>
             <div class="form-group">
                 <label class="form-label">License Number *</label>
-                <input class="form-input" type="text" placeholder="Enter license number" [(ngModel)]="newDriver.licenseNumber" />
+                <input class="form-input" type="text" placeholder="Enter license number"
+                    [(ngModel)]="newDriver.licenseNumber" />
             </div>
             <div class="form-row">
                 <div class="form-group">

@@ -1,13 +1,14 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HeaderComponent } from '../../shared/components/header/header.component';
 import { DriversApiService } from '../../services/controllers/drivers-api.service';
 import { Driver, CreateDriverRequest } from '../../core/models/driver.model';
 
 @Component({
   selector: 'app-view-driver-performance',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, HeaderComponent],
   templateUrl: './view-driver-performance.html',
   styleUrl: './view-driver-performance.scss',
 })
@@ -58,8 +59,7 @@ export class ViewDriverPerformance implements OnInit {
     this.filteredDrivers.set(
       this.drivers().filter(
         (d) =>
-          d.fullName.toLowerCase().includes(term) ||
-          d.licenseNumber.toLowerCase().includes(term),
+          d.fullName.toLowerCase().includes(term) || d.licenseNumber.toLowerCase().includes(term),
       ),
     );
   }
@@ -97,7 +97,12 @@ export class ViewDriverPerformance implements OnInit {
   }
 
   submitNewDriver(): void {
-    if (!this.newDriver.fullName || !this.newDriver.licenseNumber || !this.newDriver.licenseCategory || !this.newDriver.licenseExpiry) {
+    if (
+      !this.newDriver.fullName ||
+      !this.newDriver.licenseNumber ||
+      !this.newDriver.licenseCategory ||
+      !this.newDriver.licenseExpiry
+    ) {
       this.formError.set('All fields are required.');
       return;
     }
@@ -120,11 +125,16 @@ export class ViewDriverPerformance implements OnInit {
 
   getStatusBadgeClass(status: string): string {
     switch (status) {
-      case 'OnDuty': return 'badge-emerald';
-      case 'OnTrip': return 'badge-blue';
-      case 'OffDuty': return 'badge-amber';
-      case 'Suspended': return 'badge-rose';
-      default: return 'badge-amber';
+      case 'OnDuty':
+        return 'badge-emerald';
+      case 'OnTrip':
+        return 'badge-blue';
+      case 'OffDuty':
+        return 'badge-amber';
+      case 'Suspended':
+        return 'badge-rose';
+      default:
+        return 'badge-amber';
     }
   }
 }

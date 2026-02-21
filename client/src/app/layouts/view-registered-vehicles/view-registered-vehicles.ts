@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HeaderComponent } from '../../shared/components/header/header.component';
 import { AddNewVehicle } from './add-new-vehicle/add-new-vehicle';
 import { VehiclesApiService } from '../../services/controllers/vehicles-api.service';
 import { Vehicle } from '../../core/models/vehicle.model';
@@ -8,7 +9,7 @@ import { Vehicle } from '../../core/models/vehicle.model';
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, FormsModule, AddNewVehicle],
+  imports: [CommonModule, FormsModule, AddNewVehicle, HeaderComponent],
   templateUrl: './view-registered-vehicles.html',
   styleUrl: './view-registered-vehicles.scss',
 })
@@ -78,7 +79,7 @@ export class VehicleRegister implements OnInit {
       const term = this.searchTerm.toLowerCase();
       filtered = filtered.filter(
         (v) =>
-          v.vehicle_id.toLowerCase().includes(term) ||
+          v.id.toLowerCase().includes(term) ||
           v.name.toLowerCase().includes(term) ||
           (v.licensePlate && v.licensePlate.toLowerCase().includes(term)),
       );

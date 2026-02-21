@@ -1,173 +1,158 @@
-<div class="dashboard-container">
-    <!-- 1. Header: Logo -->
-    <header class="dashboard-header">
-        <div class="logo-section">
-            <div class="logo-icon">
-                <!-- use actual logo file as requested -->
-                <img alt="FleetFlow logo" src="assets/logo.png" />
+<div class="dashboard-layout">
+    <app-header></app-header>
+    <main class="dashboard-container">
+        <!-- 2. Search & Controls Row -->
+        <div class="controls-row">
+            <div class="search-box">
+                <div class="search-icon">
+                    <span class="material-symbols-outlined">search</span>
+                </div>
+                <input placeholder="Search vehicles, drivers, or trips..." type="text" [(ngModel)]="searchTerm" />
             </div>
-            <h1>Fleet Flow</h1>
-        </div>
-        <div class="user-section">
-            <div class="user-info">
-                <p class="role">Logistics Admin</p>
-                <p class="dept">Global Operations</p>
+            <div class="action-buttons">
+                <select class="btn-outline form-select-style" [(ngModel)]="currentStatus">
+                    <option value="">All Statuses</option>
+                    <option value="Dispatched">Dispatched</option>
+                    <option value="Completed">Completed</option>
+                    <option value="Draft">Draft</option>
+                    <option value="Cancelled">Cancelled</option>
+                </select>
+                <select class="btn-outline form-select-style" [(ngModel)]="sortBy">
+                    <option value="">Sort By...</option>
+                    <option value="status">Status</option>
+                    <option value="id">Trip ID</option>
+                </select>
             </div>
-            <div class="user-avatar">
-                <img data-alt="User profile avatar of the administrator"
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuDK6ZtVGL1sAKqgoVDlFl4qZ4xD4oSddwWyTbUlrXYkmo6JGEZIX5OUxilewZz357yqi9eC1X7ANs0dHDQTQys5O1EZljqx3olD3LqGNnZwcTZ94Abmd5Vhtxc3p_qlEMxXiln6T23i-jZEX0WuvfUgqszFuKiAdv7HzxNpzAFWGIK0J3qM0Fa6ZodqIoNyf7ilErluXhJfIHJfvNuVmv2PwgvcPfwH7DV4wVpjjuKrO0k1OOcvbCImgz_LtdJlOv3w8oyuAL0Kkto4" />
-            </div>
         </div>
-    </header>
-    <!-- 2. Search & Controls Row -->
-    <div class="controls-row">
-        <div class="search-box">
-            <div class="search-icon">
-                <span class="material-symbols-outlined">search</span>
-            </div>
-            <input placeholder="Search vehicles, drivers, or trips..." type="text" [(ngModel)]="searchTerm" />
-        </div>
-        <div class="action-buttons">
-            <select class="btn-outline form-select-style" [(ngModel)]="currentStatus">
-                <option value="">All Statuses</option>
-                <option value="Dispatched">Dispatched</option>
-                <option value="Completed">Completed</option>
-                <option value="Draft">Draft</option>
-                <option value="Cancelled">Cancelled</option>
-            </select>
-            <select class="btn-outline form-select-style" [(ngModel)]="sortBy">
-                <option value="">Sort By...</option>
-                <option value="status">Status</option>
-                <option value="id">Trip ID</option>
-            </select>
-        </div>
-    </div>
-    <!-- 3. Summary Cards -->
-    <div class="summary-cards">
-        <ng-container *ngIf="metrics$ | async as metrics">
-            <div class="card">
-                <div class="card-header">
-                    <span class="card-title">Total Vehicles</span>
-                    <div class="card-icon primary">
-                        <span class="material-symbols-outlined">directions_car</span>
+        <!-- 3. Summary Cards -->
+        <div class="summary-cards">
+            <ng-container *ngIf="metrics$ | async as metrics">
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">Total Vehicles</span>
+                        <div class="card-icon primary">
+                            <span class="material-symbols-outlined">directions_car</span>
+                        </div>
                     </div>
-                </div>
-                <div class="card-body">
-                    <h3>{{ metrics.totalVehicles }}</h3>
-                </div>
-                <p class="card-footer">Registered in fleet</p>
-            </div>
-            <div class="card">
-                <div class="card-header">
-                    <span class="card-title">Available Vehicles</span>
-                    <div class="card-icon primary">
-                        <span class="material-symbols-outlined">check_circle</span>
+                    <div class="card-body">
+                        <h3>{{ metrics.totalVehicles }}</h3>
                     </div>
+                    <p class="card-footer">Registered in fleet</p>
                 </div>
-                <div class="card-body">
-                    <h3>{{ metrics.availableVehicles }}</h3>
-                </div>
-                <p class="card-footer">Ready for dispatch</p>
-            </div>
-            <div class="card">
-                <div class="card-header">
-                    <span class="card-title">Active Trips</span>
-                    <div class="card-icon warning">
-                        <span class="material-symbols-outlined">route</span>
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">Available Vehicles</span>
+                        <div class="card-icon primary">
+                            <span class="material-symbols-outlined">check_circle</span>
+                        </div>
                     </div>
-                </div>
-                <div class="card-body">
-                    <h3>{{ metrics.activeTrips }}</h3>
-                </div>
-                <p class="card-footer">Currently on road</p>
-            </div>
-            <div class="card">
-                <div class="card-header">
-                    <span class="card-title">On Duty Drivers</span>
-                    <div class="card-icon primary">
-                        <span class="material-symbols-outlined">group</span>
+                    <div class="card-body">
+                        <h3>{{ metrics.availableVehicles }}</h3>
                     </div>
+                    <p class="card-footer">Ready for dispatch</p>
                 </div>
-                <div class="card-body">
-                    <h3>{{ metrics.onDutyDrivers }}</h3>
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">Active Trips</span>
+                        <div class="card-icon warning">
+                            <span class="material-symbols-outlined">route</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h3>{{ metrics.activeTrips }}</h3>
+                    </div>
+                    <p class="card-footer">Currently on road</p>
                 </div>
-                <p class="card-footer">Active drivers</p>
-            </div>
-        </ng-container>
-    </div>
-    <!-- 4. Data Table -->
-    <div class="data-table-container">
-        <div class="table-header">
-            <h2>Fleet Operations</h2>
-            <button>View All Trips</button>
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">On Duty Drivers</span>
+                        <div class="card-icon primary">
+                            <span class="material-symbols-outlined">group</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h3>{{ metrics.onDutyDrivers }}</h3>
+                    </div>
+                    <p class="card-footer">Active drivers</p>
+                </div>
+            </ng-container>
         </div>
-        <div class="table-wrapper">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Trip</th>
-                        <th>Vehicle</th>
-                        <th>Driver</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <ng-container *ngIf="isLoadingTrips; else tripsList">
+        <!-- 4. Data Table -->
+        <div class="data-table-container">
+            <div class="table-header">
+                <h2>Fleet Operations</h2>
+                <button>View All Trips</button>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
                         <tr>
-                            <td colspan="4" style="text-align: center; padding: 2rem;">Loading fleet operations...</td>
+                            <th>Trip</th>
+                            <th>Vehicle</th>
+                            <th>Driver</th>
+                            <th>Status</th>
                         </tr>
-                    </ng-container>
-                    <ng-template #tripsList>
-                        <tr *ngFor="let trip of filteredTrips">
-                            <td>
-                                <div class="trip-id" style="text-transform: uppercase;">{{ trip.id.substring(0,8)
-                                    || 'TRIP' }}</div>
-                                <div class="trip-route">Cross Country</div>
-                            </td>
-                            <td>
-                                <div class="vehicle-info">
-                                    <span class="material-symbols-outlined vehicle-icon">front_loader</span>
-                                    <span class="vehicle-name">{{ trip.vehicleName || 'Vehicle ' +
-                                        trip.vehicleId.substring(0,4) }}</span>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="driver-info">
-                                    <div class="avatar"
-                                        style="display: flex; align-items: center; justify-content: center;">
-                                        <span class="material-symbols-outlined"
-                                            style="color: var(--text-secondary);">person</span>
+                    </thead>
+                    <tbody>
+                        <ng-container *ngIf="isLoadingTrips; else tripsList">
+                            <tr>
+                                <td colspan="4" style="text-align: center; padding: 2rem;">Loading fleet operations...
+                                </td>
+                            </tr>
+                        </ng-container>
+                        <ng-template #tripsList>
+                            <tr *ngFor="let trip of filteredTrips">
+                                <td>
+                                    <div class="trip-id" style="text-transform: uppercase;">{{ trip.id.substring(0,8)
+                                        || 'TRIP' }}</div>
+                                    <div class="trip-route">Cross Country</div>
+                                </td>
+                                <td>
+                                    <div class="vehicle-info">
+                                        <span class="material-symbols-outlined vehicle-icon">front_loader</span>
+                                        <span class="vehicle-name">{{ trip.vehicleName || 'Vehicle ' +
+                                            trip.vehicleId.substring(0,4) }}</span>
                                     </div>
-                                    <span class="name">{{ trip.driverName || 'Driver ' + trip.driverId.substring(0,4)
-                                        }}</span>
-                                </div>
-                            </td>
-                            <td>
-                                <span class="status-badge" [ngClass]="{
+                                </td>
+                                <td>
+                                    <div class="driver-info">
+                                        <div class="avatar"
+                                            style="display: flex; align-items: center; justify-content: center;">
+                                            <span class="material-symbols-outlined"
+                                                style="color: var(--text-secondary);">person</span>
+                                        </div>
+                                        <span class="name">{{ trip.driverName || 'Driver ' +
+                                            trip.driverId.substring(0,4)
+                                            }}</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="status-badge" [ngClass]="{
                                     'status-ontrip': trip.status === 'Dispatched',
                                     'status-delivered': trip.status === 'Completed',
                                     'status-pending': trip.status === 'Draft'
                                 }">{{ trip.status }}</span>
-                            </td>
-                        </tr>
-                        <tr *ngIf="filteredTrips.length === 0">
-                            <td colspan="4" style="text-align: center; padding: 2rem;">No trips currently scheduled.
-                            </td>
-                        </tr>
-                    </ng-template>
-                </tbody>
-            </table>
-        </div>
-        <div class="table-footer">
-            <p>Showing {{ filteredTrips.length }} of {{ trips.length }} trips</p>
-            <div class="pagination">
-                <button disabled="">
-                    <span class="material-symbols-outlined">chevron_left</span>
-                </button>
-                <button>
-                    <span class="material-symbols-outlined">chevron_right</span>
-                </button>
+                                </td>
+                            </tr>
+                            <tr *ngIf="filteredTrips.length === 0">
+                                <td colspan="4" style="text-align: center; padding: 2rem;">No trips currently scheduled.
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-footer">
+                <p>Showing {{ filteredTrips.length }} of {{ trips.length }} trips</p>
+                <div class="pagination">
+                    <button disabled="">
+                        <span class="material-symbols-outlined">chevron_left</span>
+                    </button>
+                    <button>
+                        <span class="material-symbols-outlined">chevron_right</span>
+                    </button>
+                </div>
             </div>
         </div>
-    </div>
+    </main>
 </div>

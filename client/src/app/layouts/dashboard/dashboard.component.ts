@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HeaderComponent } from '../../shared/components/header/header.component';
 import { AnalyticsApiService } from '../../services/controllers/analytics-api.service';
 import { TripsApiService } from '../../services/controllers/trips-api.service';
 import { DashboardMetrics } from '../../core/models/analytics.model';
@@ -9,7 +10,7 @@ import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, HeaderComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })
@@ -57,7 +58,7 @@ export class Dashboard implements OnInit {
       const term = this.searchTerm.toLowerCase();
       filtered = filtered.filter(
         (t) =>
-          t.trip_id.toLowerCase().includes(term) ||
+          t.id.toLowerCase().includes(term) ||
           (t.vehicleName && t.vehicleName.toLowerCase().includes(term)) ||
           (t.driverName && t.driverName.toLowerCase().includes(term)),
       );
@@ -66,7 +67,7 @@ export class Dashboard implements OnInit {
     if (this.sortBy) {
       filtered = [...filtered].sort((a, b) => {
         if (this.sortBy === 'status') return a.status.localeCompare(b.status);
-        if (this.sortBy === 'id') return a.trip_id.localeCompare(b.trip_id);
+        if (this.sortBy === 'id') return a.id.localeCompare(b.id);
         return 0;
       });
     }

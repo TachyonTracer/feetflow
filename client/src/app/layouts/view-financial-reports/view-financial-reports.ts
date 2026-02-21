@@ -6,10 +6,12 @@ import { VehiclesApiService } from '../../services/controllers/vehicles-api.serv
 import { DashboardMetrics, VehicleRoi } from '../../core/models/analytics.model';
 import { Vehicle } from '../../core/models/vehicle.model';
 
+import { HeaderComponent } from '../../shared/components/header/header.component';
+
 @Component({
   selector: 'app-view-financial-reports',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, HeaderComponent],
   templateUrl: './view-financial-reports.html',
   styleUrl: './view-financial-reports.scss',
 })
@@ -72,6 +74,8 @@ export class ViewFinancialReports implements OnInit {
   }
 
   formatCurrency(value: number): string {
-    return '$' + value.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+    return (
+      '$' + value.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })
+    );
   }
 }

@@ -1,23 +1,5 @@
 <div class="dispatcher-layout">
-    <header class="top-header">
-        <div class="header-inner">
-            <div class="logo-section">
-                <div class="logo-icon">
-                    <img alt="FleetFlow logo" src="assets/logo.png" />
-                </div>
-                <h1 class="logo-title">Fleet Flow</h1>
-            </div>
-            <div class="user-actions">
-                <button class="action-btn">
-                    <span class="material-symbols-outlined">notifications</span>
-                </button>
-                <div class="user-avatar">
-                    <img alt="User Profile"
-                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuCw9bBRh1zV8Ft256BOG9mIFrRKoYdkruRDgzgJ3I0dQemyiwoMEOniPMJMe3iqbCVkPCZMET7fZlTC3tt9r-feijwcOqbmXNS2ahFWnJXXOTXcPotMQ7vrDqMyBW46Aap1Oaq8ykbM1ziuU1qGMTSlQ7ODS92GbCPJZSeY5tRoOcGKf36ivzQRDGZtpbLW-k_laHUBC0X31uKBWiplWbtoiQsz0Ap0B2ENPe4UBQNRRYS2gjTVx1s9DGfkLw4Y9y_LzT6vzD1dQWo_" />
-                </div>
-            </div>
-        </div>
-    </header>
+    <app-header></app-header>
 
     <!-- Main Content -->
     <main class="main-content">
@@ -108,8 +90,7 @@
                                                 <span class="material-symbols-outlined">check_circle</span>
                                             </button>
                                             <button *ngIf="trip.status === 'Draft' || trip.status === 'Dispatched'"
-                                                class="btn-outline btn-sm" (click)="cancelTrip(trip.id)"
-                                                title="Cancel">
+                                                class="btn-outline btn-sm" (click)="cancelTrip(trip.id)" title="Cancel">
                                                 <span class="material-symbols-outlined">cancel</span>
                                             </button>
                                         </td>

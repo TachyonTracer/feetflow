@@ -1,0 +1,145 @@
+$bg-white: var(--bg-secondary, #ffffff);
+$text-primary: var(--text-primary, #0f172a);
+$text-secondary: #64748b;
+$border-light: var(--border-color, #e2e8f0);
+$color-primary: var(--accent-color, #1e3fae);
+
+/* -- Header -- */
+.top-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background-color: $bg-white;
+  border-bottom: 1px solid $border-light;
+  padding: 1rem 1.5rem;
+
+  @media (min-width: 1024px) {
+    padding: 1rem 3rem;
+  }
+
+  .header-inner {
+    max-width: 80rem;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .logo-section {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+
+    .logo-icon {
+      background-color: transparent;
+      padding: 0;
+      border-radius: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .logo-title {
+      font-size: 1.5rem; // Matched the screenshot size approximately
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      color: $text-primary;
+      margin: 0;
+    }
+  }
+
+  .user-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    .action-btn {
+      padding: 0.5rem;
+      color: $text-secondary;
+      background: transparent;
+      border: none;
+      border-radius: 9999px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.2s;
+      position: relative; // For notification dot
+
+      &:hover {
+        background-color: #f1f5f9;
+        color: #334155;
+      }
+    }
+
+    .badge-btn {
+      .notification-dot {
+        position: absolute;
+        top: 0.35rem;
+        right: 0.45rem;
+        width: 0.4rem;
+        height: 0.4rem;
+        background-color: #ef4444; // red-500
+        border-radius: 50%;
+        border: 2px solid $bg-white;
+      }
+    }
+
+    .divider {
+      width: 1px;
+      height: 2rem;
+      background-color: $border-light;
+      margin: 0 0.5rem;
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .user-text {
+      display: none;
+      text-align: right;
+
+      @media (min-width: 640px) {
+        display: block; // show on sm and larger
+      }
+
+      .name {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: $text-primary;
+        margin: 0;
+        margin-bottom: 0.125rem;
+      }
+
+      .role {
+        font-size: 0.7rem;
+        font-weight: 500;
+        color: $text-secondary;
+        margin: 0;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+    }
+
+    .user-avatar {
+      height: 2.5rem;
+      width: 2.5rem;
+      border-radius: 9999px;
+      background-color: #fcd34d; // placeholder fallback color close to image
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+  }
+}

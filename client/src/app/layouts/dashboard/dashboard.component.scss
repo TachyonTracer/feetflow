@@ -1,100 +1,20 @@
 /* -- Root Colors defined in styles.scss -- */
+.dashboard-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-primary, #f6f6f8);
+}
 
 .dashboard-container {
+  flex: 1;
+  width: 100%;
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem 1.5rem;
 }
 
-/* Header */
-.dashboard-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 2rem;
-
-  .logo-section {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-
-    .logo-icon {
-      /* fixed-size square with blue background like the mockup */
-      width: 4rem;
-      height: 4rem;
-      border-radius: var(--radius-lg);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      /* when using an <img> inside, make it fill cleanly */
-      img {
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
-      }
-
-      .material-symbols-outlined {
-        font-size: 2rem;
-        color: white;
-      }
-    }
-
-    h1 {
-      font-size: 1.5rem;
-      font-weight: 700;
-      letter-spacing: -0.025em;
-      color: var(--accent-hover);
-      margin: 0;
-    }
-  }
-
-  .user-section {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-
-    .user-info {
-      text-align: right;
-      display: none; // default hidden
-
-      @media (min-width: 640px) {
-        display: block; // block on sm
-      }
-
-      p.role {
-        font-size: 0.875rem;
-        font-weight: 600;
-        margin-bottom: 0.125rem;
-        margin-top: 0;
-      }
-
-      p.dept {
-        font-size: 0.75rem;
-        color: var(--text-secondary);
-        margin: 0;
-      }
-    }
-
-    .user-avatar {
-      height: 2.5rem;
-      width: 2.5rem;
-      border-radius: 9999px;
-      background-color: rgba(30, 63, 174, 0.1);
-      border: 1px solid rgba(30, 63, 174, 0.2);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-
-      img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-      }
-    }
-  }
-}
+/* Header moved to HeaderComponent */
 
 /* Controls */
 .controls-row {

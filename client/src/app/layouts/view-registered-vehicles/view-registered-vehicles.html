@@ -2,34 +2,7 @@
 <app-add-new-vehicle *ngIf="isModalOpen" (close)="toggleModal()"></app-add-new-vehicle>
 
 <div class="registry-layout">
-    <header class="top-header">
-        <div class="header-inner">
-            <div class="logo-section">
-                <div class="logo-icon">
-                    <img alt="FleetFlow logo" src="assets/logo.png" />
-                </div>
-                <h1>Fleet Flow</h1>
-            </div>
-            <div class="user-actions">
-                <button class="icon-button relative">
-                    <span class="material-symbols-outlined">notifications</span>
-                    <span class="notification-dot"></span>
-                </button>
-                <button class="icon-button">
-                    <span class="material-symbols-outlined">settings</span>
-                </button>
-                <div class="divider"></div>
-                <div class="user-profile">
-                    <div class="user-text">
-                        <p class="name">Alex Rivera</p>
-                        <p class="role">Fleet Manager</p>
-                    </div>
-                    <img alt="Profile"
-                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuBsca3Q--9s0LFncnBqQTylzCUIxHIxaFGajEb3W1zLPU6KFMI5BMcOdirwYeVpMFceVVWSlueDnpJoG0yJNJRmQUeVw1u7jcEzUG4UY8g3GEFiH-x4LJSnyZYSZRSgTUVT-PEXHS8msROMzdwgTVdO6SamqdMizqj3E4_W7o2roCUTN4xaOn-dLnuexDMu9R8AKZLtWI9PMe4i9h14HerKMv-SYnqlGVkOGR1Z8lhwZqVRx823dujRM5ptijlBMcRLs2MiLIRWi17M" />
-                </div>
-            </div>
-        </div>
-    </header>
+    <app-header></app-header>
 
     <main class="main-content">
         <div class="page-header">
@@ -106,8 +79,7 @@
                                 <td class="td-odometer">{{ v.odometerKm | number:'1.0-0' }} km</td>
                                 <td class="td-actions">
                                     <div class="action-group">
-                                        <button class="action-btn" title="Retire vehicle"
-                                            (click)="retireVehicle(v.id)"
+                                        <button class="action-btn" title="Retire vehicle" (click)="retireVehicle(v.id)"
                                             [disabled]="v.status === 'Retired'">
                                             <span class="material-symbols-outlined">block</span>
                                         </button>

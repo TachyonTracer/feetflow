@@ -1,6 +1,7 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HeaderComponent } from '../../shared/components/header/header.component';
 import { MaintenanceApiService } from '../../services/controllers/maintenance-api.service';
 import { VehiclesApiService } from '../../services/controllers/vehicles-api.service';
 import { MaintenanceLog, CreateMaintenanceRequest } from '../../core/models/maintenance.model';
@@ -9,13 +10,50 @@ import { Vehicle } from '../../core/models/vehicle.model';
 @Component({
   selector: 'app-view-service-log',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, HeaderComponent],
   templateUrl: './view-service-log.html',
   styleUrl: './view-service-log.scss',
 })
 export class ViewServiceLog implements OnInit {
   logs: MaintenanceLog[] = [];
   isLoading = true;
+
+  searchTerm: string = '';
+  currentStatus: string = '';
+  sortBy: string = '';
+
+  get filteredLogs(): MaintenanceLog[] {
+    let filtered = this.logs;
+
+    if (this.currentStatus) {
+      const isClosed = this.currentStatus === 'Completed';
+      filtered = filtered.filter((l) => l.isClosed === isClosed);
+    }
+
+    if (this.searchTerm) {
+      const term = this.searchTerm.toLowerCase();
+      filtered = filtered.filter(
+        (l) =>
+          (l.maintenanceId && l.maintenanceId.toLowerCase().includes(term)) ||
+          (l.vehicleName && l.vehicleName.toLowerCase().includes(term)) ||
+          (l.description && l.description.toLowerCase().includes(term)),
+      );
+    }
+
+    if (this.sortBy) {
+      filtered = [...filtered].sort((a, b) => {
+        if (this.sortBy === 'date-desc')
+          return new Date(b.serviceDate).getTime() - new Date(a.serviceDate).getTime();
+        if (this.sortBy === 'date-asc')
+          return new Date(a.serviceDate).getTime() - new Date(b.serviceDate).getTime();
+        if (this.sortBy === 'cost-desc') return b.cost - a.cost;
+        if (this.sortBy === 'cost-asc') return a.cost - b.cost;
+        return 0;
+      });
+    }
+
+    return filtered;
+  }
 
   showCreateModal = signal(false);
   isSubmitting = signal(false);

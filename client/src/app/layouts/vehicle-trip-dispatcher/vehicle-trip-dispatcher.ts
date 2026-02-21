@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HeaderComponent } from '../../shared/components/header/header.component';
 import { TripsApiService } from '../../services/controllers/trips-api.service';
 import { VehiclesApiService } from '../../services/controllers/vehicles-api.service';
 import { DriversApiService } from '../../services/controllers/drivers-api.service';
@@ -11,7 +12,7 @@ import { Driver } from '../../core/models/driver.model';
 @Component({
   selector: 'app-vehicle-trip-dispatcher',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, HeaderComponent],
   templateUrl: './vehicle-trip-dispatcher.html',
   styleUrl: './vehicle-trip-dispatcher.scss',
 })
@@ -66,7 +67,7 @@ export class VehicleTripDispatcher implements OnInit {
       const term = this.searchTerm.toLowerCase();
       filtered = filtered.filter(
         (t) =>
-          t.trip_id.toLowerCase().includes(term) ||
+          t.id.toLowerCase().includes(term) ||
           (t.vehicleName && t.vehicleName.toLowerCase().includes(term)),
       );
     }
@@ -74,7 +75,7 @@ export class VehicleTripDispatcher implements OnInit {
     if (this.sortBy) {
       filtered = [...filtered].sort((a, b) => {
         if (this.sortBy === 'status') return a.status.localeCompare(b.status);
-        if (this.sortBy === 'id') return a.trip_id.localeCompare(b.trip_id);
+        if (this.sortBy === 'id') return a.id.localeCompare(b.id);
         return 0;
       });
     }

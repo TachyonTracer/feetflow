@@ -1,31 +1,6 @@
 <div class="service-layout">
     <!-- Top Navigation Bar -->
-    <header class="top-header">
-        <div class="header-inner">
-            <div class="logo-section">
-                <div class="logo-icon">
-                    <img alt="FleetFlow logo" src="assets/logo.png" />
-                </div>
-                <h1 class="logo-title">Fleet Flow</h1>
-            </div>
-            <div class="user-actions">
-                <button class="action-btn">
-                    <span class="material-symbols-outlined">notifications</span>
-                </button>
-                <div class="divider"></div>
-                <div class="user-profile">
-                    <div class="user-text hidden-mobile">
-                        <p class="name">Alex Thompson</p>
-                        <p class="role">Fleet Operations</p>
-                    </div>
-                    <div class="user-avatar">
-                        <img alt="User profile avatar of Alex Thompson"
-                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBPiiQgrhfkvS7cSG7BN6q_UmQUrY00GeYVKUNT85SzLityrG0d-IIgybXIJrfHvRsDHz6VFdxmXwTb14JEJAlOprAJ2N-m-6xIn8KfWfMSaDsCLF4dFqlmtpFPo6KkCBWJKM8jB3016kA-7TFrEqoQLBmlIoXSacS0hIGFD9BlaRrn34EXdeEWPTFYbvplyZtPU4Q0q-zI2Bn4JJzF89t8VuMtOl0gf_Vcis6SkuOhqsuWlAjaxL5s9bkdb19qON0Z0kZt69Myy2lT" />
-                    </div>
-                </div>
-            </div>
-        </div>
-    </header>
+    <app-header></app-header>
 
     <main class="main-content">
         <!-- Page Title & Primary Action -->
@@ -90,7 +65,7 @@
                             </tr>
                         </ng-container>
                         <ng-template #logsList>
-                            <tr *ngFor="let log of logs">
+                            <tr *ngFor="let log of filteredLogs">
                                 <td class="td-id">#{{ log.maintenanceId.substring(0,8) | uppercase }}</td>
                                 <td>
                                     <div class="vehicle-info">
@@ -151,7 +126,7 @@
         </div>
         <div class="modal-body">
             @if (formError()) {
-                <div class="error-banner">{{ formError() }}</div>
+            <div class="error-banner">{{ formError() }}</div>
             }
             <div class="form-group">
                 <label class="form-label">Vehicle *</label>
@@ -165,7 +140,7 @@
             <div class="form-group">
                 <label class="form-label">Description *</label>
                 <input class="form-input" type="text" placeholder="e.g. Oil change, brake repair"
-                       [(ngModel)]="newLog.description" />
+                    [(ngModel)]="newLog.description" />
             </div>
             <div class="form-row">
                 <div class="form-group">

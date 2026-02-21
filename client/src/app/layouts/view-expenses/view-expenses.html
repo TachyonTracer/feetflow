@@ -2,16 +2,7 @@
     (created)="onExpenseCreated()"></app-add-expenses>
 
 <div class="expenses-layout">
-    <header class="top-header">
-        <div class="header-inner">
-            <div class="logo-section">
-                <div class="logo-icon">
-                    <span class="material-symbols-outlined">local_shipping</span>
-                </div>
-                <h1 class="logo-title heading-font">Fleet Flow</h1>
-            </div>
-        </div>
-    </header>
+    <app-header></app-header>
 
     <main class="main-content">
         <div class="page-header">
@@ -66,7 +57,7 @@
                         </ng-container>
                         <ng-container *ngIf="!isLoading">
                             <tr *ngFor="let log of fuelLogs">
-                                <td class="td-id">{{ log.id?.substring(0,8) | uppercase }}</td>
+                                <td class="td-id">{{ log.id.substring(0,8) | uppercase }}</td>
                                 <td>{{ getVehicleName(log.vehicleId) }}</td>
                                 <td class="td-text">{{ log.fuelDate }}</td>
                                 <td class="td-cost-sm text-right">{{ log.liters | number:'1.2-2' }} L</td>
