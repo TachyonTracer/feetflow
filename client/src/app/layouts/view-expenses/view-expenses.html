@@ -1,0 +1,259 @@
+<div class="expenses-layout">
+    <!-- Top Navigation Bar -->
+    <header class="top-header">
+        <div class="header-inner">
+            <div class="logo-section">
+                <div class="logo-icon">
+                    <span class="material-symbols-outlined">local_shipping</span>
+                </div>
+                <h1 class="logo-title heading-font">Fleet Flow</h1>
+            </div>
+            <nav class="main-nav">
+                <a class="nav-item" href="#">Dashboard</a>
+                <a class="nav-item" href="#">Trips</a>
+                <a class="nav-item active" href="#">Expenses</a>
+                <a class="nav-item" href="#">Fleet</a>
+                <a class="nav-item" href="#">Drivers</a>
+            </nav>
+            <div class="user-actions">
+                <button class="action-btn">
+                    <span class="material-symbols-outlined">notifications</span>
+                </button>
+                <div class="user-avatar">
+                    <img alt="Profile"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuChl9Q-AQL9D7Wq7_7KmR8qHjuxIpv0PSNLqA81QAnELuXDFXKCz4Z08NkclTa-bznCVnnh3ewqCCtfnWU0u38cTY1awQraJf9S22CDNxpMvbkcbCRFWSiuA2c5yP-S89LEv4BAbaJu_DHJpWnVndpyr3VVm4vwwK209mhWil0CG68pum47ID_PkUpiy8C_u30CkZdMC0qIncYvLV8bzG_TDihOZksE0I7QFrDTMUzjh0C2nTAcHXlBtlCfttBtY4MEb5VLv4QTWeNn" />
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <!-- Breadcrumbs & Title -->
+        <div class="page-header">
+            <div class="breadcrumbs">
+                <span>Logistics</span>
+                <span class="material-symbols-outlined icon-chevron">chevron_right</span>
+                <span class="current">Expenses</span>
+            </div>
+            <div class="title-row">
+                <div class="header-text">
+                    <h2 class="heading-font">Expenses & Fuel Logging</h2>
+                    <p>Manage and audit operational costs across your fleet in real-time.</p>
+                </div>
+                <button class="btn-primary">
+                    <span class="material-symbols-outlined">add</span>
+                    <span>Add On Expenses</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Search & Controls -->
+        <div class="controls-card">
+            <div class="controls-row">
+                <div class="search-box">
+                    <span class="material-symbols-outlined search-icon">search</span>
+                    <input class="search-input" placeholder="Search by Trip ID, Driver, or Location..." type="text" />
+                </div>
+                <div class="action-filters">
+                    <button class="btn-outline">
+                        <span class="material-symbols-outlined icon">group_work</span>
+                        <span>Group By</span>
+                    </button>
+                    <button class="btn-outline">
+                        <span class="material-symbols-outlined icon">filter_list</span>
+                        <span>Filter</span>
+                    </button>
+                    <button class="btn-outline">
+                        <span class="material-symbols-outlined icon">sort</span>
+                        <span>Sort</span>
+                    </button>
+                    <div class="divider"></div>
+                    <button class="btn-icon">
+                        <span class="material-symbols-outlined icon">download</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Expenses Table Container -->
+        <div class="data-table-container">
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Trip ID</th>
+                            <th>Driver</th>
+                            <th>Distance</th>
+                            <th class="text-right">Fuel Expenses</th>
+                            <th class="text-right">Misc. Expenses</th>
+                            <th class="text-center">Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Row 1 -->
+                        <tr>
+                            <td class="td-id">#T-9001</td>
+                            <td>
+                                <div class="driver-info">
+                                    <div class="driver-avatar bg-blue">
+                                        <img
+                                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCysqSMTubcOXWYZK0vuOFj_YLN6AG3_NYomSpsrTZZAvsC4FSv9cafD_Uq-wGazp4fHkjq93_S2YKPm9jeE2mKRIbN-cWbfKLxRJn4UOin9mH-XIAbvNu9LD1EEVoEVpnf4aAB7wm0c2e7ChhG_2kaXXjrFZgUrHl_wnv-WQGm7BaiFZt6QUA0FKgElkWTApP5s9oRQPwHZN5n0t_UjvWnVdPPngbiHsG199_3IxS91CjJN81wBna2QdHd5sah4gh4xAUVs602i6Q9" />
+                                    </div>
+                                    <span class="driver-name">John Doe</span>
+                                </div>
+                            </td>
+                            <td class="td-text">450 km</td>
+                            <td class="td-cost-lg text-right">$120.00</td>
+                            <td class="td-cost-sm text-right">$15.50</td>
+                            <td class="text-center">
+                                <span class="status-badge status-done">Done</span>
+                            </td>
+                            <td class="td-actions text-right">
+                                <button class="action-btn-sm"><span
+                                        class="material-symbols-outlined">more_vert</span></button>
+                            </td>
+                        </tr>
+
+                        <!-- Row 2 -->
+                        <tr>
+                            <td class="td-id">#T-8842</td>
+                            <td>
+                                <div class="driver-info">
+                                    <div class="driver-avatar bg-amber">
+                                        <img
+                                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDclk0x3BD24wUhMhR9VM9bXUJ1bXbYzA5YWoTPQYS1721yAin4IiXTaIjWQtKTTTAcZJ1btmL1qgOwTbwZDdVRGb6PT6zL7DCsvqRrFYzn_uxNMHtqCs-OeCI3Eih1pZUHfcrpS4ifUhMJVVcyGK-XCDmUavqn57YW-Ns_y-vQJT4RQ02xnpvqvaW0Bi2pjcYo11wnSLocViejcDSNkqZRBSPkJRtQ2QftlfcydxLyDURzSgqopbs624c0zBdeUMqT1tc3MnemqaQU" />
+                                    </div>
+                                    <span class="driver-name">Sarah Smith</span>
+                                </div>
+                            </td>
+                            <td class="td-text">1,200 km</td>
+                            <td class="td-cost-lg text-right">$340.00</td>
+                            <td class="td-cost-sm text-right">$45.00</td>
+                            <td class="text-center">
+                                <span class="status-badge status-pending">Pending</span>
+                            </td>
+                            <td class="td-actions text-right">
+                                <button class="action-btn-sm"><span
+                                        class="material-symbols-outlined">more_vert</span></button>
+                            </td>
+                        </tr>
+
+                        <!-- Row 3 -->
+                        <tr>
+                            <td class="td-id">#T-9105</td>
+                            <td>
+                                <div class="driver-info">
+                                    <div class="driver-avatar bg-slate text-avatar">
+                                        <span>MJ</span>
+                                    </div>
+                                    <span class="driver-name">Marcus Johnson</span>
+                                </div>
+                            </td>
+                            <td class="td-text">780 km</td>
+                            <td class="td-cost-lg text-right">$215.40</td>
+                            <td class="td-cost-sm text-right">$8.20</td>
+                            <td class="text-center">
+                                <span class="status-badge status-approved">Approved</span>
+                            </td>
+                            <td class="td-actions text-right">
+                                <button class="action-btn-sm"><span
+                                        class="material-symbols-outlined">more_vert</span></button>
+                            </td>
+                        </tr>
+
+                        <!-- Row 4 -->
+                        <tr>
+                            <td class="td-id">#T-8921</td>
+                            <td>
+                                <div class="driver-info">
+                                    <div class="driver-avatar bg-purple">
+                                        <img
+                                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBv9gB9xtMOsuOrnEXo7kaZiahyv5c_q4AqcdxDCb4HotnupVb92sgRciM5zP_OuvLcKY9oZHoMfsWo4FnSaeVPjatYGgnuzEaShVuFkNXU-KIL-x5r39CSF3MCBkbBC9szoANZ7EmjpjjV2BNhwvfuFA4zQda7UR_zfqrKaPdOAFSbCMrmhMl70h1c2L2osOscfdKQvQvnxSlAgLTbIZ9Ps9sUpLX0DJivsFmC36oxYWzlSZo7r3K-DcvRQ4p3YkKqSzEdrVjWMd82" />
+                                    </div>
+                                    <span class="driver-name">David Chen</span>
+                                </div>
+                            </td>
+                            <td class="td-text">210 km</td>
+                            <td class="td-cost-lg text-right">$65.00</td>
+                            <td class="td-cost-sm text-right">$0.00</td>
+                            <td class="text-center">
+                                <span class="status-badge status-done">Done</span>
+                            </td>
+                            <td class="td-actions text-right">
+                                <button class="action-btn-sm"><span
+                                        class="material-symbols-outlined">more_vert</span></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="table-footer">
+                <span class="pagination-text">Showing 1 to 4 of 24 entries</span>
+                <div class="pagination">
+                    <button class="page-nav">Previous</button>
+                    <button class="page-num active">1</button>
+                    <button class="page-num">2</button>
+                    <button class="page-num">3</button>
+                    <button class="page-nav">Next</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Secondary Summary Section -->
+        <div class="summary-cards">
+            <div class="summary-card">
+                <div class="card-header">
+                    <h3 class="heading-font">Monthly Fuel Total</h3>
+                    <span class="material-symbols-outlined icon-primary">gas_meter</span>
+                </div>
+                <p class="card-value">$12,450.20</p>
+                <div class="card-trend trend-down">
+                    <span class="material-symbols-outlined text-sm">trending_down</span>
+                    <span>3.2% from last month</span>
+                </div>
+            </div>
+
+            <div class="summary-card">
+                <div class="card-header">
+                    <h3 class="heading-font">Active Approvals</h3>
+                    <span class="material-symbols-outlined icon-amber">pending_actions</span>
+                </div>
+                <p class="card-value">18 Trips</p>
+                <p class="card-subtitle tracking-tighter uppercase">Requires review within 48h</p>
+            </div>
+
+            <div class="summary-card">
+                <div class="card-header">
+                    <h3 class="heading-font">Efficiency Score</h3>
+                    <span class="material-symbols-outlined icon-green">bolt</span>
+                </div>
+                <div class="card-score">
+                    <p class="card-value">94%</p>
+                    <p class="card-subtitle-sm">Excellent</p>
+                </div>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill w-94"></div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer Meta -->
+    <footer class="bottom-meta">
+        <div class="meta-inner">
+            <div class="sync-status">
+                <span class="material-symbols-outlined">cloud_done</span>
+                <span>Auto-synced: Today, 10:45 AM</span>
+            </div>
+            <div class="footer-links">
+                <a href="#">Help Center</a>
+                <a href="#">Compliance Exports</a>
+                <a href="#">Privacy Policy</a>
+            </div>
+        </div>
+    </footer>
+</div>

@@ -28,7 +28,10 @@ export const routes: Routes = [
     path: 'service-log',
     loadComponent: () => import('./layouts/view-service-log/view-service-log').then((m) => m.ViewServiceLog),
   },
-
+  {
+    path: 'expenses',
+    loadComponent: () => import('./layouts/view-expenses/view-expenses').then((m) => m.ViewExpenses),
+  },
 
   { path: '', redirectTo: '/auth', pathMatch: 'full' },
 ];
