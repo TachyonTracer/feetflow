@@ -1,281 +1,156 @@
-<style>
-  .glass-card {
-    background: rgba(255, 255, 255, 0.92);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-  }
-
-  .login-card {
-    animation: cardSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
-  }
-
-  @keyframes cardSlideUp {
-    from {
-      opacity: 0;
-      transform: translateY(24px);
-    }
-
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  .avatar-ring {
-    background: conic-gradient(from 180deg, #136dec, #38bdf8, #818cf8, #136dec);
-    animation: avatarSpin 6s linear infinite;
-  }
-
-  @keyframes avatarSpin {
-    to {
-      background: conic-gradient(from 540deg, #136dec, #38bdf8, #818cf8, #136dec);
-    }
-  }
-
-  .input-focus-glow:focus {
-    box-shadow: 0 0 0 3px rgba(19, 109, 236, 0.1);
-  }
-
-  .login-btn {
-    background: linear-gradient(135deg, #136dec 0%, #105bc5 100%);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .login-btn:hover:not(:disabled) {
-    background: linear-gradient(135deg, #105bc5 0%, #0d4ea3 100%);
-    box-shadow: 0 8px 24px rgba(19, 109, 236, 0.35);
-    transform: translateY(-1px);
-  }
-
-  .login-btn:active:not(:disabled) {
-    transform: translateY(0);
-    box-shadow: 0 4px 12px rgba(19, 109, 236, 0.25);
-  }
-
-  .role-select-wrapper {
-    background: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(8px);
-    border-left: 3px solid #136dec;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-  }
-
-  .role-select-wrapper:hover {
-    border-color: #136dec;
-    box-shadow: 0 4px 16px rgba(19, 109, 236, 0.15);
-    background: rgba(255, 255, 255, 0.98);
-  }
-
-  .role-select-wrapper:focus-within {
-    border-color: #136dec;
-    box-shadow: 0 4px 16px rgba(19, 109, 236, 0.2), 0 0 0 3px rgba(19, 109, 236, 0.08);
-  }
-
-  .role-select-wrapper select {
-    font-weight: 600;
-    letter-spacing: 0.01em;
-  }
-
-  .role-select-wrapper select option {
-    padding: 8px 12px;
-    font-weight: 500;
-    background: #fff;
-    color: #334155;
-  }
-
-  .role-select-wrapper select option:checked {
-    background: linear-gradient(135deg, #e0edff, #dbeafe);
-    color: #136dec;
-    font-weight: 600;
-  }
-</style>
-
-<div
-  class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 h-screen w-full overflow-hidden flex flex-col md:flex-row">
+<div class="auth-page">
   <!-- Left Side: Brand & Visuals -->
-  <div
-    class="relative hidden md:flex md:w-1/2 lg:w-5/12 xl:w-1/2 flex-col justify-end p-12 bg-slate-900 overflow-hidden">
+  <div class="brand-panel">
     <!-- Background Image with Overlay -->
-    <div class="absolute inset-0 z-0">
-      <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent z-10"></div>
-      <img alt="Logistics warehouse with automated shipping containers and blue lighting"
-        class="h-full w-full object-cover opacity-80" data-alt="Modern logistics warehouse with blue lighting"
+    <div class="brand-bg">
+      <div class="brand-overlay"></div>
+      <img alt="Logistics warehouse with automated shipping containers and blue lighting" class="brand-img"
         src="https://lh3.googleusercontent.com/aida-public/AB6AXuAXzElL20dXOx_NTi5PmgHSoiUcVhACtgz0kAdyW3meDrg32IfQYouJLnnEiYY2Hq9sk98uWpa4fuSkxnWJlhISbqi6XXq8QOt_oSrIIDaZb7ibohLTN8M0Ld9iN3rJj_EIZzaKIZ4uqMtkGNZSyHLWrxdOH8dg7-BaJCPTSAi8y3eHNkcQ5N14ISrMXifuFleAHj6gRDRIkFmB9VnAfJeeJGQ0D48CBMsAjkWRdUAy7WNANUzYRgv6r8v2AfhY31Mn3H98M_I9gR2J" />
     </div>
     <!-- Brand Content -->
-    <div class="relative z-20 max-w-lg mb-8">
-      <div class="flex items-center gap-2 mb-6">
-        <div class="flex items-center justify-center w-10 h-10 rounded-lg bg-primary text-white">
-          <span class="material-symbols-outlined text-2xl">local_shipping</span>
+    <div class="brand-content">
+      <div class="brand-logo">
+        <div class="brand-logo-icon">
+          <span class="material-symbols-outlined">local_shipping</span>
         </div>
-        <h1 class="text-white text-2xl font-bold tracking-tight">FleetFlow</h1>
+        <h1 class="brand-name">FleetFlow</h1>
       </div>
-      <h2 class="text-3xl lg:text-4xl font-bold text-white mb-4 leading-tight">
+      <h2 class="brand-headline">
         Optimize your entire fleet operations in real-time.
       </h2>
-      <p class="text-slate-300 text-lg leading-relaxed">
+      <p class="brand-description">
         Join over 4,000 logistics companies using FleetFlow to track assets, manage
         drivers, and reduce operational costs with AI-driven analytics.
       </p>
     </div>
-    <!-- Trust Indicators/Decorations -->
-    <div class="relative z-20 flex gap-4 mt-4">
-      <div class="flex -space-x-3">
-        <img alt="User portrait" class="w-10 h-10 rounded-full border-2 border-slate-900"
-          data-alt="Portrait of a female user"
+    <!-- Trust Indicators -->
+    <div class="trust-indicators">
+      <div class="trust-avatars">
+        <img alt="User portrait" class="trust-avatar"
           src="https://lh3.googleusercontent.com/aida-public/AB6AXuBowGKOW3V1UXwgTgAYUS-yr4Q-mCwaRKbHYb5TX6fC6D1a7gU3H1WY66cfpw2gNA_STfROcjrU_hcQjUhZ15lAk-p3b-Y1iOz74Bp1vseqXIVj1Y5pLIH3ihZn1shxBQ2mV07K1GSVe-VfQnXXli-KXP8UrWRkV2jRiR3p9xnnqNx0emqhF-A7sjN96QU5-QvvD9QwD37TnMaDDpoUM9X5MRTnGHLuYNDKYLMlvYoeCbv9c_Mf-t3u7UVL5nEMIsQsCz1_pjYSka45" />
-        <img alt="User portrait" class="w-10 h-10 rounded-full border-2 border-slate-900"
-          data-alt="Portrait of a male user"
+        <img alt="User portrait" class="trust-avatar"
           src="https://lh3.googleusercontent.com/aida-public/AB6AXuBDguXslcQNZslJXnWxb2m4oc9LpLhOjyNurwMzt0RnFbAXSIAJMgTXk7_MrmLcUvl4yL71RPfAJWnNDiNYqT2v0P_gl7CLL2dHTffowgiUIZm_8Pd5AmY92BtXdUnzAe4v1LMJTNsMxlh6h4g3xBHtxzonluw4LbyNBiIsWs7v_TUIAB878ix1VsjLbrlsRjIi2ryHZXehLCGWOP6vWiTgjagTAReVyX_37A6jRhlo6OoQg0N_UJ7bu_oazQwiYxG2TvB2XIw5mBDC" />
-        <img alt="User portrait" class="w-10 h-10 rounded-full border-2 border-slate-900"
-          data-alt="Portrait of a male user"
+        <img alt="User portrait" class="trust-avatar"
           src="https://lh3.googleusercontent.com/aida-public/AB6AXuBj9BmoC1_6mx8Vb5fMb4by0f7vKOJAm7XzI32T54MOoamIJSjY2rsjN2VYrk90KMZ_mBtXHwyHUvoxlI91MI6MLxcxj10WUR6Xy3HXTS-ijwUiSOPrxxxV_Hy50vdvOlRZieZLuj_kvA0Bw5hjKaDfFrv8bBRAxlsLpaF1L7CIIUKaHvzSR0KzkKYARrBsDQ0xfHswNuHnJSmb4G6kiYubbn0SYllc4BwV5g51V6T8vL7vHkEc3YBIthcP1yfm4xK2PSbKa9RsZ0QA" />
       </div>
-      <div class="flex flex-col justify-center">
-        <div class="flex text-yellow-400 text-sm">
-          <span class="material-symbols-outlined text-[16px] fill-current">star</span>
-          <span class="material-symbols-outlined text-[16px] fill-current">star</span>
-          <span class="material-symbols-outlined text-[16px] fill-current">star</span>
-          <span class="material-symbols-outlined text-[16px] fill-current">star</span>
-          <span class="material-symbols-outlined text-[16px] fill-current">star</span>
+      <div class="trust-details">
+        <div class="trust-stars">
+          <span class="material-symbols-outlined">star</span>
+          <span class="material-symbols-outlined">star</span>
+          <span class="material-symbols-outlined">star</span>
+          <span class="material-symbols-outlined">star</span>
+          <span class="material-symbols-outlined">star</span>
         </div>
-        <span class="text-slate-300 text-xs font-medium">Trusted by industry leaders</span>
+        <span class="trust-label">Trusted by industry leaders</span>
       </div>
     </div>
   </div>
 
   <!-- Right Side: Login Form -->
-  <div
-    class="flex-1 flex flex-col justify-center items-center p-4 sm:p-8 bg-background-light dark:bg-background-dark relative overflow-hidden">
+  <div class="form-panel">
 
-    <!-- Decorative blobs (enhanced) -->
-    <div
-      class="absolute top-[-15%] right-[-10%] w-[500px] h-[500px] bg-gradient-to-br from-primary/8 to-blue-400/5 rounded-full blur-3xl pointer-events-none">
-    </div>
-    <div
-      class="absolute bottom-[-15%] left-[-10%] w-[400px] h-[400px] bg-gradient-to-tr from-indigo-400/8 to-cyan-300/5 rounded-full blur-3xl pointer-events-none">
-    </div>
-    <div
-      class="absolute top-[30%] left-[20%] w-[200px] h-[200px] bg-primary/3 rounded-full blur-2xl pointer-events-none">
-    </div>
+    <!-- Decorative blobs -->
+    <div class="blob blob--top"></div>
+    <div class="blob blob--bottom"></div>
+    <div class="blob blob--center"></div>
 
     <!-- Login Card -->
-    <div
-      class="login-card w-full max-w-[420px] glass-card border border-slate-200/60 dark:border-slate-700 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] rounded-2xl p-7 sm:p-9 relative z-10">
+    <div class="auth-card login-card glass-card">
 
-      <!-- Subtle top accent line -->
-      <div
-        class="absolute top-0 left-8 right-8 h-[3px] rounded-b-full bg-gradient-to-r from-primary via-blue-400 to-cyan-400">
-      </div>
+      <!-- Top accent line -->
+      <div class="accent-line"></div>
 
-      <!-- Top Row: Profile Avatar (center) + Role Dropdown (top-right) -->
-      <div class="relative flex justify-center items-start mb-8 pt-4">
+      <!-- Top Row: Profile Avatar + Role Dropdown -->
+      <div class="card-header">
 
         <!-- Profile Avatar with animated ring -->
-        <div class="relative">
-          <div class="avatar-ring absolute inset-0 rounded-full p-[3px]">
-            <div class="w-full h-full rounded-full bg-white"></div>
+        <div class="avatar-wrapper">
+          <div class="avatar-ring">
+            <div class="avatar-ring-inner"></div>
           </div>
-          <div
-            class="w-[84px] h-[84px] rounded-full bg-gradient-to-br from-primary via-blue-500 to-cyan-400 flex items-center justify-center text-white shadow-lg shadow-blue-500/25 relative z-10 m-[3px]">
-            <span class="text-2xl font-bold tracking-wide select-none">{{ profileInitials }}</span>
+          <div class="avatar-circle">
+            <span class="avatar-initials">{{ profileInitials }}</span>
           </div>
           <!-- Role badge -->
-          <div
-            class="absolute -bottom-1 -right-1 w-8 h-8 rounded-full bg-white dark:bg-slate-900 border-2 border-white dark:border-slate-800 flex items-center justify-center text-primary shadow-md z-20">
-            <span class="material-symbols-outlined text-[16px] leading-none">{{ selectedRoleIcon }}</span>
+          <div class="avatar-badge">
+            <span class="material-symbols-outlined">{{ selectedRoleIcon }}</span>
           </div>
         </div>
 
-        <!-- Role Dropdown (top-right corner) -->
-        <div class="absolute top-2 right-0">
-          <div
-            class="role-select-wrapper relative rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 transition-all duration-200 overflow-hidden">
-            <select
-              class="h-9 bg-transparent text-slate-600 dark:text-slate-300 text-[13px] font-medium pl-3 pr-8 appearance-none focus:outline-none focus:ring-0 border-none cursor-pointer"
-              [(ngModel)]="user.role" name="role" (ngModelChange)="setRole($event)">
+        <!-- Role Dropdown -->
+        <div class="role-dropdown-wrapper">
+          <div class="role-select-wrapper">
+            <select class="role-select" [(ngModel)]="user.role" name="role" (ngModelChange)="setRole($event)">
               <option *ngFor="let roleOption of availableRoles" [value]="roleOption.value">{{ roleOption.label }}
               </option>
             </select>
-            <div class="absolute inset-y-0 right-2.5 flex items-center pointer-events-none text-slate-400">
-              <span class="material-symbols-outlined text-[16px]">unfold_more</span>
+            <div class="role-select-icon">
+              <span class="material-symbols-outlined">unfold_more</span>
             </div>
           </div>
         </div>
       </div>
 
       <!-- Label showing selected role -->
-      <p class="text-center text-xs font-medium text-slate-400 dark:text-slate-500 -mt-4 mb-6 tracking-wide uppercase">
-        Signing in as <span class="text-primary font-semibold">{{ selectedRoleLabel }}</span>
+      <p class="role-label">
+        Signing in as <span class="role-label-value">{{ selectedRoleLabel }}</span>
       </p>
 
-      <!-- Compact Login Form -->
-      <form (ngSubmit)="login()" #form="ngForm" class="flex flex-col gap-4">
+      <!-- Login Form -->
+      <form (ngSubmit)="login()" #form="ngForm" class="auth-form">
         <!-- Username Input -->
-        <div>
-          <div class="relative">
-            <span
-              class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 material-symbols-outlined text-[18px]">mail</span>
-            <input #emailInput="ngModel"
-              class="input-focus-glow w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white pl-10 pr-4 focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder:text-slate-400 text-sm"
-              [ngClass]="{'!border-red-500 focus:!border-red-500 focus:!ring-red-500': emailInput.invalid && (emailInput.dirty || emailInput.touched)}"
+        <div class="form-group">
+          <div class="input-wrapper">
+            <span class="input-icon material-symbols-outlined">mail</span>
+            <input #emailInput="ngModel" class="form-input input-focus-glow"
+              [class.input-error]="emailInput.invalid && (emailInput.dirty || emailInput.touched)"
               placeholder="Username / Email" type="email" [(ngModel)]="user.username" name="username" required email />
           </div>
-          <div *ngIf="emailInput.invalid && (emailInput.dirty || emailInput.touched)"
-            class="text-red-500 text-xs mt-1.5 pl-1 flex items-center gap-1">
-            <span class="material-symbols-outlined text-[14px]">error</span>
+          <div *ngIf="emailInput.invalid && (emailInput.dirty || emailInput.touched)" class="field-error">
+            <span class="material-symbols-outlined">error</span>
             <span *ngIf="emailInput.errors?.['required']">Email is required.</span>
             <span *ngIf="emailInput.errors?.['email']">Enter a valid email.</span>
           </div>
         </div>
 
         <!-- Password Input -->
-        <div>
-          <div class="relative">
-            <span
-              class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 material-symbols-outlined text-[18px]">lock</span>
-            <input #passwordInput="ngModel"
-              class="input-focus-glow w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white pl-10 pr-11 focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder:text-slate-400 text-sm"
-              [ngClass]="{'!border-red-500 focus:!border-red-500 focus:!ring-red-500': passwordInput.invalid && (passwordInput.dirty || passwordInput.touched)}"
+        <div class="form-group">
+          <div class="input-wrapper">
+            <span class="input-icon material-symbols-outlined">lock</span>
+            <input #passwordInput="ngModel" class="form-input input-focus-glow"
+              [class.input-error]="passwordInput.invalid && (passwordInput.dirty || passwordInput.touched)"
               placeholder="Password" [type]="showPassword ? 'text' : 'password'" [(ngModel)]="user.password"
               name="password" required minlength="6" maxlength="50" />
-            <button
-              class="absolute inset-y-0 right-0 w-11 flex items-center justify-center text-slate-400 hover:text-primary transition-colors"
-              type="button" (click)="togglePasswordVisibility()">
-              <span class="material-symbols-outlined text-[18px]">{{ showPassword ? 'visibility_off' : 'visibility'
-                }}</span>
+            <button class="password-toggle" type="button" (click)="togglePasswordVisibility()">
+              <span class="material-symbols-outlined">{{ showPassword ? 'visibility_off' : 'visibility' }}</span>
             </button>
           </div>
-          <div *ngIf="passwordInput.invalid && (passwordInput.dirty || passwordInput.touched)"
-            class="text-red-500 text-xs mt-1.5 pl-1 flex items-center gap-1">
-            <span class="material-symbols-outlined text-[14px]">error</span>
+          <div *ngIf="passwordInput.invalid && (passwordInput.dirty || passwordInput.touched)" class="field-error">
+            <span class="material-symbols-outlined">error</span>
             <span *ngIf="passwordInput.errors?.['required']">Password is required.</span>
             <span *ngIf="passwordInput.errors?.['minlength']">Min 6 characters.</span>
           </div>
         </div>
 
         <!-- Spacer -->
-        <div class="h-1"></div>
+        <div class="form-spacer"></div>
 
         <!-- Login Error -->
-        <div *ngIf="loginError"
-          class="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/40 text-red-600 dark:text-red-400 text-xs font-medium">
-          <span class="material-symbols-outlined text-[16px] shrink-0">error</span>
+        <div *ngIf="loginError" class="error-alert">
+          <span class="material-symbols-outlined">error</span>
           <span>{{ loginError }}</span>
         </div>
 
         <!-- Login Button -->
-        <button
-          class="login-btn w-full h-12 text-white font-semibold rounded-xl flex items-center justify-center gap-2 text-sm disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
-          type="submit" [disabled]="!form.valid || loginRequestProcessing">
+        <button class="submit-btn login-btn" type="submit" [disabled]="!form.valid || loginRequestProcessing">
           <ng-container *ngIf="!loginRequestProcessing">
-            <span class="material-symbols-outlined text-[18px]">login</span>
+            <span class="material-symbols-outlined">login</span>
             <span>Sign In</span>
           </ng-container>
           <ng-container *ngIf="loginRequestProcessing">
-            <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
-              viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor"
+            <svg class="spinner" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="spinner-track" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="spinner-fill" fill="currentColor"
                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
               </path>
             </svg>
@@ -285,14 +160,13 @@
       </form>
 
       <!-- Footer link -->
-      <p class="text-center text-xs text-slate-400 dark:text-slate-500 mt-6">
-        Need an account? <a routerLink="../signup"
-          class="text-primary hover:text-primary-hover font-medium transition-colors">Sign Up</a>
+      <p class="card-footer-link">
+        Need an account? <a routerLink="../signup" class="link-primary">Sign Up</a>
       </p>
     </div>
 
     <!-- Footer -->
-    <div class="absolute bottom-6 w-full text-center text-xs text-slate-400 dark:text-slate-600">
+    <div class="page-footer">
       © 2024 FleetFlow Inc. All rights reserved.
     </div>
   </div>

@@ -19,6 +19,7 @@ import { ApiResponse } from '../../../core/models/api-response.model';
   standalone: true,
   imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './signup.component.html',
+  styleUrls: ['./signup.component.scss'],
 })
 export class CustomSignupComponent {
   public readonly availableRoles: RoleOption[] = [

@@ -21,6 +21,7 @@ import { ApiResponse } from '../../../core/models/api-response.model';
   standalone: true,
   imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './login.component.html',
+  styleUrls: ['./login.component.scss'],
 })
 export class CustomLoginComponent implements OnInit {
   public readonly availableRoles: RoleOption[] = [
