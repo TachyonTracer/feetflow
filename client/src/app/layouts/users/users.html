@@ -12,7 +12,7 @@
     </div>
 
     <!-- Add/Edit Form Panel -->
-    <div class="form-panel card" [@if]="isAddingUser() || editingUserId()">
+    <div class="form-panel card" *ngIf="isAddingUser() || editingUserId()">
         <h3 *ngIf="isAddingUser()">Create New User</h3>
         <h3 *ngIf="editingUserId()">Edit User</h3>
 

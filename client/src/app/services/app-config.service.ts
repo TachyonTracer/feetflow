@@ -36,6 +36,7 @@ export class AppConfig {
   public defaultErrorMessage!: string;
   public refreshTokenIntervalInMinutes!: number;
   public privateKey!: string;
+  public apiBasePath!: string;
   public organisationNames!: string[];
   public licenceExpiryDate!: string;
   public api!: {
@@ -47,6 +48,9 @@ export class AppConfig {
         apiPath: string;
       };
       resetPassword: {
+        apiPath: string;
+      };
+      signup: {
         apiPath: string;
       };
     };

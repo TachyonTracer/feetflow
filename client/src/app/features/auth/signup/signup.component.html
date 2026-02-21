@@ -1,37 +1,228 @@
-<div class="col-lg-10 m-auto">
-    <h1 id="title" class="title">Call Manager</h1>
-    <hr>
-    <p class="sub-title">Welcome! Sign up for a new account.</p>
-</div>
+<div class="auth-page">
+    <!-- Left Side: Brand & Visuals -->
+    <div class="brand-panel">
+        <!-- Background Image with Overlay -->
+        <div class="brand-bg">
+            <div class="brand-overlay"></div>
+            <img alt="Logistics warehouse with automated shipping containers and blue lighting" class="brand-img"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuAXzElL20dXOx_NTi5PmgHSoiUcVhACtgz0kAdyW3meDrg32IfQYouJLnnEiYY2Hq9sk98uWpa4fuSkxnWJlhISbqi6XXq8QOt_oSrIIDaZb7ibohLTN8M0Ld9iN3rJj_EIZzaKIZ4uqMtkGNZSyHLWrxdOH8dg7-BaJCPTSAi8y3eHNkcQ5N14ISrMXifuFleAHj6gRDRIkFmB9VnAfJeeJGQ0D48CBMsAjkWRdUAy7WNANUzYRgv6r8v2AfhY31Mn3H98M_I9gR2J" />
+        </div>
+        <!-- Brand Content -->
+        <div class="brand-content">
+            <div class="brand-logo">
+                <div class="brand-logo-icon">
+                    <span class="material-symbols-outlined">local_shipping</span>
+                </div>
+                <h1 class="brand-name">FleetFlow</h1>
+            </div>
+            <h2 class="brand-headline">
+                Start managing your fleet smarter today.
+            </h2>
+            <p class="brand-description">
+                Create your account and unlock powerful tools for real-time fleet tracking,
+                driver management, and AI-driven cost optimization.
+            </p>
+        </div>
+        <!-- Trust Indicators -->
+        <div class="trust-indicators">
+            <div class="trust-avatars">
+                <img alt="User portrait" class="trust-avatar"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuBowGKOW3V1UXwgTgAYUS-yr4Q-mCwaRKbHYb5TX6fC6D1a7gU3H1WY66cfpw2gNA_STfROcjrU_hcQjUhZ15lAk-p3b-Y1iOz74Bp1vseqXIVj1Y5pLIH3ihZn1shxBQ2mV07K1GSVe-VfQnXXli-KXP8UrWRkV2jRiR3p9xnnqNx0emqhF-A7sjN96QU5-QvvD9QwD37TnMaDDpoUM9X5MRTnGHLuYNDKYLMlvYoeCbv9c_Mf-t3u7UVL5nEMIsQsCz1_pjYSka45" />
+                <img alt="User portrait" class="trust-avatar"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuBDguXslcQNZslJXnWxb2m4oc9LpLhOjyNurwMzt0RnFbAXSIAJMgTXk7_MrmLcUvl4yL71RPfAJWnNDiNYqT2v0P_gl7CLL2dHTffowgiUIZm_8Pd5AmY92BtXdUnzAe4v1LMJTNsMxlh6h4g3xBHtxzonluw4LbyNBiIsWs7v_TUIAB878ix1VsjLbrlsRjIi2ryHZXehLCGWOP6vWiTgjagTAReVyX_37A6jRhlo6OoQg0N_UJ7bu_oazQwiYxG2TvB2XIw5mBDC" />
+                <img alt="User portrait" class="trust-avatar"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuBj9BmoC1_6mx8Vb5fMb4by0f7vKOJAm7XzI32T54MOoamIJSjY2rsjN2VYrk90KMZ_mBtXHwyHUvoxlI91MI6MLxcxj10WUR6Xy3HXTS-ijwUiSOPrxxxV_Hy50vdvOlRZieZLuj_kvA0Bw5hjKaDfFrv8bBRAxlsLpaF1L7CIIUKaHvzSR0KzkKYARrBsDQ0xfHswNuHnJSmb4G6kiYubbn0SYllc4BwV5g51V6T8vL7vHkEc3YBIthcP1yfm4xK2PSbKa9RsZ0QA" />
+            </div>
+            <div class="trust-details">
+                <div class="trust-stars">
+                    <span class="material-symbols-outlined">star</span>
+                    <span class="material-symbols-outlined">star</span>
+                    <span class="material-symbols-outlined">star</span>
+                    <span class="material-symbols-outlined">star</span>
+                    <span class="material-symbols-outlined">star</span>
+                </div>
+                <span class="trust-label">Trusted by industry leaders</span>
+            </div>
+        </div>
+    </div>
 
-<form (ngSubmit)="signup()" #form="ngForm" aria-labelledby="title">
-    <div class="col-lg-10 mb-4 ms-auto me-auto">
-        <label class="label" for="input-username">Username:</label>
-        <input class="form-control" [(ngModel)]="user.username" name="username" id="input-username"
-            placeholder="Enter Username" autofocus required>
+    <!-- Right Side: Signup Form -->
+    <div class="form-panel">
+
+        <!-- Decorative blobs -->
+        <div class="blob blob--top"></div>
+        <div class="blob blob--bottom"></div>
+        <div class="blob blob--center"></div>
+
+        <!-- Signup Card -->
+        <div class="auth-card signup-card glass-card">
+
+            <!-- Top accent line -->
+            <div class="accent-line"></div>
+
+            <!-- Top Row: Profile Avatar + Role Dropdown -->
+            <div class="card-header">
+
+                <!-- Profile Avatar with animated ring -->
+                <div class="avatar-wrapper">
+                    <div class="avatar-ring">
+                        <div class="avatar-ring-inner"></div>
+                    </div>
+                    <div class="avatar-circle">
+                        <span class="avatar-initials">{{ profileInitials }}</span>
+                    </div>
+                    <!-- Role badge -->
+                    <div class="avatar-badge">
+                        <span class="material-symbols-outlined">{{ selectedRoleIcon }}</span>
+                    </div>
+                </div>
+
+                <!-- Role Dropdown -->
+                <div class="role-dropdown-wrapper">
+                    <div class="role-select-wrapper">
+                        <select class="role-select" [(ngModel)]="user.role" name="role"
+                            (ngModelChange)="setRole($event)">
+                            <option *ngFor="let roleOption of availableRoles" [value]="roleOption.value">{{
+                                roleOption.label }}
+                            </option>
+                        </select>
+                        <div class="role-select-icon">
+                            <span class="material-symbols-outlined">unfold_more</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Label showing selected role -->
+            <p class="role-label">
+                Create your <span class="role-label-value">{{ selectedRoleLabel }}</span> account
+            </p>
+
+            <!-- Success Message -->
+            <div *ngIf="signupSuccess" class="success-alert">
+                <span class="material-symbols-outlined">check_circle</span>
+                <span>Account created! Redirecting to login...</span>
+            </div>
+
+            <!-- Signup Form -->
+            <form *ngIf="!signupSuccess" (ngSubmit)="signup()" #form="ngForm" class="auth-form">
+                <!-- Full Name -->
+                <div class="form-group">
+                    <div class="input-wrapper">
+                        <span class="input-icon material-symbols-outlined">person</span>
+                        <input #fullNameInput="ngModel" class="form-input input-focus-glow"
+                            [class.input-error]="fullNameInput.invalid && (fullNameInput.dirty || fullNameInput.touched)"
+                            placeholder="Full Name *" type="text" [(ngModel)]="user.fullName" name="fullName" required
+                            minlength="2" />
+                    </div>
+                    <div *ngIf="fullNameInput.invalid && (fullNameInput.dirty || fullNameInput.touched)"
+                        class="field-error">
+                        <span class="material-symbols-outlined">error</span>
+                        <span *ngIf="fullNameInput.errors?.['required']">Full name is required.</span>
+                        <span *ngIf="fullNameInput.errors?.['minlength']">Min 2 characters.</span>
+                    </div>
+                </div>
+
+                <!-- Email -->
+                <div class="form-group">
+                    <div class="input-wrapper">
+                        <span class="input-icon material-symbols-outlined">mail</span>
+                        <input #emailInput="ngModel" class="form-input input-focus-glow"
+                            [class.input-error]="emailInput.invalid && (emailInput.dirty || emailInput.touched)"
+                            placeholder="Email Address *" type="email" [(ngModel)]="user.email" name="email" required
+                            email />
+                    </div>
+                    <div *ngIf="emailInput.invalid && (emailInput.dirty || emailInput.touched)" class="field-error">
+                        <span class="material-symbols-outlined">error</span>
+                        <span *ngIf="emailInput.errors?.['required']">Email is required.</span>
+                        <span *ngIf="emailInput.errors?.['email']">Enter a valid email.</span>
+                    </div>
+                </div>
+
+                <!-- Password -->
+                <div class="form-group">
+                    <div class="input-wrapper">
+                        <span class="input-icon material-symbols-outlined">lock</span>
+                        <input #passwordInput="ngModel" class="form-input input-focus-glow"
+                            [class.input-error]="passwordInput.invalid && (passwordInput.dirty || passwordInput.touched)"
+                            placeholder="Password *" [type]="showPassword ? 'text' : 'password'"
+                            [(ngModel)]="user.password" name="password" required minlength="6" maxlength="50" />
+                        <button class="password-toggle" type="button" (click)="togglePasswordVisibility()">
+                            <span class="material-symbols-outlined">{{ showPassword ? 'visibility_off' : 'visibility'
+                                }}</span>
+                        </button>
+                    </div>
+                    <div *ngIf="passwordInput.invalid && (passwordInput.dirty || passwordInput.touched)"
+                        class="field-error">
+                        <span class="material-symbols-outlined">error</span>
+                        <span *ngIf="passwordInput.errors?.['required']">Password is required.</span>
+                        <span *ngIf="passwordInput.errors?.['minlength']">Min 6 characters.</span>
+                    </div>
+                </div>
+
+                <!-- Confirm Password -->
+                <div class="form-group">
+                    <div class="input-wrapper">
+                        <span class="input-icon material-symbols-outlined">lock_reset</span>
+                        <input #confirmPasswordInput="ngModel" class="form-input input-focus-glow"
+                            [class.input-error]="(confirmPasswordInput.dirty || confirmPasswordInput.touched) && (confirmPasswordInput.invalid || !passwordsMatch)"
+                            placeholder="Confirm Password *" [type]="showConfirmPassword ? 'text' : 'password'"
+                            [(ngModel)]="user.confirmPassword" name="confirmPassword" required minlength="6"
+                            maxlength="50" />
+                        <button class="password-toggle" type="button" (click)="toggleConfirmPasswordVisibility()">
+                            <span class="material-symbols-outlined">{{ showConfirmPassword ? 'visibility_off' :
+                                'visibility' }}</span>
+                        </button>
+                    </div>
+                    <div *ngIf="(confirmPasswordInput.dirty || confirmPasswordInput.touched) && (confirmPasswordInput.invalid || !passwordsMatch)"
+                        class="field-error">
+                        <span class="material-symbols-outlined">error</span>
+                        <span *ngIf="confirmPasswordInput.errors?.['required']">Confirm your password.</span>
+                        <span *ngIf="confirmPasswordInput.errors?.['minlength']">Min 6 characters.</span>
+                        <span
+                            *ngIf="!confirmPasswordInput.errors?.['required'] && !confirmPasswordInput.errors?.['minlength'] && !passwordsMatch">Passwords
+                            do not match.</span>
+                    </div>
+                </div>
+
+                <!-- Spacer -->
+                <div class="form-spacer"></div>
+
+                <!-- Signup Error -->
+                <div *ngIf="signupError" class="error-alert">
+                    <span class="material-symbols-outlined">error</span>
+                    <span>{{ signupError }}</span>
+                </div>
+
+                <!-- Signup Button -->
+                <button class="submit-btn signup-btn" type="submit"
+                    [disabled]="!form.valid || !passwordsMatch || signupRequestProcessing">
+                    <ng-container *ngIf="!signupRequestProcessing">
+                        <span class="material-symbols-outlined">person_add</span>
+                        <span>Create Account</span>
+                    </ng-container>
+                    <ng-container *ngIf="signupRequestProcessing">
+                        <svg class="spinner" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="spinner-track" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                            </circle>
+                            <path class="spinner-fill" fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                            </path>
+                        </svg>
+                        <span>Creating account...</span>
+                    </ng-container>
+                </button>
+            </form>
+
+            <!-- Footer link -->
+            <p class="card-footer-link">
+                Already have an account? <a routerLink="../login" class="link-primary">Sign In</a>
+            </p>
+        </div>
+
+        <!-- Footer -->
+        <div class="page-footer">
+            © 2024 FleetFlow Inc. All rights reserved.
+        </div>
     </div>
-    <div class="col-lg-10 mb-4 ms-auto me-auto">
-        <label class="label" for="input-email">Email:</label>
-        <input class="form-control" [(ngModel)]="user.email" name="email" id="input-email"
-            placeholder="Enter Email Address" type="email" required>
-    </div>
-    <div class="col-lg-10 mb-4 ms-auto me-auto">
-        <label class="label" for="input-password">Password:</label>
-        <input class="form-control" [(ngModel)]="user.password" name="password" type="password" id="input-password"
-            placeholder="Enter Password" required minlength="6" maxlength="50">
-    </div>
-    <div class="col-lg-10 mb-4 ms-auto me-auto">
-        <label class="label" for="input-re-password">Repeat Password:</label>
-        <input class="form-control" [(ngModel)]="user.confirmPassword" name="confirmPassword" type="password"
-            id="input-re-password" placeholder="Confirm Password" required minlength="6" maxlength="50">
-    </div>
-    <div class="col-lg-10 ms-auto me-auto">
-        <button class="btn btn-primary" type="submit"
-            [disabled]="!form.valid || user.password !== user.confirmPassword">
-            Sign Up
-        </button>
-    </div>
-    <div class="col-lg-10 mt-3 ms-auto me-auto text-center">
-        <p>Already have an account? <a routerLink="../login">Log In</a></p>
-    </div>
-</form>
+</div>
