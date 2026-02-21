@@ -33,3 +33,4 @@ bin/*
 
 # NuGet Packages
 *.nupkg
+client/public/*.html
