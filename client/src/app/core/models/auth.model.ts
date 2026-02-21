@@ -37,7 +37,6 @@ export interface UserDetails {
 
 export interface RegisterRequest {
   fullName: string;
-  username: string;
   email: string;
   password: string;
   role: LoginRole;
@@ -45,7 +44,6 @@ export interface RegisterRequest {
 
 export interface SignupFormData {
   fullName: string;
-  username: string;
   email: string;
   password: string;
   confirmPassword: string;

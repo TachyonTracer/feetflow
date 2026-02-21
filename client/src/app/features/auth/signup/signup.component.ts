@@ -31,7 +31,6 @@ export class CustomSignupComponent {
 
   public user: SignupFormData = {
     fullName: '',
-    username: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -102,7 +101,6 @@ export class CustomSignupComponent {
 
     const payload: RegisterRequest = {
       fullName: this.user.fullName,
-      username: this.user.username,
       email: this.user.email,
       password: this.user.password,
       role: this.user.role,
