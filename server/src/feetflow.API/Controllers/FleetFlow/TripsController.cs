@@ -16,9 +16,9 @@ public class TripsController : ControllerBase
     public TripsController(IMediator mediator) => _mediator = mediator;
 
     [HttpGet]
-    public async Task<IActionResult> GetTrips([FromQuery] int page = 1, [FromQuery] int pageSize = 20, [FromQuery] TripStatus? status = null, [FromQuery] Guid? vehicleId = null, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> GetTrips([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10, [FromQuery] TripStatus? status = null, [FromQuery] Guid? vehicleId = null, CancellationToken cancellationToken = default)
     {
-        var result = await _mediator.Send(new GetTripsQuery(page, pageSize, status, vehicleId), cancellationToken);
+        var result = await _mediator.Send(new GetTripsQuery(pageNumber, pageSize, status, vehicleId), cancellationToken);
         return result.IsSuccess ? Ok(result.Value) : StatusCode(result.StatusCode, new ProblemDetails { Status = result.StatusCode, Detail = result.Error });
     }
 

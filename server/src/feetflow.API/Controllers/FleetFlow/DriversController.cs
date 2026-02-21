@@ -15,9 +15,9 @@ public class DriversController : ControllerBase
     public DriversController(IMediator mediator) => _mediator = mediator;
 
     [HttpGet]
-    public async Task<IActionResult> GetDrivers([FromQuery] bool includeDeleted = false, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> GetDrivers([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10, [FromQuery] bool includeDeleted = false, CancellationToken cancellationToken = default)
     {
-        var result = await _mediator.Send(new GetDriversQuery(includeDeleted), cancellationToken);
+        var result = await _mediator.Send(new GetDriversPagedQuery(pageNumber, pageSize, includeDeleted), cancellationToken);
         return result.IsSuccess ? Ok(result.Value) : StatusCode(result.StatusCode, new ProblemDetails { Status = result.StatusCode, Detail = result.Error });
     }
 

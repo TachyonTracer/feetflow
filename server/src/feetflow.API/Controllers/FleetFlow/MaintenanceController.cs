@@ -15,9 +15,9 @@ public class MaintenanceController : ControllerBase
     public MaintenanceController(IMediator mediator) => _mediator = mediator;
 
     [HttpGet]
-    public async Task<IActionResult> GetLogs([FromQuery] int page = 1, [FromQuery] int pageSize = 20, [FromQuery] bool? isClosed = null, [FromQuery] Guid? vehicleId = null, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> GetLogs([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10, [FromQuery] bool? isClosed = null, [FromQuery] Guid? vehicleId = null, CancellationToken cancellationToken = default)
     {
-        var result = await _mediator.Send(new GetMaintenanceLogsQuery(page, pageSize, isClosed, vehicleId), cancellationToken);
+        var result = await _mediator.Send(new GetMaintenanceLogsQuery(pageNumber, pageSize, isClosed, vehicleId), cancellationToken);
         return result.IsSuccess ? Ok(result.Value) : StatusCode(result.StatusCode, new ProblemDetails { Status = result.StatusCode, Detail = result.Error });
     }
 

@@ -17,9 +17,9 @@ public class VehiclesController : ControllerBase
     public VehiclesController(IMediator mediator) => _mediator = mediator;
 
     [HttpGet]
-    public async Task<IActionResult> GetVehicles([FromQuery] int page = 1, [FromQuery] int pageSize = 20, [FromQuery] VehicleStatus? status = null, [FromQuery] bool includeDeleted = false, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> GetVehicles([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10, [FromQuery] VehicleStatus? status = null, [FromQuery] bool includeDeleted = false, CancellationToken cancellationToken = default)
     {
-        var result = await _mediator.Send(new GetVehiclesQuery(page, pageSize, status, includeDeleted), cancellationToken);
+        var result = await _mediator.Send(new GetVehiclesQuery(pageNumber, pageSize, status, includeDeleted), cancellationToken);
         return ToActionResult(result);
     }
 

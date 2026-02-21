@@ -26,18 +26,45 @@
                 </div>
                 <!-- Controls Group -->
                 <div class="filter-actions">
-                    <select class="btn-outline form-select-style" [(ngModel)]="currentStatus">
-                        <option value="">All Statuses</option>
-                        <option value="Completed">Completed</option>
-                        <option value="In Progress">In Progress</option>
-                    </select>
-                    <select class="btn-outline form-select-style" [(ngModel)]="sortBy">
-                        <option value="">Sort By...</option>
-                        <option value="date-desc">Date (Newest First)</option>
-                        <option value="date-asc">Date (Oldest First)</option>
-                        <option value="cost-desc">Cost (High to Low)</option>
-                        <option value="cost-asc">Cost (Low to High)</option>
-                    </select>
+                    <!-- Status Dropdown -->
+                    <div class="custom-select-container status-select">
+                        <div class="selected-trigger" (click)="toggleStatusDropdown($event)">
+                            <span class="selected-text">{{ currentStatusLabel }}</span>
+                            <span class="material-symbols-outlined icon-chevron"
+                                [class.rotated]="isStatusDropdownOpen()">expand_more</span>
+                        </div>
+
+                        <div class="dropdown-menu" *ngIf="isStatusDropdownOpen()">
+                            <ul class="options-list">
+                                <li class="option-item" *ngFor="let opt of statusOptions"
+                                    [class.active]="currentStatus === opt.value" (click)="selectStatus(opt.value)">
+                                    <span class="vehicle-name">{{ opt.label }}</span>
+                                    <span class="material-symbols-outlined check-icon"
+                                        *ngIf="currentStatus === opt.value">check</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Sort Dropdown -->
+                    <div class="custom-select-container sort-select">
+                        <div class="selected-trigger" (click)="toggleSortDropdown($event)">
+                            <span class="selected-text" [class.placeholder]="!sortBy">{{ currentSortLabel }}</span>
+                            <span class="material-symbols-outlined icon-chevron"
+                                [class.rotated]="isSortDropdownOpen()">expand_more</span>
+                        </div>
+
+                        <div class="dropdown-menu" *ngIf="isSortDropdownOpen()">
+                            <ul class="options-list">
+                                <li class="option-item" *ngFor="let opt of sortOptions"
+                                    [class.active]="sortBy === opt.value" (click)="selectSort(opt.value)">
+                                    <span class="vehicle-name">{{ opt.label }}</span>
+                                    <span class="material-symbols-outlined check-icon"
+                                        *ngIf="sortBy === opt.value">check</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -107,7 +134,16 @@
 
             <!-- Pagination -->
             <div class="table-footer" *ngIf="!isLoading">
-                <span class="pagination-text">Showing {{ filteredLogs.length }} logs</span>
+                <span class="pagination-text">Showing {{ logs.length }} of {{ totalCount }} logs</span>
+                <div class="pagination">
+                    <button class="page-nav" (click)="changePage(pageNumber - 1)" [disabled]="pageNumber <= 1">
+                        <span class="material-symbols-outlined">chevron_left</span>
+                    </button>
+                    <span class="page-info">Page {{ pageNumber }} of {{ totalPages || 1 }}</span>
+                    <button class="page-nav" (click)="changePage(pageNumber + 1)" [disabled]="pageNumber >= totalPages || totalPages === 0">
+                        <span class="material-symbols-outlined">chevron_right</span>
+                    </button>
+                </div>
             </div>
         </div>
 

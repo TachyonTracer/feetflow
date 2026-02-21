@@ -16,18 +16,11 @@
                 <input placeholder="Search vehicles by ID, make, or model..." type="text" [(ngModel)]="searchTerm" />
             </div>
             <div class="filter-actions">
-                <select class="btn-outline" [(ngModel)]="currentStatus">
-                    <option value="">All Statuses</option>
-                    <option value="Available">Available</option>
-                    <option value="InShop">In Shop</option>
-                    <option value="OnTrip">On Trip</option>
-                    <option value="Retired">Retired</option>
-                </select>
-                <select class="btn-outline" [(ngModel)]="sortBy">
-                    <option value="">Sort By...</option>
-                    <option value="capacity">Capacity (High to Low)</option>
-                    <option value="odometer">Odometer (High to Low)</option>
-                </select>
+                <app-searchable-select [options]="statusOptions" [ngModel]="currentStatus"
+                    (ngModelChange)="currentStatus = $event; onFiltersChanged()">
+                </app-searchable-select>
+                <app-searchable-select [options]="sortOptions" [(ngModel)]="sortBy">
+                </app-searchable-select>
             </div>
         </div>
 
@@ -50,17 +43,18 @@
                             <th>Type</th>
                             <th>Capacity</th>
                             <th>Odometer</th>
+                            <th>Acquisition Cost</th>
                             <th class="col-actions">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         <ng-container *ngIf="isLoading; else vehicleList">
                             <tr>
-                                <td colspan="8" style="text-align: center; padding: 2rem;">Loading vehicles...</td>
+                                <td colspan="9" style="text-align: center; padding: 2rem;">Loading vehicles...</td>
                             </tr>
                         </ng-container>
                         <ng-template #vehicleList>
-                            <tr *ngFor="let v of vehicles; let i = index">
+                            <tr *ngFor="let v of displayVehicles; let i = index">
                                 <td class="td-sr">{{ v.id.substring(0,8) | uppercase }}</td>
                                 <td>{{ v.licensePlate || 'N/A' }}</td>
                                 <td>
@@ -77,45 +71,53 @@
                                 <td><span class="type-badge">{{ v.vehicleType }}</span></td>
                                 <td class="td-capacity">{{ v.maxCapacityKg | number:'1.0-0' }} kg</td>
                                 <td class="td-odometer">{{ v.odometerKm | number:'1.0-0' }} km</td>
+                                <td class="td-cost">{{ v.acquisitionCost | inrCurrency }}</td>
                                 <td class="td-actions">
                                     <div class="action-group">
-                                        <button class="action-btn" title="Retire vehicle" (click)="retireVehicle(v.id)"
+                                        <button class="ff-action-icon-btn" title="Retire vehicle" (click)="retireVehicle(v.id)"
                                             [disabled]="v.status === 'Retired'">
                                             <span class="material-symbols-outlined">block</span>
                                         </button>
-                                        <button class="action-btn danger" title="Delete vehicle"
+                                        <button class="ff-action-icon-btn danger" title="Delete vehicle"
                                             (click)="deleteVehicle(v.id)">
                                             <span class="material-symbols-outlined">delete</span>
                                         </button>
                                     </div>
                                 </td>
                             </tr>
-                            <tr *ngIf="vehicles.length === 0">
-                                <td colspan="8" style="text-align: center; padding: 2rem;">No vehicles found.</td>
+                            <tr *ngIf="displayVehicles.length === 0">
+                                <td colspan="9" style="text-align: center; padding: 2rem;">No vehicles found.</td>
                             </tr>
                         </ng-template>
                     </tbody>
                 </table>
             </div>
-            <div class="table-footer">
-                <p *ngIf="totalCount > 0">Showing <span>{{ (pageNumber - 1) * pageSize + 1 }} to {{ endCount }}</span>
-                    of <span>{{ totalCount }}</span> vehicles</p>
-                <p *ngIf="totalCount === 0">Showing 0 to 0 of 0 vehicles</p>
-                <div class="pagination">
-                    <button class="page-nav" (click)="changePage(pageNumber - 1)"
-                        [disabled]="pageNumber === 1 || totalPages === 0"><span
-                            class="material-symbols-outlined">chevron_left</span></button>
-                    <button *ngFor="let p of getPages()" class="page-num" [class.active]="p === pageNumber"
+            <div class="table-footer ff-table-footer" *ngIf="!isLoading">
+                <div class="pagination-left">
+                    <span class="ff-count-text" *ngIf="totalCount > 0">
+                        Showing {{ (pageNumber - 1) * pageSize + 1 }}-{{ endCount }} of {{ totalCount }} vehicles
+                    </span>
+                    <span class="ff-count-text" *ngIf="totalCount === 0">No vehicles</span>
+                    <app-searchable-select class="ff-page-size" [options]="pageSizeOptionsForSelect"
+                        [ngModel]="pageSizeModel" (ngModelChange)="onPageSizeChange($event)">
+                    </app-searchable-select>
+                </div>
+                <div class="ff-pagination">
+                    <button class="ff-page-button" (click)="changePage(pageNumber - 1)" [disabled]="pageNumber <= 1">
+                        <span class="material-symbols-outlined">chevron_left</span>
+                    </button>
+                    <button *ngFor="let p of getPages()" class="ff-page-button" [class.active]="p === pageNumber"
                         (click)="changePage(p)">{{ p }}</button>
-                    <button class="page-nav" (click)="changePage(pageNumber + 1)"
-                        [disabled]="pageNumber === totalPages || totalPages === 0"><span
-                            class="material-symbols-outlined">chevron_right</span></button>
+                    <button class="ff-page-button" (click)="changePage(pageNumber + 1)"
+                        [disabled]="pageNumber >= totalPages || totalPages === 0">
+                        <span class="material-symbols-outlined">chevron_right</span>
+                    </button>
                 </div>
             </div>
         </div>
     </main>
 
     <footer class="bottom-footer">
-        <p>© 2024 Fleet Flow Solutions Inc. System Status: All systems operational.</p>
+        <p>© 2026 Fleet Flow Solutions Inc. System Status: All systems operational.</p>
     </footer>
 </div>

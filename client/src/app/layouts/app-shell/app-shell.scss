@@ -201,6 +201,42 @@ $transition-speed: 0.3s;
   padding: 16px;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
   background: rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.user-info-block {
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #e2e8f0;
+  font-size: 0.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  .user-name {
+    font-weight: 600;
+    color: #f1f5f9;
+  }
+  .user-email {
+    color: #94a3b8;
+    word-break: break-all;
+  }
+  .user-role {
+    color: #64748b;
+    text-transform: capitalize;
+  }
+  &.loading {
+    color: #94a3b8;
+  }
+}
+
+.sidebar-collapsed .user-info-block .user-name,
+.sidebar-collapsed .user-info-block .user-email,
+.sidebar-collapsed .user-info-block .user-role {
+  display: none;
 }
 
 .logout-btn {

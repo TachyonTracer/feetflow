@@ -16,7 +16,15 @@
             <div class="search-box">
                 <span class="material-symbols-outlined search-icon">search</span>
                 <input class="search-input" placeholder="Search drivers..." type="text" [(ngModel)]="searchTerm"
-                    (ngModelChange)="filterDrivers()" />
+                    (ngModelChange)="onFiltersChanged()" />
+            </div>
+            <div class="action-filters">
+                <app-searchable-select [options]="statusOptions" [ngModel]="currentStatus"
+                    (ngModelChange)="currentStatus = $event; onFiltersChanged()">
+                </app-searchable-select>
+                <app-searchable-select [options]="sortOptions" [ngModel]="sortBy"
+                    (ngModelChange)="sortBy = $event; onFiltersChanged()">
+                </app-searchable-select>
             </div>
         </div>
 
@@ -38,12 +46,12 @@
                         <tr>
                             <td colspan="6" class="text-center">Loading drivers...</td>
                         </tr>
-                        } @else if (filteredDrivers().length === 0) {
+                        } @else if (paginatedDrivers.length === 0) {
                         <tr>
                             <td colspan="6" class="text-center">No drivers found.</td>
                         </tr>
                         } @else {
-                        @for (driver of filteredDrivers(); track driver.id) {
+                        @for (driver of paginatedDrivers; track driver.id) {
                         <tr>
                             <td>
                                 <div class="driver-info">
@@ -81,7 +89,7 @@
                             </td>
                             <td class="text-right">
                                 @if (driver.status !== 'Suspended') {
-                                <button class="btn-action btn-suspend" (click)="suspendDriver(driver.id)"
+                                <button class="ff-action-icon-btn danger" (click)="suspendDriver(driver.id)"
                                     title="Suspend driver">
                                     <span class="material-symbols-outlined">block</span>
                                 </button>
@@ -94,9 +102,26 @@
                 </table>
             </div>
 
-            <div class="table-footer">
-                <span class="pagination-text">Showing {{ filteredDrivers().length }} of {{ drivers().length }}
-                    drivers</span>
+            <div class="table-footer ff-table-footer" *ngIf="!isLoading()">
+                <div class="pagination-left">
+                    <span class="ff-count-text">Showing {{ startRecord }}-{{ endRecord }} of {{ totalCount }} drivers</span>
+                    <app-searchable-select class="ff-page-size" [options]="pageSizeOptions"
+                        [ngModel]="pageSize.toString()" (ngModelChange)="onPageSizeChanged($event)">
+                    </app-searchable-select>
+                </div>
+                <div class="ff-pagination">
+                    <button class="ff-page-button" (click)="changePage(pageNumber - 1)" [disabled]="pageNumber <= 1">
+                        <span class="material-symbols-outlined">chevron_left</span>
+                    </button>
+                    <button *ngFor="let page of getPageNumbers()" class="ff-page-button"
+                        [class.active]="page === pageNumber" (click)="changePage(page)">
+                        {{ page }}
+                    </button>
+                    <button class="ff-page-button" (click)="changePage(pageNumber + 1)"
+                        [disabled]="pageNumber >= totalPages || totalPages === 0">
+                        <span class="material-symbols-outlined">chevron_right</span>
+                    </button>
+                </div>
             </div>
         </div>
     </main>
@@ -129,14 +154,15 @@
             <div class="form-row">
                 <div class="form-group">
                     <label class="form-label">License Category *</label>
-                    <select class="form-select" [(ngModel)]="newDriver.licenseCategory">
-                        <option value="">Select Category</option>
-                        <option value="A">A - Motorcycle</option>
-                        <option value="B">B - Car</option>
-                        <option value="C">C - Truck</option>
-                        <option value="D">D - Bus</option>
-                        <option value="CE">CE - Heavy Truck</option>
-                    </select>
+                    <app-searchable-select [options]="[
+                        { value: '', label: 'Select Category' },
+                        { value: 'A', label: 'A - Motorcycle' },
+                        { value: 'B', label: 'B - Car' },
+                        { value: 'C', label: 'C - Truck' },
+                        { value: 'D', label: 'D - Bus' },
+                        { value: 'CE', label: 'CE - Heavy Truck' }
+                    ]" [(ngModel)]="newDriver.licenseCategory" [searchPlaceholder]="'Search license category...'">
+                    </app-searchable-select>
                 </div>
                 <div class="form-group">
                     <label class="form-label">License Expiry *</label>

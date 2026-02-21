@@ -4,23 +4,50 @@ import { FormsModule } from '@angular/forms';
 import { HeaderComponent } from '../../shared/components/header/header.component';
 import { DriversApiService } from '../../services/controllers/drivers-api.service';
 import { Driver, CreateDriverRequest } from '../../core/models/driver.model';
+import {
+  SearchableSelectComponent,
+  SearchableSelectOption,
+} from '../../shared/components/searchable-select/searchable-select.component';
 
 @Component({
   selector: 'app-view-driver-performance',
   standalone: true,
-  imports: [CommonModule, FormsModule, HeaderComponent],
+  imports: [CommonModule, FormsModule, HeaderComponent, SearchableSelectComponent],
   templateUrl: './view-driver-performance.html',
   styleUrl: './view-driver-performance.scss',
 })
 export class ViewDriverPerformance implements OnInit {
   drivers = signal<Driver[]>([]);
-  filteredDrivers = signal<Driver[]>([]);
   isLoading = signal(true);
   searchTerm = '';
+  currentStatus = '';
+  sortBy = '';
 
   showCreateModal = signal(false);
   isSubmitting = signal(false);
   formError = signal('');
+
+  readonly statusOptions: SearchableSelectOption[] = [
+    { value: '', label: 'All Statuses' },
+    { value: 'OnDuty', label: 'On Duty' },
+    { value: 'OnTrip', label: 'On Trip' },
+    { value: 'OffDuty', label: 'Off Duty' },
+    { value: 'Suspended', label: 'Suspended' },
+  ];
+
+  readonly sortOptions: SearchableSelectOption[] = [
+    { value: '', label: 'Sort By' },
+    { value: 'name', label: 'Name' },
+    { value: 'licenseExpiry', label: 'License Expiry' },
+    { value: 'status', label: 'Status' },
+    { value: 'createdAt', label: 'Created Date' },
+  ];
+
+  readonly pageSizeOptions: SearchableSelectOption[] = [
+    { value: '10', label: '10 per page' },
+    { value: '25', label: '25 per page' },
+    { value: '50', label: '50 per page' },
+  ];
 
   newDriver: CreateDriverRequest = {
     fullName: '',
@@ -28,6 +55,11 @@ export class ViewDriverPerformance implements OnInit {
     licenseCategory: '',
     licenseExpiry: '',
   };
+
+  pageNumber = 1;
+  pageSize = 10;
+  totalCount = 0;
+  totalPages = 1;
 
   constructor(private driversApiService: DriversApiService) {}
 
@@ -37,10 +69,10 @@ export class ViewDriverPerformance implements OnInit {
 
   loadDrivers(): void {
     this.isLoading.set(true);
-    this.driversApiService.getDrivers().subscribe({
-      next: (data) => {
-        this.drivers.set(data);
-        this.filteredDrivers.set(data);
+    this.driversApiService.getDrivers(1, 500).subscribe({
+      next: (res) => {
+        this.drivers.set(res.items ?? []);
+        this.recalculatePagination();
         this.isLoading.set(false);
       },
       error: (err) => {
@@ -50,18 +82,92 @@ export class ViewDriverPerformance implements OnInit {
     });
   }
 
-  filterDrivers(): void {
-    const term = this.searchTerm.toLowerCase();
-    if (!term) {
-      this.filteredDrivers.set(this.drivers());
-      return;
+  get filteredDrivers(): Driver[] {
+    const searchTerm = this.searchTerm.toLowerCase().trim();
+    let list = this.drivers();
+
+    if (this.currentStatus) {
+      list = list.filter((driver) => driver.status === this.currentStatus);
     }
-    this.filteredDrivers.set(
-      this.drivers().filter(
-        (d) =>
-          d.fullName.toLowerCase().includes(term) || d.licenseNumber.toLowerCase().includes(term),
-      ),
-    );
+
+    if (searchTerm) {
+      list = list.filter(
+        (driver) =>
+          driver.fullName.toLowerCase().includes(searchTerm) ||
+          driver.licenseNumber.toLowerCase().includes(searchTerm) ||
+          driver.licenseCategory.toLowerCase().includes(searchTerm),
+      );
+    }
+
+    if (this.sortBy) {
+      list = [...list].sort((leftDriver, rightDriver) => {
+        if (this.sortBy === 'name') return leftDriver.fullName.localeCompare(rightDriver.fullName);
+        if (this.sortBy === 'status') return leftDriver.status.localeCompare(rightDriver.status);
+        if (this.sortBy === 'licenseExpiry') {
+          return (
+            new Date(leftDriver.licenseExpiry).getTime() - new Date(rightDriver.licenseExpiry).getTime()
+          );
+        }
+        if (this.sortBy === 'createdAt') {
+          return new Date(rightDriver.createdAt).getTime() - new Date(leftDriver.createdAt).getTime();
+        }
+        return 0;
+      });
+    }
+
+    return list;
+  }
+
+  get paginatedDrivers(): Driver[] {
+    const startIndex = (this.pageNumber - 1) * this.pageSize;
+    return this.filteredDrivers.slice(startIndex, startIndex + this.pageSize);
+  }
+
+  get startRecord(): number {
+    if (this.totalCount === 0) return 0;
+    return (this.pageNumber - 1) * this.pageSize + 1;
+  }
+
+  get endRecord(): number {
+    if (this.totalCount === 0) return 0;
+    return Math.min(this.pageNumber * this.pageSize, this.totalCount);
+  }
+
+  changePage(page: number): void {
+    if (page < 1 || page > this.totalPages) return;
+    this.pageNumber = page;
+  }
+
+  onFiltersChanged(): void {
+    this.pageNumber = 1;
+    this.recalculatePagination();
+  }
+
+  onPageSizeChanged(pageSize: string): void {
+    const parsedPageSize = Number(pageSize);
+    if (!Number.isFinite(parsedPageSize) || parsedPageSize <= 0) return;
+    this.pageSize = parsedPageSize;
+    this.pageNumber = 1;
+    this.recalculatePagination();
+  }
+
+  getPageNumbers(): number[] {
+    const pages: number[] = [];
+    const maxVisiblePages = 5;
+    const startPage = Math.max(1, this.pageNumber - 2);
+    const endPage = Math.min(this.totalPages, startPage + maxVisiblePages - 1);
+    for (let page = startPage; page <= endPage; page += 1) {
+      pages.push(page);
+    }
+    return pages;
+  }
+
+  private recalculatePagination(): void {
+    this.totalCount = this.filteredDrivers.length;
+    this.totalPages = Math.max(1, Math.ceil(this.totalCount / this.pageSize));
+    if (this.pageNumber > this.totalPages) {
+      this.pageNumber = this.totalPages;
+    }
   }
 
   isLicenseExpiringSoon(expiryDate: string): boolean {

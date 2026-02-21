@@ -29,18 +29,12 @@
                                 type="text" [(ngModel)]="searchTerm" />
                         </div>
                         <div class="filter-actions">
-                            <select class="btn-outline form-select-style" [(ngModel)]="currentStatus">
-                                <option value="">All Statuses</option>
-                                <option value="OnTrip">On Trip</option>
-                                <option value="Delivered">Delivered</option>
-                                <option value="Pending">Pending</option>
-                                <option value="Cancelled">Cancelled</option>
-                            </select>
-                            <select class="btn-outline form-select-style" [(ngModel)]="sortBy">
-                                <option value="">Sort By...</option>
-                                <option value="status">Status</option>
-                                <option value="id">Trip ID</option>
-                            </select>
+                            <app-searchable-select [options]="statusOptions" [ngModel]="currentStatus"
+                                (ngModelChange)="currentStatus = $event; onFilterChanged()">
+                            </app-searchable-select>
+                            <app-searchable-select [options]="sortOptions" [ngModel]="sortBy"
+                                (ngModelChange)="sortBy = $event; onSortChanged()">
+                            </app-searchable-select>
                         </div>
                     </div>
                 </section>
@@ -60,16 +54,18 @@
                                         <th>Vehicle</th>
                                         <th>Driver</th>
                                         <th>Cargo (kg)</th>
+                                        <th>Revenue</th>
                                         <th>Status</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr *ngFor="let trip of trips">
+                                    <tr *ngFor="let trip of filteredTrips">
                                         <td class="td-id">{{ trip.id.substring(0,8) | uppercase }}</td>
                                         <td class="td-text">{{ getVehicleName(trip.vehicleId) }}</td>
                                         <td class="td-text">{{ getDriverName(trip.driverId) }}</td>
                                         <td class="td-text">{{ trip.cargoWeightKg | number:'1.0-0' }}</td>
+                                        <td class="td-text">{{ trip.revenue | inrCurrency }}</td>
                                         <td>
                                             <span class="status-badge" [ngClass]="{
                                                 'status-warning': trip.status === 'Draft',
@@ -81,29 +77,49 @@
                                             </span>
                                         </td>
                                         <td class="td-actions">
-                                            <button *ngIf="trip.status === 'Draft'" class="btn-outline btn-sm"
+                                            <button *ngIf="trip.status === 'Draft'" class="ff-action-icon-btn"
                                                 (click)="dispatchTrip(trip.id)" title="Dispatch">
                                                 <span class="material-symbols-outlined">send</span>
                                             </button>
-                                            <button *ngIf="trip.status === 'Dispatched'" class="btn-outline btn-sm"
+                                            <button *ngIf="trip.status === 'Dispatched'" class="ff-action-icon-btn"
                                                 (click)="openCompleteModal(trip.id)" title="Complete">
                                                 <span class="material-symbols-outlined">check_circle</span>
                                             </button>
                                             <button *ngIf="trip.status === 'Draft' || trip.status === 'Dispatched'"
-                                                class="btn-outline btn-sm" (click)="cancelTrip(trip.id)" title="Cancel">
+                                                class="ff-action-icon-btn danger" (click)="cancelTrip(trip.id)"
+                                                title="Cancel">
                                                 <span class="material-symbols-outlined">cancel</span>
                                             </button>
                                         </td>
                                     </tr>
-                                    <tr *ngIf="trips.length === 0 && !isLoadingLogs">
-                                        <td colspan="6" style="text-align: center; padding: 2rem;">No active trips
+                                    <tr *ngIf="filteredTrips.length === 0 && !isLoadingLogs">
+                                        <td colspan="7" style="text-align: center; padding: 2rem;">No active trips
                                             found.</td>
                                     </tr>
                                     <tr *ngIf="isLoadingLogs">
-                                        <td colspan="6" style="text-align: center; padding: 2rem;">Loading trips...</td>
+                                        <td colspan="7" style="text-align: center; padding: 2rem;">Loading trips...</td>
                                     </tr>
                                 </tbody>
                             </table>
+                        </div>
+                        <div class="table-footer ff-table-footer" *ngIf="!isLoadingLogs">
+                            <div class="pagination-left">
+                                <span class="ff-count-text">Showing {{ startRecord }}-{{ endRecord }} of {{ tripTotalCount }} trips</span>
+                                <app-searchable-select class="ff-page-size" [options]="pageSizeOptions"
+                                    [ngModel]="tripPageSize.toString()" (ngModelChange)="onPageSizeChanged($event)">
+                                </app-searchable-select>
+                            </div>
+                            <div class="ff-pagination">
+                                <button class="ff-page-button" (click)="changeTripPage(tripPageNumber - 1)"
+                                    [disabled]="tripPageNumber <= 1">
+                                    <span class="material-symbols-outlined">chevron_left</span>
+                                </button>
+                                <span class="page-info">Page {{ tripPageNumber }} of {{ tripTotalPages || 1 }}</span>
+                                <button class="ff-page-button" (click)="changeTripPage(tripPageNumber + 1)"
+                                    [disabled]="tripPageNumber >= tripTotalPages || tripTotalPages === 0">
+                                    <span class="material-symbols-outlined">chevron_right</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </section>
@@ -119,15 +135,9 @@
 
                             <div class="form-group">
                                 <label class="form-label">Select Vehicle</label>
-                                <div class="select-wrapper">
-                                    <select class="form-select" name="vehicleId" [(ngModel)]="newTrip.vehicleId"
-                                        required>
-                                        <option value="">Select a fleet unit...</option>
-                                        <option *ngFor="let v of vehicles" [value]="v.id">{{ v.name }} - {{
-                                            v.licensePlate }}</option>
-                                    </select>
-                                    <span class="material-symbols-outlined select-icon">expand_more</span>
-                                </div>
+                                <app-searchable-select [options]="getVehicleOptions()" [(ngModel)]="newTrip.vehicleId"
+                                    name="vehicleId">
+                                </app-searchable-select>
                             </div>
 
                             <div class="form-group">
@@ -141,20 +151,15 @@
 
                             <div class="form-group">
                                 <label class="form-label">Select Driver</label>
-                                <div class="select-wrapper">
-                                    <select class="form-select" name="driverId" [(ngModel)]="newTrip.driverId" required>
-                                        <option value="">Assign a driver...</option>
-                                        <option *ngFor="let d of drivers" [value]="d.id">{{ d.fullName }} (ID: {{
-                                            d.licenseNumber }})</option>
-                                    </select>
-                                    <span class="material-symbols-outlined select-icon">expand_more</span>
-                                </div>
+                                <app-searchable-select [options]="getDriverOptions()" [(ngModel)]="newTrip.driverId"
+                                    name="driverId">
+                                </app-searchable-select>
                             </div>
 
                             <div class="form-group">
                                 <label class="form-label">Est. Fuel Cost</label>
                                 <div class="input-wrapper">
-                                    <span class="input-prefix">$</span>
+                                    <span class="input-prefix">₹</span>
                                     <input class="form-input pl-prefix" placeholder="0.00" type="number" name="estFuel"
                                         [(ngModel)]="uiEstimatedFuelCost" />
                                 </div>
@@ -202,7 +207,7 @@
                     <input class="form-input" type="number" [(ngModel)]="completeEndOdometer" placeholder="0" />
                 </div>
                 <div class="form-group" style="margin-bottom: 1rem;">
-                    <label class="form-label">Revenue ($)</label>
+                    <label class="form-label">Revenue (INR)</label>
                     <input class="form-input" type="number" [(ngModel)]="completeRevenue" placeholder="0.00"
                         step="0.01" />
                 </div>

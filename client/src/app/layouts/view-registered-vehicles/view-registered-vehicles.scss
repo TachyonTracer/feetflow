@@ -101,6 +101,10 @@
         width: auto;
       }
 
+      app-searchable-select {
+        min-width: 10.5rem;
+      }
+
       .btn-outline {
         display: flex;
         align-items: center;
@@ -259,6 +263,11 @@
             font-size: 0.875rem;
           }
 
+          &.td-cost {
+            font-size: 0.875rem;
+            font-weight: 600;
+          }
+
           &.td-capacity {
             font-weight: 500;
           }
@@ -330,7 +339,7 @@
             align-items: center;
             justify-content: flex-end;
             gap: 0.25rem;
-            opacity: 0;
+            opacity: 1;
             transition: opacity 0.2s;
 
             .action-btn {
@@ -360,12 +369,11 @@
     }
 
     .table-footer {
-      padding: 1rem 1.5rem;
-      background-color: #f8fafc;
-      border-top: 1px solid var(--border-color, #e2e8f0);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      .pagination-left {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
 
       p {
         font-size: 0.75rem;
@@ -376,6 +384,14 @@
         span {
           color: var(--text-primary, #0f172a);
         }
+      }
+
+      .page-size-select {
+        padding: 0.35rem 0.5rem;
+        border: 1px solid var(--border-color, #e2e8f0);
+        border-radius: 6px;
+        font-size: 0.8rem;
+        background: #fff;
       }
 
       .pagination {

@@ -79,6 +79,58 @@ public class FuelLogRepository : IFuelLogRepository
         }
     }
 
+    public async Task<IReadOnlyList<FuelLog>> GetByVehicleIdPagedAsync(Guid vehicleId, int pageNumber, int pageSize, CancellationToken cancellationToken = default)
+    {
+        var connection = await GetConnectionAsync(cancellationToken);
+        var fromUow = _unitOfWork.GetConnection() != null;
+        try
+        {
+            await using var cmd = new NpgsqlCommand(
+                @"SELECT f.fuel_log_id, f.vehicle_id, f.trip_id, f.liters, f.cost, f.fuel_date, f.created_at
+                  FROM fuel_logs f
+                  JOIN vehicles v ON v.vehicle_id = f.vehicle_id AND v.is_deleted = FALSE
+                  WHERE f.vehicle_id = @vehicle_id
+                  ORDER BY f.fuel_date DESC
+                  LIMIT @limit OFFSET @offset", connection);
+            cmd.Transaction = GetTransaction();
+            cmd.Parameters.AddWithValue("vehicle_id", vehicleId);
+            cmd.Parameters.AddWithValue("limit", pageSize);
+            cmd.Parameters.AddWithValue("offset", (pageNumber - 1) * pageSize);
+            var list = new List<FuelLog>();
+            await using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
+            while (await reader.ReadAsync(cancellationToken))
+                list.Add(Map(reader));
+            return list;
+        }
+        finally
+        {
+            if (!fromUow)
+                await connection.DisposeAsync();
+        }
+    }
+
+    public async Task<int> CountByVehicleIdAsync(Guid vehicleId, CancellationToken cancellationToken = default)
+    {
+        var connection = await GetConnectionAsync(cancellationToken);
+        var fromUow = _unitOfWork.GetConnection() != null;
+        try
+        {
+            await using var cmd = new NpgsqlCommand(
+                @"SELECT COUNT(*) FROM fuel_logs f
+                  JOIN vehicles v ON v.vehicle_id = f.vehicle_id AND v.is_deleted = FALSE
+                  WHERE f.vehicle_id = @vehicle_id", connection);
+            cmd.Transaction = GetTransaction();
+            cmd.Parameters.AddWithValue("vehicle_id", vehicleId);
+            var result = await cmd.ExecuteScalarAsync(cancellationToken);
+            return Convert.ToInt32(result);
+        }
+        finally
+        {
+            if (!fromUow)
+                await connection.DisposeAsync();
+        }
+    }
+
     public async Task<Guid> AddAsync(FuelLog log, CancellationToken cancellationToken = default)
     {
         var connection = await GetConnectionAsync(cancellationToken);

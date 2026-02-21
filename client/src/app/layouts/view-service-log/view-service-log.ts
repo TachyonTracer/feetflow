@@ -22,6 +22,61 @@ export class ViewServiceLog implements OnInit {
   currentStatus: string = '';
   sortBy: string = '';
 
+  isStatusDropdownOpen = signal(false);
+  isSortDropdownOpen = signal(false);
+
+  statusOptions = [
+    { value: '', label: 'All Statuses' },
+    { value: 'Completed', label: 'Completed' },
+    { value: 'In Progress', label: 'In Progress' }
+  ];
+
+  sortOptions = [
+    { value: '', label: 'Sort By...' },
+    { value: 'date-desc', label: 'Date (Newest First)' },
+    { value: 'date-asc', label: 'Date (Oldest First)' },
+    { value: 'cost-desc', label: 'Cost (High to Low)' },
+    { value: 'cost-asc', label: 'Cost (Low to High)' }
+  ];
+
+  get currentStatusLabel(): string {
+    return this.statusOptions.find(o => o.value === this.currentStatus)?.label || 'All Statuses';
+  }
+
+  get currentSortLabel(): string {
+    return this.sortOptions.find(o => o.value === this.sortBy)?.label || 'Sort By...';
+  }
+
+  toggleStatusDropdown(event: Event) {
+    event.stopPropagation();
+    this.isSortDropdownOpen.set(false);
+    this.isStatusDropdownOpen.set(!this.isStatusDropdownOpen());
+  }
+
+  toggleSortDropdown(event: Event) {
+    event.stopPropagation();
+    this.isStatusDropdownOpen.set(false);
+    this.isSortDropdownOpen.set(!this.isSortDropdownOpen());
+  }
+
+  selectStatus(value: string) {
+    this.currentStatus = value;
+    this.isStatusDropdownOpen.set(false);
+  }
+
+  selectSort(value: string) {
+    this.sortBy = value;
+    this.isSortDropdownOpen.set(false);
+  }
+
+  checkClickOutside(event: Event) {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.custom-select-container')) {
+      this.isStatusDropdownOpen.set(false);
+      this.isSortDropdownOpen.set(false);
+    }
+  }
+
   get filteredLogs(): MaintenanceLog[] {
     let filtered = this.logs;
 
@@ -70,18 +125,30 @@ export class ViewServiceLog implements OnInit {
   constructor(
     private maintenanceService: MaintenanceApiService,
     private vehiclesService: VehiclesApiService,
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.loadLogs();
     this.loadVehicles();
+    document.addEventListener('click', this.checkClickOutside.bind(this));
   }
+
+  ngOnDestroy(): void {
+    document.removeEventListener('click', this.checkClickOutside.bind(this));
+  }
+
+  pageNumber = 1;
+  pageSize = 10;
+  totalCount = 0;
+  totalPages = 0;
 
   loadLogs() {
     this.isLoading = true;
-    this.maintenanceService.getMaintenanceLogs().subscribe({
-      next: (res: any) => {
-        this.logs = res.items || res || [];
+    this.maintenanceService.getMaintenanceLogs(this.pageNumber, this.pageSize).subscribe({
+      next: (res) => {
+        this.logs = res.items ?? [];
+        this.totalCount = res.totalCount ?? 0;
+        this.totalPages = (res.totalPages ?? Math.ceil(this.totalCount / this.pageSize)) || 1;
         this.isLoading = false;
       },
       error: (err) => {
@@ -93,9 +160,15 @@ export class ViewServiceLog implements OnInit {
 
   loadVehicles() {
     this.vehiclesService.getVehicles(1, 100).subscribe({
-      next: (res) => this.vehicles.set(res.items || []),
+      next: (res) => this.vehicles.set(res.items ?? []),
       error: (err) => console.error('Failed to load vehicles', err),
     });
+  }
+
+  changePage(page: number) {
+    if (page < 1 || page > this.totalPages) return;
+    this.pageNumber = page;
+    this.loadLogs();
   }
 
   closeLog(id: string) {

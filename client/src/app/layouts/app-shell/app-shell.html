@@ -25,6 +25,15 @@
     </nav>
 
     <div class="sidebar-footer">
+      @if (userContext.user(); as user) {
+        <div class="user-info-block">
+          <span class="user-name">{{ user.fullName }}</span>
+          <span class="user-email">{{ user.email }}</span>
+          <span class="user-role">{{ user.role }}</span>
+        </div>
+      } @else if (userContext.isLoading()) {
+        <div class="user-info-block loading">Loading...</div>
+      }
       <button class="nav-link logout-btn" (click)="logout()">
         <span class="material-symbols-outlined nav-icon">logout</span>
         <span class="nav-label">Logout</span>

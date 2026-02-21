@@ -1,6 +1,7 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, OnInit } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { JwtHelperService } from '../../services/helpers/jwt-helper.service';
+import { UserContextService } from '../../core/services/user-context.service';
 
 interface NavItem {
   label: string;
@@ -15,7 +16,7 @@ interface NavItem {
   templateUrl: './app-shell.html',
   styleUrl: './app-shell.scss',
 })
-export class AppShell {
+export class AppShell implements OnInit {
   sidebarCollapsed = signal(false);
 
   navItems: NavItem[] = [
@@ -29,13 +30,21 @@ export class AppShell {
     { label: 'Users', icon: 'manage_accounts', route: '/users' },
   ];
 
-  constructor(private jwtHelper: JwtHelperService) {}
+  constructor(
+    private jwtHelper: JwtHelperService,
+    public userContext: UserContextService,
+  ) {}
+
+  ngOnInit(): void {
+    this.userContext.loadCurrentUser();
+  }
 
   toggleSidebar(): void {
     this.sidebarCollapsed.update((v) => !v);
   }
 
   logout(): void {
+    this.userContext.clearUser();
     this.jwtHelper.clearJWTToken();
     localStorage.removeItem('x-auth-token');
     localStorage.removeItem('user_details');

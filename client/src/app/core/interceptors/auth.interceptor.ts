@@ -3,10 +3,12 @@ import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { catchError, throwError } from 'rxjs';
 import { JwtHelperService } from '../../services/helpers/jwt-helper.service';
+import { UserContextService } from '../services/user-context.service';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const jwtHelper = inject(JwtHelperService);
   const router = inject(Router);
+  const userContext = inject(UserContextService);
 
   const authHeaderValue = jwtHelper.getAuthorizationHeaderValue();
 
@@ -25,6 +27,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
       switch (error.status) {
         case 401:
+          userContext.clearUser();
           jwtHelper.clearJWTToken();
           localStorage.removeItem('x-auth-token');
           router.navigate(['/auth/login']);

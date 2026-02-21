@@ -8,30 +8,22 @@ import {
   UpdateVehicleRequest,
   VehicleStatus,
 } from '../../core/models/vehicle.model';
-
-export interface GetVehiclesResponse {
-  items: Vehicle[];
-  pageNumber: number;
-  totalPages: number;
-  totalCount: number;
-  hasPreviousPage: boolean;
-  hasNextPage: boolean;
-}
+import { PagedResult } from '../../core/models/paged-result.model';
 
 @Injectable({ providedIn: 'root' })
 export class VehiclesApiService {
   constructor(private apiService: ApiService) {}
 
   public getVehicles(
-    page: number = 1,
-    pageSize: number = 20,
+    pageNumber: number = 1,
+    pageSize: number = 10,
     status?: VehicleStatus,
     includeDeleted: boolean = false,
-  ): Observable<GetVehiclesResponse> {
-    const queryParams: any = { page, pageSize, includeDeleted };
-    if (status) queryParams.status = status;
+  ): Observable<PagedResult<Vehicle>> {
+    const queryParams: Record<string, string | number | boolean> = { pageNumber, pageSize, includeDeleted };
+    if (status) queryParams['status'] = status;
 
-    return this.apiService.get<GetVehiclesResponse>(API.vehicles.base, { queryParams });
+    return this.apiService.get<PagedResult<Vehicle>>(API.vehicles.base, { queryParams });
   }
 
   public getVehicleById(id: string): Observable<Vehicle> {
@@ -54,9 +46,7 @@ export class VehiclesApiService {
     return this.apiService.patch<void>(
       `${API.vehicles.base}/{id}/retire`,
       {},
-      {
-        routeParams: { id },
-      },
+      { routeParams: { id } },
     );
   }
 

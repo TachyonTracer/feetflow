@@ -2,36 +2,47 @@
     <app-header></app-header>
     <main class="user-management-container">
         <div class="header-section">
-            <h1>User Management</h1>
+            <div>
+                <h1>User Management</h1>
+                <p>Manage application users, roles, and lifecycle actions.</p>
+            </div>
         </div>
 
         <div class="error-banner" *ngIf="errorMessage()">
             {{ errorMessage() }}
         </div>
 
-        <div class="form-panel card" *ngIf="editingUserId()">
-            <h3>Edit User</h3>
-
-            <div class="form-group">
-                <label for="userName">Full Name *</label>
-                <input id="userName" type="text" [(ngModel)]="userForm().fullName" class="form-control"
-                    placeholder="Enter full name" required />
+        <div class="form-panel" *ngIf="editingUserId()">
+            <div class="form-header">
+                <div class="header-icon">
+                    <span class="material-symbols-outlined">edit_square</span>
+                </div>
+                <div class="header-text">
+                    <h3>Edit User Profile</h3>
+                    <p class="subtitle">Update user information and access controls</p>
+                </div>
             </div>
 
-            <div class="form-group mt-3">
-                <label for="userRole">Role</label>
-                <select id="userRole" [(ngModel)]="userForm().role" class="form-control">
-                    <option value="Manager">Manager</option>
-                    <option value="Dispatcher">Dispatcher</option>
-                    <option value="SafetyOfficer">Safety Officer</option>
-                    <option value="FinancialAnalyst">Financial Analyst</option>
-                </select>
+            <div class="form-body">
+                <div class="form-group">
+                    <label for="userName">Full Name <span class="required">*</span></label>
+                    <div class="input-wrapper">
+                        <span class="material-symbols-outlined input-icon">person</span>
+                        <input id="userName" type="text" [(ngModel)]="userForm().fullName" class="form-control"
+                            placeholder="Enter full name" required />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="userRole">Role</label>
+                    <app-searchable-select id="userRole" [options]="roleOptions" [(ngModel)]="userForm().role">
+                    </app-searchable-select>
+                </div>
             </div>
 
             <div class="form-actions mt-4">
-                <button class="btn btn-secondary mr-2" (click)="cancelForm()">Cancel</button>
-                <button class="btn btn-success" (click)="saveEditedUser()"
-                    [disabled]="isLoading() || !userForm().fullName">
+                <button class="ff-btn-secondary" (click)="cancelForm()">Cancel</button>
+                <button class="ff-btn-primary" (click)="saveEditedUser()" [disabled]="isLoading() || !userForm().fullName">
                     Update User
                 </button>
             </div>
@@ -41,8 +52,24 @@
             <p>Processing data, please wait...</p>
         </div>
 
+        <div class="controls-row mt-4" *ngIf="!isLoading() && !editingUserId()">
+            <div class="search-box">
+                <span class="material-symbols-outlined search-icon">search</span>
+                <input placeholder="Search users by name, email, or role..." type="text" [(ngModel)]="searchTerm"
+                    (ngModelChange)="onFiltersChanged()" />
+            </div>
+            <div class="control-actions">
+                <app-searchable-select [options]="roleOptions" [ngModel]="currentRole"
+                    (ngModelChange)="currentRole = $event; onFiltersChanged()">
+                </app-searchable-select>
+                <app-searchable-select [options]="sortOptions" [ngModel]="sortBy"
+                    (ngModelChange)="sortBy = $event; onFiltersChanged()">
+                </app-searchable-select>
+            </div>
+        </div>
+
         <div class="table-container mt-4" *ngIf="!isLoading() && !editingUserId()">
-            <table class="table table-striped custom-table" *ngIf="users().length > 0; else emptyState">
+            <table class="table table-striped custom-table" *ngIf="paginatedUsers.length > 0; else emptyState">
                 <thead>
                     <tr>
                         <th>Name</th>
@@ -53,15 +80,21 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let user of users()">
+                    <tr *ngFor="let user of paginatedUsers">
                         <td class="font-weight-bold">{{ user.fullName }}</td>
                         <td>{{ user.email }}</td>
                         <td>{{ user.role }}</td>
                         <td class="text-muted">{{ user.createdAt | date:'mediumDate' }}</td>
                         <td class="actions-col">
-                            <button class="btn btn-sm btn-outline-primary" (click)="openEditForm(user)">Edit</button>
-                            <button class="btn btn-sm btn-outline-danger ml-2"
-                                (click)="deleteUser(user.userId)">Delete</button>
+                            <div class="table-actions">
+                                <button class="action-btn edit-btn" (click)="openEditForm(user)" title="Edit User">
+                                    <span class="material-symbols-outlined">edit</span>
+                                </button>
+                                <button class="action-btn delete-btn" (click)="deleteUser(user.userId)"
+                                    title="Delete User">
+                                    <span class="material-symbols-outlined">delete</span>
+                                </button>
+                            </div>
                         </td>
                     </tr>
                 </tbody>
@@ -73,6 +106,27 @@
                     <p class="text-muted">There are currently no users in the system.</p>
                 </div>
             </ng-template>
+
+            <div class="ff-table-footer" *ngIf="paginatedUsers.length > 0">
+                <div class="pagination-left">
+                    <span class="ff-count-text">Showing {{ startRecord }}-{{ endRecord }} of {{ totalCount }} users</span>
+                    <app-searchable-select class="ff-page-size" [options]="pageSizeOptions"
+                        [ngModel]="pageSize.toString()" (ngModelChange)="onPageSizeChanged($event)">
+                    </app-searchable-select>
+                </div>
+                <div class="ff-pagination">
+                    <button class="ff-page-button" (click)="changePage(pageNumber - 1)" [disabled]="pageNumber <= 1">
+                        <span class="material-symbols-outlined">chevron_left</span>
+                    </button>
+                    <button *ngFor="let page of getPageNumbers()" class="ff-page-button"
+                        [class.active]="page === pageNumber" (click)="changePage(page)">
+                        {{ page }}
+                    </button>
+                    <button class="ff-page-button" (click)="changePage(pageNumber + 1)" [disabled]="pageNumber >= totalPages">
+                        <span class="material-symbols-outlined">chevron_right</span>
+                    </button>
+                </div>
+            </div>
         </div>
     </main>
 </div>

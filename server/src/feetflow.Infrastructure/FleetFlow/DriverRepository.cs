@@ -78,6 +78,58 @@ public class DriverRepository : IDriverRepository
         }
     }
 
+    public async Task<IReadOnlyList<Driver>> GetPagedAsync(int pageNumber, int pageSize, bool includeDeleted, CancellationToken cancellationToken = default)
+    {
+        var connection = await GetConnectionAsync(cancellationToken);
+        var fromUow = _unitOfWork.GetConnection() != null;
+        try
+        {
+            var sql = @"SELECT driver_id, full_name, license_number, license_category, license_expiry, status::text, is_deleted, created_at, (xmin)::text::integer
+                        FROM drivers";
+            if (!includeDeleted)
+                sql += " WHERE is_deleted = FALSE";
+            sql += " ORDER BY created_at DESC LIMIT @limit OFFSET @offset";
+
+            await using var cmd = new NpgsqlCommand(sql, connection);
+            cmd.Transaction = GetTransaction();
+            cmd.Parameters.AddWithValue("limit", pageSize);
+            cmd.Parameters.AddWithValue("offset", (pageNumber - 1) * pageSize);
+
+            var list = new List<Driver>();
+            await using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
+            while (await reader.ReadAsync(cancellationToken))
+                list.Add(MapDriver(reader));
+            return list;
+        }
+        finally
+        {
+            if (!fromUow)
+                await connection.DisposeAsync();
+        }
+    }
+
+    public async Task<int> CountAsync(bool includeDeleted, CancellationToken cancellationToken = default)
+    {
+        var connection = await GetConnectionAsync(cancellationToken);
+        var fromUow = _unitOfWork.GetConnection() != null;
+        try
+        {
+            var sql = "SELECT COUNT(*) FROM drivers";
+            if (!includeDeleted)
+                sql += " WHERE is_deleted = FALSE";
+
+            await using var cmd = new NpgsqlCommand(sql, connection);
+            cmd.Transaction = GetTransaction();
+            var result = await cmd.ExecuteScalarAsync(cancellationToken);
+            return Convert.ToInt32(result);
+        }
+        finally
+        {
+            if (!fromUow)
+                await connection.DisposeAsync();
+        }
+    }
+
     public async Task<Guid> AddAsync(Driver driver, CancellationToken cancellationToken = default)
     {
         var connection = await GetConnectionAsync(cancellationToken);

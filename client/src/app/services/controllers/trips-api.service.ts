@@ -8,31 +8,23 @@ import {
   CompleteTripRequest,
   TripStatus,
 } from '../../core/models/trip.model';
-
-export interface GetTripsResponse {
-  items: Trip[];
-  pageNumber: number;
-  totalPages: number;
-  totalCount: number;
-  hasPreviousPage: boolean;
-  hasNextPage: boolean;
-}
+import { PagedResult } from '../../core/models/paged-result.model';
 
 @Injectable({ providedIn: 'root' })
 export class TripsApiService {
   constructor(private apiService: ApiService) {}
 
   public getTrips(
-    page: number = 1,
-    pageSize: number = 20,
+    pageNumber: number = 1,
+    pageSize: number = 10,
     status?: TripStatus,
     vehicleId?: string,
-  ): Observable<GetTripsResponse> {
-    const queryParams: any = { page, pageSize };
-    if (status) queryParams.status = status;
-    if (vehicleId) queryParams.vehicleId = vehicleId;
+  ): Observable<PagedResult<Trip>> {
+    const queryParams: Record<string, string | number> = { pageNumber, pageSize };
+    if (status) queryParams['status'] = status;
+    if (vehicleId) queryParams['vehicleId'] = vehicleId;
 
-    return this.apiService.get<GetTripsResponse>(API.trips.base, { queryParams });
+    return this.apiService.get<PagedResult<Trip>>(API.trips.base, { queryParams });
   }
 
   public createTrip(request: CreateTripRequest): Observable<Trip> {
@@ -40,13 +32,7 @@ export class TripsApiService {
   }
 
   public dispatchTrip(id: string): Observable<void> {
-    return this.apiService.patch<void>(
-      `${API.trips.base}/{id}/dispatch`,
-      {},
-      {
-        routeParams: { id },
-      },
-    );
+    return this.apiService.patch<void>(`${API.trips.base}/{id}/dispatch`, {}, { routeParams: { id } });
   }
 
   public completeTrip(id: string, request: CompleteTripRequest): Observable<void> {
@@ -56,12 +42,6 @@ export class TripsApiService {
   }
 
   public cancelTrip(id: string): Observable<void> {
-    return this.apiService.patch<void>(
-      `${API.trips.base}/{id}/cancel`,
-      {},
-      {
-        routeParams: { id },
-      },
-    );
+    return this.apiService.patch<void>(`${API.trips.base}/{id}/cancel`, {}, { routeParams: { id } });
   }
 }
