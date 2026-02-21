@@ -92,25 +92,29 @@
                                 <td>{{ v.licensePlate || 'N/A' }}</td>
                                 <td>
                                     <span class="status-badge" [ngClass]="{
-                                        'status-active': v.status === 'Active',
-                                        'status-maintenance': v.status === 'InMaintenance',
-                                        'status-inactive': v.status === 'Retired'
+                                        'status-active': v.status === 'Available' || v.status === 'Active',
+                                        'status-maintenance': v.status === 'InShop' || v.status === 'InMaintenance',
+                                        'status-inactive': v.status === 'Retired',
+                                        'status-primary': v.status === 'OnTrip'
                                     }">
                                         <span class="dot"></span> {{ v.status }}
                                     </span>
                                 </td>
                                 <td>{{ v.name }}</td>
                                 <td><span class="type-badge">{{ v.vehicleType }}</span></td>
-                                <td class="td-capacity">TBD kg</td>
-                                <td class="td-odometer">TBD km</td>
+                                <td class="td-capacity">{{ v.maxCapacityKg | number:'1.0-0' }} kg</td>
+                                <td class="td-odometer">{{ v.odometerKm | number:'1.0-0' }} km</td>
                                 <td class="td-actions">
                                     <div class="action-group">
-                                        <button class="action-btn"><span
-                                                class="material-symbols-outlined">visibility</span></button>
-                                        <button class="action-btn"><span
-                                                class="material-symbols-outlined">edit</span></button>
-                                        <button class="action-btn danger"><span
-                                                class="material-symbols-outlined">delete</span></button>
+                                        <button class="action-btn" title="Retire vehicle"
+                                            (click)="retireVehicle(v.vehicle_id)"
+                                            [disabled]="v.status === 'Retired'">
+                                            <span class="material-symbols-outlined">block</span>
+                                        </button>
+                                        <button class="action-btn danger" title="Delete vehicle"
+                                            (click)="deleteVehicle(v.vehicle_id)">
+                                            <span class="material-symbols-outlined">delete</span>
+                                        </button>
                                     </div>
                                 </td>
                             </tr>

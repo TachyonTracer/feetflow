@@ -11,6 +11,7 @@ import {
   RoleOption,
   SignupFormData,
   RegisterRequest,
+  AVAILABLE_ROLES,
 } from '../../../core/models/auth.model';
 import { ApiResponse } from '../../../core/models/api-response.model';
 
@@ -22,12 +23,7 @@ import { ApiResponse } from '../../../core/models/api-response.model';
   styleUrls: ['./signup.component.scss'],
 })
 export class CustomSignupComponent {
-  public readonly availableRoles: RoleOption[] = [
-    { value: 'manager', label: 'Manager', icon: 'manage_accounts' },
-    { value: 'dispatcher', label: 'Dispatcher', icon: 'hub' },
-    { value: 'analyst', label: 'Analyst', icon: 'analytics' },
-    { value: 'safety_officer', label: 'Safety Officer', icon: 'health_and_safety' },
-  ];
+  public readonly availableRoles: RoleOption[] = AVAILABLE_ROLES;
 
   public user: SignupFormData = {
     fullName: '',
@@ -106,7 +102,7 @@ export class CustomSignupComponent {
       role: this.user.role,
     };
 
-    this.apiService.post<ApiResponse>(API.auth.signup, payload).subscribe({
+    this.apiService.post<ApiResponse>(API.auth.signup, payload, { rawResponse: true }).subscribe({
       next: (response: ApiResponse) => {
         if (response.errorMessage) {
           this.signupRequestProcessing = false;
@@ -116,7 +112,7 @@ export class CustomSignupComponent {
 
         this.signupRequestProcessing = false;
         this.signupSuccess = true;
-        this.navigationService.navigateToDashboard();
+        this.navigationService.navigateToLogin();
       },
       error: (error) => {
         this.signupRequestProcessing = false;

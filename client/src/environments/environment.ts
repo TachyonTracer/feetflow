@@ -34,6 +34,9 @@ export const environment = {
     maintenance: {
       base: '/api/maintenance',
     },
+    fuel: {
+      base: '/api/fuel',
+    },
     analytics: {
       base: '/api/analytics',
       dashboard: '/api/analytics/dashboard',

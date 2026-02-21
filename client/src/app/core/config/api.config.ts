@@ -19,6 +19,9 @@ export const API = {
   get maintenance() {
     return environment.api.maintenance;
   },
+  get fuel() {
+    return environment.api.fuel;
+  },
   get analytics() {
     return environment.api.analytics;
   },

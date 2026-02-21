@@ -13,6 +13,7 @@ import {
   LoginCredentials,
   LoginRequest,
   LoginResponse,
+  AVAILABLE_ROLES,
 } from '../../../core/models/auth.model';
 import { ApiResponse } from '../../../core/models/api-response.model';
 
@@ -24,12 +25,7 @@ import { ApiResponse } from '../../../core/models/api-response.model';
   styleUrls: ['./login.component.scss'],
 })
 export class CustomLoginComponent implements OnInit {
-  public readonly availableRoles: RoleOption[] = [
-    { value: 'manager', label: 'Manager', icon: 'manage_accounts' },
-    { value: 'dispatcher', label: 'Dispatcher', icon: 'hub' },
-    { value: 'analyst', label: 'Analyst', icon: 'analytics' },
-    { value: 'safety_officer', label: 'Safety Officer', icon: 'health_and_safety' },
-  ];
+  public readonly availableRoles: RoleOption[] = AVAILABLE_ROLES;
 
   public user: LoginCredentials = {
     email: '',
@@ -126,7 +122,7 @@ export class CustomLoginComponent implements OnInit {
       role: this.user.role,
     };
 
-    this.apiService.post<ApiResponse>(API.auth.login, payload).subscribe({
+    this.apiService.post<ApiResponse>(API.auth.login, payload, { rawResponse: true }).subscribe({
       next: (response: ApiResponse) => {
         // Check for server-side error
         if (response.errorMessage) {

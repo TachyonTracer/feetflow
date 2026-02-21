@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { ApiService } from '../api/api.service';
 import { API } from '../../core/config/api.config';
-import { User, CreateUserRequest } from '../../core/models/user.model';
+import { User, UpdateUserRequest } from '../../core/models/user.model';
 
 @Injectable({ providedIn: 'root' })
 export class UsersApiService {
@@ -18,28 +17,23 @@ export class UsersApiService {
   }
 
   public getUserById(userId: string): Observable<User> {
-    return this.apiService.get<User>(API.users.getById, {
+    return this.apiService.get<User>(`${API.users.getAll}/{id}`, {
       routeParams: { id: userId },
     });
   }
 
-  public createUser(createUserRequest: CreateUserRequest): Observable<User> {
-    return this.apiService
-      .post<User>(API.users.create, createUserRequest)
-      .pipe(map((user) => ({ ...user, name: user.name.trim() })));
+  public getCurrentUser(): Observable<User> {
+    return this.apiService.get<User>(`${API.users.getAll}/me`);
   }
 
-  public updateUser(
-    userId: string,
-    updateUserRequest: Partial<CreateUserRequest>,
-  ): Observable<User> {
-    return this.apiService.put<User>(API.users.update, updateUserRequest, {
+  public updateUser(userId: string, request: UpdateUserRequest): Observable<User> {
+    return this.apiService.put<User>(`${API.users.getAll}/{id}`, request, {
       routeParams: { id: userId },
     });
   }
 
   public deleteUser(userId: string): Observable<void> {
-    return this.apiService.delete<void>(API.users.delete, {
+    return this.apiService.delete<void>(`${API.users.getAll}/{id}`, {
       routeParams: { id: userId },
     });
   }

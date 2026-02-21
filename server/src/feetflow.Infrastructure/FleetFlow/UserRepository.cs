@@ -119,6 +119,76 @@ public class UserRepository : IUserRepository
         }
     }
 
+    public async Task<IReadOnlyList<User>> GetAllAsync(bool includeDeleted = false, CancellationToken cancellationToken = default)
+    {
+        var connection = await GetConnectionAsync(cancellationToken);
+        var fromUow = _unitOfWork.GetConnection() != null;
+        try
+        {
+            var sql = includeDeleted
+                ? "SELECT user_id, full_name, email, password_hash, role::text, is_deleted, created_at FROM users ORDER BY created_at DESC"
+                : "SELECT user_id, full_name, email, password_hash, role::text, is_deleted, created_at FROM users WHERE is_deleted = FALSE ORDER BY created_at DESC";
+
+            await using var cmd = new NpgsqlCommand(sql, connection);
+            if (_unitOfWork.GetTransaction() is NpgsqlTransaction trans)
+                cmd.Transaction = trans;
+
+            var result = new List<User>();
+            await using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
+            while (await reader.ReadAsync(cancellationToken))
+                result.Add(MapUser(reader));
+            return result;
+        }
+        finally
+        {
+            if (!fromUow)
+                await connection.DisposeAsync();
+        }
+    }
+
+    public async Task<int> UpdateAsync(User user, CancellationToken cancellationToken = default)
+    {
+        var connection = await GetConnectionAsync(cancellationToken);
+        var fromUow = _unitOfWork.GetConnection() != null;
+        try
+        {
+            await using var cmd = new NpgsqlCommand(
+                @"UPDATE users SET full_name = @full_name, role = @role::user_role
+                  WHERE user_id = @user_id AND is_deleted = FALSE", connection);
+            if (_unitOfWork.GetTransaction() is NpgsqlTransaction trans)
+                cmd.Transaction = trans;
+            cmd.Parameters.AddWithValue("user_id", user.Id);
+            cmd.Parameters.AddWithValue("full_name", user.FullName);
+            cmd.Parameters.AddWithValue("role", FleetFlowEnumMapper.ToDb(user.Role));
+            return await cmd.ExecuteNonQueryAsync(cancellationToken);
+        }
+        finally
+        {
+            if (!fromUow)
+                await connection.DisposeAsync();
+        }
+    }
+
+    public async Task<int> SoftDeleteAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        var connection = await GetConnectionAsync(cancellationToken);
+        var fromUow = _unitOfWork.GetConnection() != null;
+        try
+        {
+            await using var cmd = new NpgsqlCommand(
+                "UPDATE users SET is_deleted = TRUE WHERE user_id = @user_id AND is_deleted = FALSE", connection);
+            if (_unitOfWork.GetTransaction() is NpgsqlTransaction trans)
+                cmd.Transaction = trans;
+            cmd.Parameters.AddWithValue("user_id", id);
+            return await cmd.ExecuteNonQueryAsync(cancellationToken);
+        }
+        finally
+        {
+            if (!fromUow)
+                await connection.DisposeAsync();
+        }
+    }
+
     private static User MapUser(NpgsqlDataReader reader)
     {
         return new User

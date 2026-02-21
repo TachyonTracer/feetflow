@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, throwError, timer } from 'rxjs';
-import { retry, finalize, shareReplay } from 'rxjs/operators';
+import { retry, finalize, shareReplay, map } from 'rxjs/operators';
 import { ApiServiceService } from './api-service.service';
 import { environment } from '../../../environments/environment';
 
@@ -12,6 +12,7 @@ export interface ApiOptions {
   retryCount?: number;
   retryDelay?: number;
   cache?: boolean;
+  rawResponse?: boolean;
 }
 
 @Injectable({
@@ -64,6 +65,19 @@ export class ApiService {
     return { headers, params };
   }
 
+  private unwrapApiResponse<T>(response: any): T {
+    if (
+      response &&
+      typeof response === 'object' &&
+      'result' in response &&
+      'status' in response &&
+      'timestamp' in response
+    ) {
+      return response.result as T;
+    }
+    return response as T;
+  }
+
   private handleObservables<T>(
     req: Observable<T>,
     options?: ApiOptions,
@@ -73,6 +87,10 @@ export class ApiService {
     const retryDelay = options?.retryDelay ?? 1000;
 
     let obs = req;
+
+    if (!options?.rawResponse) {
+      obs = obs.pipe(map((response: any) => this.unwrapApiResponse<T>(response)));
+    }
 
     if (retryCount > 0) {
       obs = obs.pipe(retry({ count: retryCount, delay: retryDelay }));

@@ -22,8 +22,9 @@ export class MaintenanceApiService {
     );
   }
 
-  // To be used once backend endpoint is complete
-  public getMaintenanceLogs(): Observable<MaintenanceLog[]> {
-    return this.apiService.get<MaintenanceLog[]>(API.maintenance.base);
+  public getMaintenanceLogs(page: number = 1, pageSize: number = 50): Observable<any> {
+    return this.apiService.get<any>(API.maintenance.base, {
+      queryParams: { page, pageSize },
+    });
   }
 }

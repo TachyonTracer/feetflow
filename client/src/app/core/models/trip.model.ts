@@ -1,4 +1,4 @@
-export type TripStatus = 'Pending' | 'OnTrip' | 'Delivered' | 'Cancelled';
+export type TripStatus = 'Draft' | 'Dispatched' | 'Completed' | 'Cancelled';
 
 export interface Trip {
   trip_id: string;
@@ -21,8 +21,8 @@ export interface Trip {
 }
 
 export interface CreateTripRequest {
-  vehicle_id: string;
-  driver_id: string;
+  vehicleId: string;
+  driverId: string;
   cargoWeightKg: number;
 }
 

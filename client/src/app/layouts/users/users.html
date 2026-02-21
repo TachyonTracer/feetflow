@@ -1,70 +1,61 @@
 <div class="user-management-container">
     <div class="header-section">
         <h1>User Management</h1>
-        <button class="btn btn-primary" (click)="openAddForm()" *ngIf="!isAddingUser() && !editingUserId()">
-            + Add New User
-        </button>
     </div>
 
-    <!-- Global Error Banner -->
     <div class="error-banner" *ngIf="errorMessage()">
         {{ errorMessage() }}
     </div>
 
-    <!-- Add/Edit Form Panel -->
-    <div class="form-panel card" *ngIf="isAddingUser() || editingUserId()">
-        <h3 *ngIf="isAddingUser()">Create New User</h3>
-        <h3 *ngIf="editingUserId()">Edit User</h3>
+    <div class="form-panel card" *ngIf="editingUserId()">
+        <h3>Edit User</h3>
 
         <div class="form-group">
-            <label for="userName">Name *</label>
-            <input id="userName" type="text" [(ngModel)]="userForm().name" class="form-control"
-                placeholder="Enter user name" required />
+            <label for="userName">Full Name *</label>
+            <input id="userName" type="text" [(ngModel)]="userForm().fullName" class="form-control"
+                placeholder="Enter full name" required />
         </div>
 
         <div class="form-group mt-3">
-            <label for="userDesc">Description</label>
-            <textarea id="userDesc" [(ngModel)]="userForm().description" class="form-control"
-                placeholder="Enter user description" rows="3">
-      </textarea>
+            <label for="userRole">Role</label>
+            <select id="userRole" [(ngModel)]="userForm().role" class="form-control">
+                <option value="Manager">Manager</option>
+                <option value="Dispatcher">Dispatcher</option>
+                <option value="SafetyOfficer">Safety Officer</option>
+                <option value="FinancialAnalyst">Financial Analyst</option>
+            </select>
         </div>
 
         <div class="form-actions mt-4">
             <button class="btn btn-secondary mr-2" (click)="cancelForm()">Cancel</button>
-
-            <button *ngIf="isAddingUser()" class="btn btn-success" (click)="saveNewUser()"
-                [disabled]="isLoading() || !userForm().name">
-                Save User
-            </button>
-
-            <button *ngIf="editingUserId()" class="btn btn-success" (click)="saveEditedUser()"
-                [disabled]="isLoading() || !userForm().name">
+            <button class="btn btn-success" (click)="saveEditedUser()"
+                [disabled]="isLoading() || !userForm().fullName">
                 Update User
             </button>
         </div>
     </div>
 
-    <!-- Loading State -->
     <div class="loading-state" *ngIf="isLoading()">
         <p>Processing data, please wait...</p>
     </div>
 
-    <!-- User Data Table -->
-    <div class="table-container mt-4" *ngIf="!isLoading() && !isAddingUser() && !editingUserId()">
+    <div class="table-container mt-4" *ngIf="!isLoading() && !editingUserId()">
         <table class="table table-striped custom-table" *ngIf="users().length > 0; else emptyState">
             <thead>
                 <tr>
-                    <th>ID</th>
                     <th>Name</th>
-                    <th>Description</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Joined</th>
                     <th class="actions-col">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 <tr *ngFor="let user of users()">
-                    <td class="text-muted">{{ user.userId }}</td>
-                    <td class="font-weight-bold">{{ user.name }}</td>
-                    <td>{{ user.description || '-' }}</td>
+                    <td class="font-weight-bold">{{ user.fullName }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.role }}</td>
+                    <td class="text-muted">{{ user.createdAt | date:'mediumDate' }}</td>
                     <td class="actions-col">
                         <button class="btn btn-sm btn-outline-primary" (click)="openEditForm(user)">Edit</button>
                         <button class="btn btn-sm btn-outline-danger ml-2"
@@ -78,7 +69,6 @@
             <div class="empty-state text-center mt-5">
                 <h4>No Users Found</h4>
                 <p class="text-muted">There are currently no users in the system.</p>
-                <button class="btn btn-primary mt-3" (click)="openAddForm()">Create the first user</button>
             </div>
         </ng-template>
     </div>

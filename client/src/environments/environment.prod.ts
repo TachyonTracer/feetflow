@@ -6,11 +6,12 @@ export const environment = {
   defaultErrorMessage: 'Something went wrong! Please try again later',
   refreshTokenIntervalInMinutes: 5,
   privateKey: 'efr$#@)#E%*',
-  apiBasePath: '', // relative path — nginx proxies /api to the backend
+  apiBasePath: '',
   api: {
     auth: {
-      login: '/api/auth/login',
-      signup: '/api/auth/signup',
+      login: '/api/Auth/login',
+      signup: '/api/Auth/signup',
+      refresh: '/api/Auth/refresh',
       getAccessToken: '/api/get_access_token',
       resetPassword: '/api/custom/public/accounts/reset_password',
     },
@@ -20,6 +21,25 @@ export const environment = {
       create: '/api/users',
       update: '/api/users',
       delete: '/api/users',
+    },
+    vehicles: {
+      base: '/api/Vehicles',
+    },
+    trips: {
+      base: '/api/Trips',
+    },
+    drivers: {
+      base: '/api/Drivers',
+    },
+    maintenance: {
+      base: '/api/maintenance',
+    },
+    fuel: {
+      base: '/api/fuel',
+    },
+    analytics: {
+      base: '/api/analytics',
+      dashboard: '/api/analytics/dashboard',
     },
   },
 };

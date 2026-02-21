@@ -26,14 +26,19 @@ export class VehicleTripDispatcher implements OnInit {
   isSubmitting = false;
 
   newTrip: CreateTripRequest = {
-    vehicle_id: '',
-    driver_id: '',
+    vehicleId: '',
+    driverId: '',
     cargoWeightKg: 0,
   };
 
-  uiOrigin: string = '';
-  uiDestination: string = '';
-  uiEstimatedFuelCost: number = 0;
+  uiOrigin = '';
+  uiDestination = '';
+  uiEstimatedFuelCost = 0;
+
+  completeTripId = '';
+  completeEndOdometer = 0;
+  completeRevenue = 0;
+  showCompleteModal = false;
 
   constructor(
     private tripsService: TripsApiService,
@@ -61,15 +66,14 @@ export class VehicleTripDispatcher implements OnInit {
   }
 
   loadDropdownData() {
-    // Only fetch first page of vehicles/drivers for dropdowns simplisticly
     this.vehiclesService.getVehicles(1, 100).subscribe((res) => (this.vehicles = res.items || []));
     this.driversService.getDrivers(false).subscribe((res) => (this.drivers = res || []));
   }
 
   submitNewTrip() {
     if (
-      !this.newTrip.vehicle_id ||
-      !this.newTrip.driver_id ||
+      !this.newTrip.vehicleId ||
+      !this.newTrip.driverId ||
       !this.uiOrigin ||
       !this.uiDestination
     ) {
@@ -82,22 +86,77 @@ export class VehicleTripDispatcher implements OnInit {
       next: () => {
         this.isSubmitting = false;
         this.loadActiveTrips();
-        this.activeTab = 'log'; // switch back to logs
-        // Reset form
-        this.newTrip = {
-          vehicle_id: '',
-          driver_id: '',
-          cargoWeightKg: 0,
-        };
+        this.activeTab = 'log';
+        this.newTrip = { vehicleId: '', driverId: '', cargoWeightKg: 0 };
         this.uiOrigin = '';
         this.uiDestination = '';
         this.uiEstimatedFuelCost = 0;
       },
       error: (err) => {
-        console.error('Failed to dispatch trip', err);
+        console.error('Failed to create trip', err);
         alert('Failed to submit trip.');
         this.isSubmitting = false;
       },
     });
+  }
+
+  dispatchTrip(tripId: string) {
+    this.tripsService.dispatchTrip(tripId).subscribe({
+      next: () => this.loadActiveTrips(),
+      error: (err) => {
+        console.error('Failed to dispatch trip', err);
+        alert('Failed to dispatch trip.');
+      },
+    });
+  }
+
+  openCompleteModal(tripId: string) {
+    this.completeTripId = tripId;
+    this.completeEndOdometer = 0;
+    this.completeRevenue = 0;
+    this.showCompleteModal = true;
+  }
+
+  confirmCompleteTrip() {
+    if (this.completeEndOdometer <= 0 || this.completeRevenue < 0) {
+      alert('Please enter valid end odometer and revenue values.');
+      return;
+    }
+    this.tripsService
+      .completeTrip(this.completeTripId, {
+        endOdometer: this.completeEndOdometer,
+        revenue: this.completeRevenue,
+      })
+      .subscribe({
+        next: () => {
+          this.showCompleteModal = false;
+          this.loadActiveTrips();
+        },
+        error: (err) => {
+          console.error('Failed to complete trip', err);
+          alert('Failed to complete trip.');
+        },
+      });
+  }
+
+  cancelTrip(tripId: string) {
+    if (!confirm('Are you sure you want to cancel this trip?')) return;
+    this.tripsService.cancelTrip(tripId).subscribe({
+      next: () => this.loadActiveTrips(),
+      error: (err) => {
+        console.error('Failed to cancel trip', err);
+        alert('Failed to cancel trip.');
+      },
+    });
+  }
+
+  getVehicleName(vehicleId: string): string {
+    const vehicle = this.vehicles.find((v) => v.vehicle_id === vehicleId);
+    return vehicle ? `${vehicle.name}` : `Vehicle ${vehicleId.substring(0, 5)}`;
+  }
+
+  getDriverName(driverId: string): string {
+    const driver = this.drivers.find((d) => d.driver_id === driverId);
+    return driver ? driver.fullName : `Driver ${driverId.substring(0, 5)}`;
   }
 }

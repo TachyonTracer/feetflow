@@ -23,9 +23,8 @@ export class ViewServiceLog implements OnInit {
   loadLogs() {
     this.isLoading = true;
     this.maintenanceService.getMaintenanceLogs().subscribe({
-      next: (res) => {
-        // Assume API returns array directly or inside items wrapper
-        this.logs = (res as any).items || res || [];
+      next: (res: any) => {
+        this.logs = res.items || res || [];
         this.isLoading = false;
       },
       error: (err) => {

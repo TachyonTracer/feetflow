@@ -32,12 +32,34 @@ export class VehicleRegister implements OnInit {
       next: (res) => {
         this.vehicles = res.items || [];
         this.totalCount = res.totalCount || 0;
-        this.totalPages = res.totalPages || 1;
+        this.totalPages = Math.ceil(this.totalCount / this.pageSize) || 1;
         this.isLoading = false;
       },
       error: (err) => {
         console.error('Failed to load vehicles', err);
         this.isLoading = false;
+      },
+    });
+  }
+
+  retireVehicle(vehicleId: string) {
+    if (!confirm('Are you sure you want to retire this vehicle?')) return;
+    this.vehiclesService.retireVehicle(vehicleId).subscribe({
+      next: () => this.loadVehicles(),
+      error: (err) => {
+        console.error('Failed to retire vehicle', err);
+        alert('Failed to retire vehicle. It may be currently on a trip.');
+      },
+    });
+  }
+
+  deleteVehicle(vehicleId: string) {
+    if (!confirm('Are you sure you want to delete this vehicle?')) return;
+    this.vehiclesService.deleteVehicle(vehicleId).subscribe({
+      next: () => this.loadVehicles(),
+      error: (err) => {
+        console.error('Failed to delete vehicle', err);
+        alert('Failed to delete vehicle.');
       },
     });
   }
