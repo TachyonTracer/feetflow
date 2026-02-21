@@ -1,0 +1,238 @@
+<div class="service-layout">
+    <!-- Top Navigation Bar -->
+    <header class="top-header">
+        <div class="header-inner">
+            <div class="logo-section">
+                <div class="logo-icon">
+                    <span class="material-symbols-outlined">local_shipping</span>
+                </div>
+                <h1 class="logo-title">Fleet Flow</h1>
+            </div>
+            <div class="user-actions">
+                <button class="action-btn">
+                    <span class="material-symbols-outlined">notifications</span>
+                </button>
+                <div class="divider"></div>
+                <div class="user-profile">
+                    <div class="user-text hidden-mobile">
+                        <p class="name">Alex Thompson</p>
+                        <p class="role">Fleet Operations</p>
+                    </div>
+                    <div class="user-avatar">
+                        <img alt="User profile avatar of Alex Thompson"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBPiiQgrhfkvS7cSG7BN6q_UmQUrY00GeYVKUNT85SzLityrG0d-IIgybXIJrfHvRsDHz6VFdxmXwTb14JEJAlOprAJ2N-m-6xIn8KfWfMSaDsCLF4dFqlmtpFPo6KkCBWJKM8jB3016kA-7TFrEqoQLBmlIoXSacS0hIGFD9BlaRrn34EXdeEWPTFYbvplyZtPU4Q0q-zI2Bn4JJzF89t8VuMtOl0gf_Vcis6SkuOhqsuWlAjaxL5s9bkdb19qON0Z0kZt69Myy2lT" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <!-- Page Title & Primary Action -->
+        <div class="page-header">
+            <div class="header-text">
+                <h2>Maintenance & Service Logs</h2>
+                <p>Manage and track your vehicle service history and upcoming repairs.</p>
+            </div>
+            <button class="btn-primary">
+                <span class="material-symbols-outlined icon-small">add</span>
+                <span>Create New Services</span>
+            </button>
+        </div>
+
+        <!-- Utility Bar: Search, Filter, Group, Sort -->
+        <div class="filters-card">
+            <div class="filters-row">
+                <!-- Search -->
+                <div class="search-box">
+                    <span class="material-symbols-outlined search-icon">search</span>
+                    <input class="search-input" placeholder="Search by Vehicle, Log ID, or Service Type..."
+                        type="text" />
+                </div>
+                <!-- Controls Group -->
+                <div class="filter-actions">
+                    <button class="btn-outline">
+                        <span class="material-symbols-outlined icon">group_work</span>
+                        Group By
+                        <span class="material-symbols-outlined icon-chevron">expand_more</span>
+                    </button>
+                    <button class="btn-outline">
+                        <span class="material-symbols-outlined icon">filter_list</span>
+                        Filter
+                        <span class="material-symbols-outlined icon-chevron">expand_more</span>
+                    </button>
+                    <button class="btn-outline">
+                        <span class="material-symbols-outlined icon">swap_vert</span>
+                        Sort
+                        <span class="material-symbols-outlined icon-chevron">expand_more</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Table Container -->
+        <div class="data-table-container">
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Log ID</th>
+                            <th>Vehicle</th>
+                            <th>Issue/Service</th>
+                            <th>Date</th>
+                            <th class="text-right">Cost</th>
+                            <th class="text-center">Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Row 1: Completed -->
+                        <tr>
+                            <td class="td-id">#LOG-882</td>
+                            <td>
+                                <div class="vehicle-info">
+                                    <div class="vehicle-icon">
+                                        <span class="material-symbols-outlined">directions_car</span>
+                                    </div>
+                                    <div class="vehicle-details">
+                                        <p class="vehicle-name">Ford Transit</p>
+                                        <p class="vehicle-plate">ABC-123</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <p class="service-name">Brake Pad Replacement</p>
+                                <p class="service-desc">Routine Safety Check</p>
+                            </td>
+                            <td class="td-date">Oct 24, 2023</td>
+                            <td class="td-cost">$450.00</td>
+                            <td class="td-status">
+                                <span class="status-badge status-completed">
+                                    <span class="dot"></span> Completed
+                                </span>
+                            </td>
+                            <td class="td-actions">
+                                <button class="action-btn-sm"><span
+                                        class="material-symbols-outlined">more_vert</span></button>
+                            </td>
+                        </tr>
+
+                        <!-- Row 2: In Progress -->
+                        <tr>
+                            <td class="td-id">#LOG-883</td>
+                            <td>
+                                <div class="vehicle-info">
+                                    <div class="vehicle-icon">
+                                        <span class="material-symbols-outlined">local_shipping</span>
+                                    </div>
+                                    <div class="vehicle-details">
+                                        <p class="vehicle-name">Freightliner M2</p>
+                                        <p class="vehicle-plate">XYZ-987</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <p class="service-name">Engine Check</p>
+                                <p class="service-desc">Unexpected failure</p>
+                            </td>
+                            <td class="td-date">Oct 25, 2023</td>
+                            <td class="td-cost">$1,200.00</td>
+                            <td class="td-status">
+                                <span class="status-badge status-progress">
+                                    <span class="dot"></span> In Progress
+                                </span>
+                            </td>
+                            <td class="td-actions">
+                                <button class="action-btn-sm"><span
+                                        class="material-symbols-outlined">more_vert</span></button>
+                            </td>
+                        </tr>
+
+                        <!-- Row 3: Pending -->
+                        <tr>
+                            <td class="td-id">#LOG-884</td>
+                            <td>
+                                <div class="vehicle-info">
+                                    <div class="vehicle-icon">
+                                        <span class="material-symbols-outlined">directions_car</span>
+                                    </div>
+                                    <div class="vehicle-details">
+                                        <p class="vehicle-name">Toyota Hiace</p>
+                                        <p class="vehicle-plate">HI-772</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <p class="service-name">Oil Change</p>
+                                <p class="service-desc">Scheduled maintenance</p>
+                            </td>
+                            <td class="td-date">Oct 26, 2023</td>
+                            <td class="td-cost">$85.00</td>
+                            <td class="td-status">
+                                <span class="status-badge status-pending">
+                                    <span class="dot"></span> Pending
+                                </span>
+                            </td>
+                            <td class="td-actions">
+                                <button class="action-btn-sm"><span
+                                        class="material-symbols-outlined">more_vert</span></button>
+                            </td>
+                        </tr>
+
+                        <!-- Row 4: Completed -->
+                        <tr>
+                            <td class="td-id">#LOG-885</td>
+                            <td>
+                                <div class="vehicle-info">
+                                    <div class="vehicle-icon">
+                                        <span class="material-symbols-outlined">airport_shuttle</span>
+                                    </div>
+                                    <div class="vehicle-details">
+                                        <p class="vehicle-name">Mercedes Sprinter</p>
+                                        <p class="vehicle-plate">MS-550</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <p class="service-name">Tire Rotation</p>
+                                <p class="service-desc">Post-trip inspection</p>
+                            </td>
+                            <td class="td-date">Oct 27, 2023</td>
+                            <td class="td-cost">$120.00</td>
+                            <td class="td-status">
+                                <span class="status-badge status-completed">
+                                    <span class="dot"></span> Completed
+                                </span>
+                            </td>
+                            <td class="td-actions">
+                                <button class="action-btn-sm"><span
+                                        class="material-symbols-outlined">more_vert</span></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="table-footer">
+                <span class="pagination-text">Showing 1 to 4 of 48 logs</span>
+                <div class="pagination">
+                    <button class="page-nav disabled" disabled>
+                        <span class="material-symbols-outlined icon-small">chevron_left</span>
+                    </button>
+                    <button class="page-num active">1</button>
+                    <button class="page-num">2</button>
+                    <button class="page-num">3</button>
+                    <button class="page-nav">
+                        <span class="material-symbols-outlined icon-small">chevron_right</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="bottom-footer">
+        <p>© 2023 Fleet Flow Logistics Management. All rights reserved.</p>
+    </footer>
+</div>

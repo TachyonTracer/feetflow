@@ -15,5 +15,20 @@ export const routes: Routes = [
     path: 'dashboard',
     loadComponent: () => import('./layouts/dashboard/dashboard.component').then((m) => m.Dashboard),
   },
+  {
+    path: 'register',
+    loadComponent: () => import('./layouts/view-registered-vehicles/view-registered-vehicles').then((m) => m.VehicleRegister),
+  },
+
+  {
+    path: 'dispatcher',
+    loadComponent: () => import('./layouts/vehicle-trip-dispatcher/vehicle-trip-dispatcher').then((m) => m.VehicleTripDispatcher),
+  },
+  {
+    path: 'service-log',
+    loadComponent: () => import('./layouts/view-service-log/view-service-log').then((m) => m.ViewServiceLog),
+  },
+
+
   { path: '', redirectTo: '/auth', pathMatch: 'full' },
 ];

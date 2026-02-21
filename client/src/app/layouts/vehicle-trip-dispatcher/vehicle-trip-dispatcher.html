@@ -1,0 +1,218 @@
+<div class="dispatcher-layout">
+    <header class="top-header">
+        <div class="header-inner">
+            <div class="logo-section">
+                <div class="logo-icon">
+                    <span class="material-symbols-outlined icon-large">local_shipping</span>
+                </div>
+                <h1 class="logo-title">Fleet Flow</h1>
+            </div>
+            <div class="user-actions">
+                <button class="action-btn">
+                    <span class="material-symbols-outlined">notifications</span>
+                </button>
+                <div class="user-avatar">
+                    <img alt="User Profile"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuCw9bBRh1zV8Ft256BOG9mIFrRKoYdkruRDgzgJ3I0dQemyiwoMEOniPMJMe3iqbCVkPCZMET7fZlTC3tt9r-feijwcOqbmXNS2ahFWnJXXOTXcPotMQ7vrDqMyBW46Aap1Oaq8ykbM1ziuU1qGMTSlQ7ODS92GbCPJZSeY5tRoOcGKf36ivzQRDGZtpbLW-k_laHUBC0X31uKBWiplWbtoiQsz0Ap0B2ENPe4UBQNRRYS2gjTVx1s9DGfkLw4Y9y_LzT6vzD1dQWo_" />
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Tab Navigation -->
+        <div class="tabs-container">
+            <input checked class="tab-input log-tab" id="tab-log" name="tabs" type="radio" (change)="activeTab = 'log'"
+                [checked]="activeTab === 'log'" />
+            <input class="tab-input add-tab" id="tab-add" name="tabs" type="radio" (change)="activeTab = 'add'"
+                [checked]="activeTab === 'add'" />
+            <div class="tabs-header">
+                <label class="tab-label" for="tab-log">
+                    <span class="tab-text">Active Trip Dispatch Log</span>
+                </label>
+                <label class="tab-label" for="tab-add">
+                    <span class="tab-text">Add New Trip</span>
+                </label>
+            </div>
+
+            <!-- Log Content -->
+            <div class="tab-content tab-content-log" [class.active-content]="activeTab === 'log'">
+
+                <section class="filters-section">
+                    <div class="filters-row">
+                        <div class="search-box">
+                            <span class="material-symbols-outlined search-icon">search</span>
+                            <input class="search-input" placeholder="Search Trip ID, driver, or destination..."
+                                type="text" />
+                        </div>
+                        <div class="filter-actions">
+                            <button class="btn-outline">
+                                <span class="material-symbols-outlined icon">layers</span>
+                                Group By
+                            </button>
+                            <button class="btn-outline">
+                                <span class="material-symbols-outlined icon">filter_list</span>
+                                Filter
+                            </button>
+                            <button class="btn-outline">
+                                <span class="material-symbols-outlined icon">sort</span>
+                                Sort
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="log-table-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Active Trip Dispatch Log</h2>
+                        <span class="section-subtitle">Showing 4 active deliveries</span>
+                    </div>
+
+                    <div class="data-table-container">
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Trip ID</th>
+                                        <th>Fleet Type</th>
+                                        <th>Origin</th>
+                                        <th>Destination</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="td-id">FF-102</td>
+                                        <td class="td-text">Semi-Truck</td>
+                                        <td class="td-text">Chicago, IL</td>
+                                        <td class="td-text">Detroit, MI</td>
+                                        <td>
+                                            <span class="status-badge status-primary">
+                                                On the Way
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="td-id">FF-105</td>
+                                        <td class="td-text">Delivery Van</td>
+                                        <td class="td-text">Austin, TX</td>
+                                        <td class="td-text">Dallas, TX</td>
+                                        <td>
+                                            <span class="status-badge status-success">
+                                                Delivered
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="td-id">FF-108</td>
+                                        <td class="td-text">Heavy Hauler</td>
+                                        <td class="td-text">Phoenix, AZ</td>
+                                        <td class="td-text">Los Angeles, CA</td>
+                                        <td>
+                                            <span class="status-badge status-warning">
+                                                Delayed
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="td-id">FF-110</td>
+                                        <td class="td-text">Box Truck</td>
+                                        <td class="td-text">Atlanta, GA</td>
+                                        <td class="td-text">Orlando, FL</td>
+                                        <td>
+                                            <span class="status-badge status-primary">
+                                                On the Way
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Add Trip Content -->
+            <div class="tab-content tab-content-add" [class.active-content]="activeTab === 'add'">
+                <h2 class="section-title">Add New Trip</h2>
+
+                <div class="form-container">
+                    <form class="trip-form">
+                        <div class="form-grid">
+
+                            <div class="form-group">
+                                <label class="form-label">Select Vehicle</label>
+                                <div class="select-wrapper">
+                                    <select class="form-select">
+                                        <option>Select a fleet unit...</option>
+                                        <option>Truck #502 - Volvo FH16</option>
+                                        <option>Van #12 - Mercedes Sprinter</option>
+                                        <option>Hauler #99 - Kenworth T680</option>
+                                    </select>
+                                    <span class="material-symbols-outlined select-icon">expand_more</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Cargo Weight (kg)</label>
+                                <div class="input-wrapper">
+                                    <input class="form-input text-left" placeholder="0.00" type="number" />
+                                    <span class="input-suffix">KG</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Select Driver</label>
+                                <div class="select-wrapper">
+                                    <select class="form-select">
+                                        <option>Assign a driver...</option>
+                                        <option>Sarah Jenkins (ID: 884)</option>
+                                        <option>Marcus Thorne (ID: 219)</option>
+                                        <option>Elena Rodriguez (ID: 552)</option>
+                                    </select>
+                                    <span class="material-symbols-outlined select-icon">expand_more</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Est. Fuel Cost</label>
+                                <div class="input-wrapper">
+                                    <span class="input-prefix">$</span>
+                                    <input class="form-input pl-prefix" placeholder="0.00" type="number" />
+                                </div>
+                            </div>
+
+                            <div class="form-group col-span-2">
+                                <label class="form-label">Origin Address</label>
+                                <div class="input-wrapper">
+                                    <span class="material-symbols-outlined input-icon">location_on</span>
+                                    <input class="form-input pl-icon" placeholder="Street, City, Zip Code"
+                                        type="text" />
+                                </div>
+                            </div>
+
+                            <div class="form-group col-span-2">
+                                <label class="form-label">Destination Address</label>
+                                <div class="input-wrapper">
+                                    <span class="material-symbols-outlined input-icon">flag</span>
+                                    <input class="form-input pl-icon" placeholder="Street, City, Zip Code"
+                                        type="text" />
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="form-actions">
+                            <button class="btn-primary" type="submit">
+                                <span class="material-symbols-outlined">send</span>
+                                Confirm and Dispatch
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </main>
+</div>

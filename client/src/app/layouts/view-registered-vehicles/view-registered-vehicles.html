@@ -1,0 +1,222 @@
+<!-- Add New Vehicle Modal (conditionally rendered) -->
+<app-add-new-vehicle *ngIf="isModalOpen" (close)="toggleModal()"></app-add-new-vehicle>
+
+<div class="registry-layout">
+    <header class="top-header">
+        <div class="header-inner">
+            <div class="logo-section">
+                <div class="logo-icon">
+                    <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M8.57829 8.57829C5.52816 11.6284 3.451 15.5145 2.60947 19.7452C1.76794 23.9758 2.19984 28.361 3.85056 32.3462C5.50128 36.3314 8.29667 39.7376 11.8832 42.134C15.4698 44.5305 19.6865 45.8096 24 45.8096C28.3135 45.8096 32.5302 44.5305 36.1168 42.134C39.7033 39.7375 42.4987 36.3314 44.1494 32.3462C45.8002 28.361 46.2321 23.9758 45.3905 19.7452C44.549 15.5145 42.4718 11.6284 39.4217 8.57829L24 24L8.57829 8.57829Z"
+                            fill="currentColor"></path>
+                    </svg>
+                </div>
+                <h1>Fleet Flow</h1>
+            </div>
+            <div class="user-actions">
+                <button class="icon-button relative">
+                    <span class="material-symbols-outlined">notifications</span>
+                    <span class="notification-dot"></span>
+                </button>
+                <button class="icon-button">
+                    <span class="material-symbols-outlined">settings</span>
+                </button>
+                <div class="divider"></div>
+                <div class="user-profile">
+                    <div class="user-text">
+                        <p class="name">Alex Rivera</p>
+                        <p class="role">Fleet Manager</p>
+                    </div>
+                    <img alt="Profile"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuBsca3Q--9s0LFncnBqQTylzCUIxHIxaFGajEb3W1zLPU6KFMI5BMcOdirwYeVpMFceVVWSlueDnpJoG0yJNJRmQUeVw1u7jcEzUG4UY8g3GEFiH-x4LJSnyZYSZRSgTUVT-PEXHS8msROMzdwgTVdO6SamqdMizqj3E4_W7o2roCUTN4xaOn-dLnuexDMu9R8AKZLtWI9PMe4i9h14HerKMv-SYnqlGVkOGR1Z8lhwZqVRx823dujRM5ptijlBMcRLs2MiLIRWi17M" />
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="page-header">
+            <h2>Vehicle Registry</h2>
+            <p>Manage and monitor your entire transport fleet assets.</p>
+        </div>
+
+        <div class="filters-card">
+            <div class="search-box">
+                <span class="material-symbols-outlined search-icon">search</span>
+                <input placeholder="Search vehicles by ID, make, or model..." type="text" />
+            </div>
+            <div class="filter-actions">
+                <button class="btn-outline">
+                    <span class="material-symbols-outlined">group_work</span>
+                    Group By
+                </button>
+                <button class="btn-outline">
+                    <span class="material-symbols-outlined">filter_alt</span>
+                    Filter
+                </button>
+                <button class="btn-outline">
+                    <span class="material-symbols-outlined">sort</span>
+                    Sort By
+                </button>
+            </div>
+        </div>
+
+        <div class="actions-row">
+            <button class="btn-primary" (click)="toggleModal()">
+                <span class="material-symbols-outlined">add</span>
+                New Vehicle
+            </button>
+        </div>
+
+        <div class="data-table-container">
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="col-sr">Sr.No</th>
+                            <th class="col-plate">Plate</th>
+                            <th>Status</th>
+                            <th>Model</th>
+                            <th>Type</th>
+                            <th>Capacity</th>
+                            <th>Odometer</th>
+                            <th class="col-actions">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="td-sr">FL-90210</td>
+                            <td>Freightliner</td>
+                            <td>
+                                <span class="status-badge status-active">
+                                    <span class="dot"></span> Active
+                                </span>
+                            </td>
+                            <td>Cascadia</td>
+                            <td><span class="type-badge">Heavy Duty</span></td>
+                            <td class="td-capacity">18,000 kg</td>
+                            <td class="td-odometer">142,503 km</td>
+                            <td class="td-actions">
+                                <div class="action-group">
+                                    <button class="action-btn"><span
+                                            class="material-symbols-outlined">visibility</span></button>
+                                    <button class="action-btn"><span
+                                            class="material-symbols-outlined">edit</span></button>
+                                    <button class="action-btn danger"><span
+                                            class="material-symbols-outlined">delete</span></button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="td-sr">VO-44122</td>
+                            <td>Volvo</td>
+                            <td>
+                                <span class="status-badge status-maintenance">
+                                    <span class="dot"></span> Maintenance
+                                </span>
+                            </td>
+                            <td>VNL 860</td>
+                            <td><span class="type-badge">Sleeper Cab</span></td>
+                            <td class="td-capacity">20,500 kg</td>
+                            <td class="td-odometer">89,211 km</td>
+                            <td class="td-actions">
+                                <div class="action-group">
+                                    <button class="action-btn"><span
+                                            class="material-symbols-outlined">visibility</span></button>
+                                    <button class="action-btn"><span
+                                            class="material-symbols-outlined">edit</span></button>
+                                    <button class="action-btn danger"><span
+                                            class="material-symbols-outlined">delete</span></button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="td-sr">FD-11890</td>
+                            <td>Ford</td>
+                            <td>
+                                <span class="status-badge status-active">
+                                    <span class="dot"></span> Active
+                                </span>
+                            </td>
+                            <td>F-550 Super Duty</td>
+                            <td><span class="type-badge">Service Truck</span></td>
+                            <td class="td-capacity">8,500 kg</td>
+                            <td class="td-odometer">212,044 km</td>
+                            <td class="td-actions">
+                                <div class="action-group">
+                                    <button class="action-btn"><span
+                                            class="material-symbols-outlined">visibility</span></button>
+                                    <button class="action-btn"><span
+                                            class="material-symbols-outlined">edit</span></button>
+                                    <button class="action-btn danger"><span
+                                            class="material-symbols-outlined">delete</span></button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="td-sr">KW-55211</td>
+                            <td>Kenworth</td>
+                            <td>
+                                <span class="status-badge status-inactive">
+                                    <span class="dot"></span> Inactive
+                                </span>
+                            </td>
+                            <td>T680</td>
+                            <td><span class="type-badge">Heavy Duty</span></td>
+                            <td class="td-capacity">19,000 kg</td>
+                            <td class="td-odometer">45,119 km</td>
+                            <td class="td-actions">
+                                <div class="action-group">
+                                    <button class="action-btn"><span
+                                            class="material-symbols-outlined">visibility</span></button>
+                                    <button class="action-btn"><span
+                                            class="material-symbols-outlined">edit</span></button>
+                                    <button class="action-btn danger"><span
+                                            class="material-symbols-outlined">delete</span></button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="td-sr">PB-33881</td>
+                            <td>Peterbilt</td>
+                            <td>
+                                <span class="status-badge status-active">
+                                    <span class="dot"></span> Active
+                                </span>
+                            </td>
+                            <td>579</td>
+                            <td><span class="type-badge">Heavy Duty</span></td>
+                            <td class="td-capacity">18,500 kg</td>
+                            <td class="td-odometer">12,402 km</td>
+                            <td class="td-actions">
+                                <div class="action-group">
+                                    <button class="action-btn"><span
+                                            class="material-symbols-outlined">visibility</span></button>
+                                    <button class="action-btn"><span
+                                            class="material-symbols-outlined">edit</span></button>
+                                    <button class="action-btn danger"><span
+                                            class="material-symbols-outlined">delete</span></button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-footer">
+                <p>Showing <span>1 to 5</span> of <span>128</span> vehicles</p>
+                <div class="pagination">
+                    <button class="page-nav"><span class="material-symbols-outlined">chevron_left</span></button>
+                    <button class="page-num active">1</button>
+                    <button class="page-num">2</button>
+                    <button class="page-num">3</button>
+                    <button class="page-nav"><span class="material-symbols-outlined">chevron_right</span></button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bottom-footer">
+        <p>© 2024 Fleet Flow Solutions Inc. System Status: All systems operational.</p>
+    </footer>
+</div>
