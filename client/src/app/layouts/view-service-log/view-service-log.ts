@@ -22,6 +22,61 @@ export class ViewServiceLog implements OnInit {
   currentStatus: string = '';
   sortBy: string = '';
 
+  isStatusDropdownOpen = signal(false);
+  isSortDropdownOpen = signal(false);
+
+  statusOptions = [
+    { value: '', label: 'All Statuses' },
+    { value: 'Completed', label: 'Completed' },
+    { value: 'In Progress', label: 'In Progress' }
+  ];
+
+  sortOptions = [
+    { value: '', label: 'Sort By...' },
+    { value: 'date-desc', label: 'Date (Newest First)' },
+    { value: 'date-asc', label: 'Date (Oldest First)' },
+    { value: 'cost-desc', label: 'Cost (High to Low)' },
+    { value: 'cost-asc', label: 'Cost (Low to High)' }
+  ];
+
+  get currentStatusLabel(): string {
+    return this.statusOptions.find(o => o.value === this.currentStatus)?.label || 'All Statuses';
+  }
+
+  get currentSortLabel(): string {
+    return this.sortOptions.find(o => o.value === this.sortBy)?.label || 'Sort By...';
+  }
+
+  toggleStatusDropdown(event: Event) {
+    event.stopPropagation();
+    this.isSortDropdownOpen.set(false);
+    this.isStatusDropdownOpen.set(!this.isStatusDropdownOpen());
+  }
+
+  toggleSortDropdown(event: Event) {
+    event.stopPropagation();
+    this.isStatusDropdownOpen.set(false);
+    this.isSortDropdownOpen.set(!this.isSortDropdownOpen());
+  }
+
+  selectStatus(value: string) {
+    this.currentStatus = value;
+    this.isStatusDropdownOpen.set(false);
+  }
+
+  selectSort(value: string) {
+    this.sortBy = value;
+    this.isSortDropdownOpen.set(false);
+  }
+
+  checkClickOutside(event: Event) {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.custom-select-container')) {
+      this.isStatusDropdownOpen.set(false);
+      this.isSortDropdownOpen.set(false);
+    }
+  }
+
   get filteredLogs(): MaintenanceLog[] {
     let filtered = this.logs;
 
@@ -70,11 +125,16 @@ export class ViewServiceLog implements OnInit {
   constructor(
     private maintenanceService: MaintenanceApiService,
     private vehiclesService: VehiclesApiService,
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.loadLogs();
     this.loadVehicles();
+    document.addEventListener('click', this.checkClickOutside.bind(this));
+  }
+
+  ngOnDestroy(): void {
+    document.removeEventListener('click', this.checkClickOutside.bind(this));
   }
 
   loadLogs() {

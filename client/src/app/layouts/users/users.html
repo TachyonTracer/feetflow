@@ -9,30 +9,47 @@
             {{ errorMessage() }}
         </div>
 
-        <div class="form-panel card" *ngIf="editingUserId()">
-            <h3>Edit User</h3>
-
-            <div class="form-group">
-                <label for="userName">Full Name *</label>
-                <input id="userName" type="text" [(ngModel)]="userForm().fullName" class="form-control"
-                    placeholder="Enter full name" required />
+        <div class="form-panel" *ngIf="editingUserId()">
+            <div class="form-header">
+                <div class="header-icon">
+                    <span class="material-symbols-outlined">edit_square</span>
+                </div>
+                <div class="header-text">
+                    <h3>Edit User Profile</h3>
+                    <p class="subtitle">Update user information and access controls</p>
+                </div>
             </div>
 
-            <div class="form-group mt-3">
-                <label for="userRole">Role</label>
-                <select id="userRole" [(ngModel)]="userForm().role" class="form-control">
-                    <option value="Manager">Manager</option>
-                    <option value="Dispatcher">Dispatcher</option>
-                    <option value="SafetyOfficer">Safety Officer</option>
-                    <option value="FinancialAnalyst">Financial Analyst</option>
-                </select>
+            <div class="form-body">
+                <div class="form-group">
+                    <label for="userName">Full Name <span class="required">*</span></label>
+                    <div class="input-wrapper">
+                        <span class="material-symbols-outlined input-icon">person</span>
+                        <input id="userName" type="text" [(ngModel)]="userForm().fullName" class="form-control"
+                            placeholder="Enter full name" required />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="userRole">Role Assignment</label>
+                    <div class="input-wrapper select-wrapper">
+                        <span class="material-symbols-outlined input-icon">shield_person</span>
+                        <select id="userRole" [(ngModel)]="userForm().role" class="form-control custom-select">
+                            <option value="Manager">Manager</option>
+                            <option value="Dispatcher">Dispatcher</option>
+                            <option value="SafetyOfficer">Safety Officer</option>
+                            <option value="FinancialAnalyst">Financial Analyst</option>
+                        </select>
+                        <span class="material-symbols-outlined dropdown-icon">expand_more</span>
+                    </div>
+                </div>
             </div>
 
             <div class="form-actions mt-4">
-                <button class="btn btn-secondary mr-2" (click)="cancelForm()">Cancel</button>
-                <button class="btn btn-success" (click)="saveEditedUser()"
+                <button class="btn btn-secondary-modern mr-2" (click)="cancelForm()">Cancel</button>
+                <button class="btn btn-primary-modern" (click)="saveEditedUser()"
                     [disabled]="isLoading() || !userForm().fullName">
-                    Update User
+                    Save Changes
                 </button>
             </div>
         </div>
@@ -59,9 +76,15 @@
                         <td>{{ user.role }}</td>
                         <td class="text-muted">{{ user.createdAt | date:'mediumDate' }}</td>
                         <td class="actions-col">
-                            <button class="btn btn-sm btn-outline-primary" (click)="openEditForm(user)">Edit</button>
-                            <button class="btn btn-sm btn-outline-danger ml-2"
-                                (click)="deleteUser(user.userId)">Delete</button>
+                            <div class="table-actions">
+                                <button class="action-btn edit-btn" (click)="openEditForm(user)" title="Edit User">
+                                    <span class="material-symbols-outlined">edit</span>
+                                </button>
+                                <button class="action-btn delete-btn" (click)="deleteUser(user.userId)"
+                                    title="Delete User">
+                                    <span class="material-symbols-outlined">delete</span>
+                                </button>
+                            </div>
                         </td>
                     </tr>
                 </tbody>

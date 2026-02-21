@@ -1,7 +1,7 @@
 <app-add-expenses *ngIf="isAddExpenseModalOpen" (close)="toggleModal()"
     (created)="onExpenseCreated()"></app-add-expenses>
 
-<div class="expenses-layout">
+<div class="expenses-layout view-expenses">
     <app-header></app-header>
 
     <main class="main-content">
@@ -27,11 +27,41 @@
             <div class="controls-row">
                 <div class="search-box">
                     <span class="material-symbols-outlined search-icon">local_shipping</span>
-                    <select class="search-input" [(ngModel)]="selectedVehicleId" (change)="onVehicleChange()">
-                        <option *ngFor="let v of vehicles" [value]="v.id">
-                            {{ v.name }} - {{ v.licensePlate }}
-                        </option>
-                    </select>
+                    <div class="custom-select-container">
+                        <div class="selected-trigger" (click)="toggleDropdown()">
+                            <span class="material-symbols-outlined icon-vehicle">directions_car</span>
+                            <span class="selected-text" [class.placeholder]="!selectedVehicleId">
+                                {{ selectedVehicleName }}
+                            </span>
+                            <span class="material-symbols-outlined icon-chevron" [class.rotated]="isDropdownOpen()">
+                                expand_more
+                            </span>
+                        </div>
+
+                        <div class="dropdown-menu" *ngIf="isDropdownOpen()">
+                            <div class="search-wrap">
+                                <span class="material-symbols-outlined search-icon">search</span>
+                                <input type="text" class="search-input"
+                                    placeholder="Search vehicles by name or plate..." [ngModel]="searchTerm()"
+                                    (ngModelChange)="searchTerm.set($event)" (click)="$event.stopPropagation()" />
+                            </div>
+
+                            <ul class="options-list">
+                                <li class="option-item" *ngFor="let v of filteredVehicles"
+                                    [class.active]="v.id === selectedVehicleId" (click)="selectVehicle(v.id)">
+                                    <div class="vehicle-info">
+                                        <span class="vehicle-name">{{ v.name }}</span>
+                                        <span class="vehicle-plate badge badge-gray">{{ v.licensePlate }}</span>
+                                    </div>
+                                    <span class="material-symbols-outlined check-icon"
+                                        *ngIf="v.id === selectedVehicleId">check</span>
+                                </li>
+                                <li class="option-empty" *ngIf="filteredVehicles.length === 0">
+                                    No vehicles found
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

@@ -232,6 +232,199 @@ $purple-100: #f3e8ff;
   }
 }
 
+/* Custom Select Component Modernization */
+.custom-select-container {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+
+  .selected-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.875rem 1rem;
+    background: $bg-white;
+    border: 1px solid $border-light;
+    border-radius: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+
+    &:hover {
+      border-color: #cbd5e1; // slate-300
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+
+    .icon-vehicle {
+      color: $primary-color;
+      margin-right: 0.75rem;
+      font-size: 20px;
+    }
+
+    .selected-text {
+      flex: 1;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: $text-primary;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+
+      &.placeholder {
+        color: $text-muted;
+        font-weight: 400;
+      }
+    }
+
+    .icon-chevron {
+      color: $text-muted;
+      transition: transform 0.2s ease;
+
+      &.rotated {
+        transform: rotate(180deg);
+      }
+    }
+  }
+
+  .dropdown-menu {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    left: 0;
+    width: 100%;
+    background: $bg-white;
+    border-radius: 0.75rem;
+    border: 1px solid $border-light;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+    z-index: 50;
+    overflow: hidden;
+    animation: dropFadeIn 0.2s ease-out forwards;
+    transform-origin: top;
+
+    @keyframes dropFadeIn {
+      from {
+        opacity: 0;
+        transform: scaleY(0.95);
+      }
+
+      to {
+        opacity: 1;
+        transform: scaleY(1);
+      }
+    }
+
+    .search-wrap {
+      display: flex;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid #f1f5f9; // slate-100
+      background: #f8fafc; // slate-50
+
+      .search-icon {
+        color: $text-muted;
+        font-size: 20px;
+        margin-right: 0.5rem;
+      }
+
+      .search-input {
+        flex: 1;
+        border: none;
+        background: transparent;
+        font-size: 0.875rem;
+        color: $text-primary;
+        outline: none;
+
+        &::placeholder {
+          color: $text-muted;
+        }
+      }
+    }
+
+    .options-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      max-height: 260px;
+      overflow-y: auto;
+
+      &::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      &::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background-color: #cbd5e1;
+        border-radius: 10px;
+      }
+
+      .option-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.75rem 1rem;
+        cursor: pointer;
+        transition: background-color 0.15s ease;
+        border-bottom: 1px solid #f8fafc;
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        &:hover {
+          background-color: #f1f5f9; // slate-100
+        }
+
+        &.active {
+          background-color: #eff6ff; // blue-50
+
+          .vehicle-name {
+            color: $primary-color;
+            font-weight: 600;
+          }
+        }
+
+        .vehicle-info {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+
+          .vehicle-name {
+            font-size: 0.875rem;
+            color: $text-primary;
+          }
+
+          .badge {
+            font-size: 0.7rem;
+            padding: 0.15rem 0.5rem;
+            border-radius: 4px;
+
+            &.badge-gray {
+              background: #e2e8f0; // slate-200
+              color: #475569; // slate-600
+            }
+          }
+        }
+
+        .check-icon {
+          color: $primary-color;
+          font-size: 20px;
+          font-weight: 600;
+        }
+      }
+
+      .option-empty {
+        padding: 1.5rem 1rem;
+        text-align: center;
+        color: $text-muted;
+        font-size: 0.875rem;
+        font-style: italic;
+      }
+    }
+  }
+}
+
 /* -- Data Table -- */
 .data-table-container {
   background-color: $bg-white;

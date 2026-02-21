@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HeaderComponent } from '../../shared/components/header/header.component';
@@ -21,14 +21,62 @@ export class ViewExpenses implements OnInit {
   selectedVehicleId = '';
   isLoading = false;
   totalFuelCost = 0;
+  isDropdownOpen = signal(false);
+  searchTerm = signal('');
+
+  get filteredVehicles(): Vehicle[] {
+    const term = this.searchTerm().toLowerCase();
+    if (!term) return this.vehicles;
+    return this.vehicles.filter(v =>
+      v.name.toLowerCase().includes(term) ||
+      v.licensePlate.toLowerCase().includes(term)
+    );
+  }
+
+  get selectedVehicleName(): string {
+    if (!this.selectedVehicleId) return 'Search and select a vehicle...';
+    const vehicle = this.vehicles.find(v => v.id === this.selectedVehicleId);
+    return vehicle ? `${vehicle.name} (${vehicle.licensePlate})` : 'Select a vehicle...';
+  }
+
+  toggleDropdown() {
+    this.isDropdownOpen.set(!this.isDropdownOpen());
+    if (this.isDropdownOpen()) {
+      this.searchTerm.set('');
+      // Add tiny timeout to ensure DOM updating has completed rendering the input
+      setTimeout(() => {
+        const searchInput = document.querySelector('.view-expenses .search-input') as HTMLInputElement | null;
+        if (searchInput) searchInput.focus();
+      }, 10);
+    }
+  }
+
+  selectVehicle(id: string) {
+    this.selectedVehicleId = id;
+    this.isDropdownOpen.set(false);
+    this.onVehicleChange();
+  }
+
+  // Close dropdown when clicking outside
+  checkClickOutside(event: Event) {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.custom-select-container')) {
+      this.isDropdownOpen.set(false);
+    }
+  }
 
   constructor(
     private vehiclesService: VehiclesApiService,
     private fuelService: FuelApiService,
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.loadVehicles();
+    document.addEventListener('click', this.checkClickOutside.bind(this));
+  }
+
+  ngOnDestroy(): void {
+    document.removeEventListener('click', this.checkClickOutside.bind(this));
   }
 
   loadVehicles() {
