@@ -2,14 +2,14 @@
 :root {
   --font-family: 'Inter', sans-serif;
 
-  /* Modern Color Palette (Dark Theme Base) */
-  --bg-primary: #0f172a;
-  --bg-secondary: #1e293b;
-  --text-primary: #f8fafc;
-  --text-secondary: #94a3b8;
-  --accent-color: #3b82f6;
-  --accent-hover: #2563eb;
-  --border-color: #334155;
+  /* Fleet Flow Default Theme (Light) */
+  --bg-primary: #f6f6f8;
+  --bg-secondary: #ffffff;
+  --text-primary: #0f172a;
+  --text-secondary: #64748b;
+  --accent-color: #1e3fae;
+  --accent-hover: #1e3fae;
+  --border-color: #e2e8f0;
 
   /* Spacing */
   --spacing-sm: 0.5rem;
@@ -66,4 +66,8 @@ ul {
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--border-color);
+}
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
 }
