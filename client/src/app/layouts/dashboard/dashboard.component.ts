@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
 import { HeaderComponent } from '../../shared/components/header/header.component';
 import { AnalyticsApiService } from '../../services/controllers/analytics-api.service';
 import { TripsApiService } from '../../services/controllers/trips-api.service';

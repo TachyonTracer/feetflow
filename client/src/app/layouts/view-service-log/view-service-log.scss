@@ -25,7 +25,7 @@ $amber-500: #f59e0b;
   min-height: 100vh;
   background-color: $bg-light;
   color: $text-primary;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-family);
   display: flex;
   flex-direction: column;
 }

@@ -1,6 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
+@import '@angular/material/prebuilt-themes/azure-blue.css';
+
 /* Global Styles & Reset */
 :root {
-  --font-family: 'Inter', sans-serif;
+  --font-family: 'Manrope', sans-serif;
 
   /* Fleet Flow Default Theme (Light) */
   --bg-primary: #f6f6f8;
@@ -242,4 +245,75 @@ ul {
   max-width: 2.5rem; /* keep the logo proportional to the header size */
   max-height: 2.5rem;
   display: block;
+}
+
+/* Dashboard select panel (MatSelect overlay) */
+.fleet-dashboard-select-panel {
+  border-radius: 0.75rem !important;
+  border: 1px solid var(--border-color) !important;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.14) !important;
+  background-color: var(--bg-secondary) !important;
+  padding: 0.25rem 0 !important;
+}
+
+.fleet-dashboard-select-panel .mat-mdc-option {
+  min-height: 2.4rem !important;
+  font-size: 0.95rem !important;
+  font-weight: 500 !important;
+  font-family: var(--font-family) !important;
+}
+
+.fleet-dashboard-select-panel .mat-mdc-option .mdc-list-item__primary-text {
+  color: var(--text-primary) !important;
+  font-family: var(--font-family) !important;
+}
+
+.fleet-dashboard-select-panel .mat-mdc-option.mdc-list-item--selected {
+  background-color: var(--accent-color) !important;
+}
+
+.fleet-dashboard-select-panel .mat-mdc-option.mdc-list-item--selected .mdc-list-item__primary-text {
+  color: #fff !important;
+  font-weight: 600 !important;
+}
+
+.fleet-dashboard-select-panel .mat-mdc-option:hover:not(.mdc-list-item--disabled):not(
+    .mdc-list-item--selected
+  ) {
+  background-color: #edf2ff !important;
+}
+
+/* Auth role select panel (MatSelect overlay) */
+.fleet-auth-role-select-panel {
+  border-radius: 0.9rem !important;
+  border: 1px solid var(--border-color) !important;
+  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.16) !important;
+  background-color: #fff !important;
+  padding: 0.25rem 0 !important;
+}
+
+.fleet-auth-role-select-panel .mat-mdc-option {
+  min-height: 2.35rem !important;
+  font-size: 0.92rem !important;
+  font-weight: 600 !important;
+  font-family: var(--font-family) !important;
+}
+
+.fleet-auth-role-select-panel .mat-mdc-option .mdc-list-item__primary-text {
+  color: #334155 !important;
+  font-family: var(--font-family) !important;
+}
+
+.fleet-auth-role-select-panel .mat-mdc-option.mdc-list-item--selected {
+  background-color: #136dec !important;
+}
+
+.fleet-auth-role-select-panel .mat-mdc-option.mdc-list-item--selected .mdc-list-item__primary-text {
+  color: #fff !important;
+}
+
+.fleet-auth-role-select-panel .mat-mdc-option:hover:not(.mdc-list-item--disabled):not(
+    .mdc-list-item--selected
+  ) {
+  background-color: #edf2ff !important;
 }

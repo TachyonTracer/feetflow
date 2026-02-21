@@ -25,7 +25,7 @@ $rose-700: #be123c;
   min-height: 100vh;
   background-color: $bg-light;
   color: $text-primary;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-family);
   display: flex;
   flex-direction: column;
 

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { ApiService } from '../api/api.service';
 import { API } from '../../core/config/api.config';
 import { User, UpdateUserRequest } from '../../core/models/user.model';
@@ -23,7 +24,10 @@ export class UsersApiService {
   }
 
   public getCurrentUser(): Observable<User> {
-    return this.apiService.get<User>(`${API.users.getAll}/me`);
+    return this.apiService.get<User>(API.users.getCurrent).pipe(
+      // Compatibility fallback in case environment points to singular /user/me route.
+      catchError(() => this.apiService.get<User>(`${API.users.getAll}/me`)),
+    );
   }
 
   public updateUser(userId: string, request: UpdateUserRequest): Observable<User> {

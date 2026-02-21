@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
 import { RouterModule } from '@angular/router';
 import { NavigationService } from '../../../services/navigation.service';
 import { ApiService } from '../../../services/api/api.service';
@@ -12,13 +14,14 @@ import {
   SignupFormData,
   RegisterRequest,
   AVAILABLE_ROLES,
+  mapRoleToApiRole,
 } from '../../../core/models/auth.model';
 import { ApiResponse } from '../../../core/models/api-response.model';
 
 @Component({
   selector: 'app-signup',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule, MatFormFieldModule, MatSelectModule],
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.scss'],
 })
@@ -95,11 +98,17 @@ export class CustomSignupComponent {
     this.signupError = '';
     this.signupSuccess = false;
 
+    if (!this.passwordsMatch) {
+      this.signupRequestProcessing = false;
+      this.signupError = 'Password and confirm password must match.';
+      return;
+    }
+
     const payload: RegisterRequest = {
       fullName: this.user.fullName,
       email: this.user.email,
       password: this.user.password,
-      role: this.user.role,
+      role: mapRoleToApiRole(this.user.role),
     };
 
     this.apiService.post<ApiResponse>(API.auth.signup, payload, { rawResponse: true }).subscribe({

@@ -49,6 +49,8 @@ export class AppShell implements OnInit {
     localStorage.removeItem('x-auth-token');
     localStorage.removeItem('user_details');
     localStorage.removeItem('application_user_details');
+    localStorage.removeItem('current_user_name');
+    localStorage.removeItem('current_user_role');
     window.location.href = '/auth/login';
   }
 }

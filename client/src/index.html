@@ -7,13 +7,68 @@
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/png" href="assets/logo.png">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
     rel="stylesheet" />
+  <style>
+    /* Global Asset Loader */
+    .global-loader-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      width: 100vw;
+      background-color: #f6f6f8;
+      font-family: 'Manrope', sans-serif;
+    }
+
+    .global-loader {
+      width: 48px;
+      height: 48px;
+      border: 4px solid #e2e8f0;
+      border-top-color: #1e3fae;
+      border-radius: 50%;
+      animation: global-spin 1s linear infinite;
+      margin-bottom: 1rem;
+    }
+
+    .global-loader-text {
+      color: #64748b;
+      font-weight: 500;
+      font-size: 0.875rem;
+      letter-spacing: 0.05em;
+      animation: global-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+
+    @keyframes global-spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes global-pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.5;
+      }
+    }
+  </style>
 </head>
 
 <body>
-  <app-root></app-root>
+  <app-root>
+    <div class="global-loader-container">
+      <div class="global-loader"></div>
+      <p class="global-loader-text">Loading Fleet Flow...</p>
+    </div>
+  </app-root>
 </body>
 
 </html>

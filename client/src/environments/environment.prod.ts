@@ -17,6 +17,7 @@ export const environment = {
     },
     users: {
       getAll: '/api/users',
+      getCurrent: '/api/users/me',
       getById: '/api/users',
       create: '/api/users',
       update: '/api/users',

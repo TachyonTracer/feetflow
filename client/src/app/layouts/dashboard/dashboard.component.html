@@ -10,9 +10,7 @@
                 <input placeholder="Search vehicles, drivers, or trips..." type="text" [(ngModel)]="searchTerm" />
             </div>
             <div class="action-buttons">
-                <app-searchable-select
-                    [options]="statusOptions"
-                    [ngModel]="currentStatus"
+                <app-searchable-select [options]="statusOptions" [ngModel]="currentStatus"
                     (ngModelChange)="onStatusChanged($event)">
                 </app-searchable-select>
                 <app-searchable-select [options]="sortOptions" [(ngModel)]="sortBy">
@@ -140,11 +138,8 @@
             <div class="table-footer ff-table-footer">
                 <div class="footer-left">
                     <p class="ff-count-text">Showing {{ startRecord }}-{{ endRecord }} of {{ tripTotalCount }} trips</p>
-                    <app-searchable-select
-                        class="ff-page-size"
-                        [options]="pageSizeOptions"
-                        [ngModel]="tripPageSize.toString()"
-                        (ngModelChange)="onPageSizeChanged($event)">
+                    <app-searchable-select class="ff-page-size" [options]="pageSizeOptions"
+                        [ngModel]="tripPageSize.toString()" (ngModelChange)="onPageSizeChanged($event)">
                     </app-searchable-select>
                 </div>
                 <div class="ff-pagination">

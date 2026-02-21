@@ -1,10 +1,11 @@
 using MediatR;
 using feetflow.Domain.Common;
+using feetflow.Domain.Enums;
 using FluentValidation;
 
 namespace feetflow.Application.Features.FleetFlow.Auth;
 
-public record LoginCommand(string Email, string Password) : IRequest<Result<LoginResult>>;
+public record LoginCommand(string Email, string Password, UserRole Role) : IRequest<Result<LoginResult>>;
 
 public record LoginResult(Guid UserId, string Email, string Role);
 
@@ -14,6 +15,7 @@ public class LoginCommandValidator : AbstractValidator<LoginCommand>
     {
         RuleFor(x => x.Email).NotEmpty().EmailAddress();
         RuleFor(x => x.Password).NotEmpty();
+        RuleFor(x => x.Role).IsInEnum();
     }
 }
 
@@ -34,6 +36,9 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, Result<LoginRes
 
         if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
             return Result<LoginResult>.Unauthorized("Invalid email or password.");
+
+        if (user.Role != request.Role)
+            return Result<LoginResult>.Unauthorized("Selected role does not match this account.");
 
         return Result<LoginResult>.Success(new LoginResult(user.Id, user.Email, user.Role.ToString()));
     }

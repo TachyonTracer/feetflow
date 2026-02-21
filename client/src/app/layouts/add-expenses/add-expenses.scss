@@ -35,7 +35,7 @@ $border-light: var(--border-color, #e2e8f0);
     display: flex;
     flex-direction: column;
     max-height: 90vh;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-family);
 }
 
 /* Modal Header */

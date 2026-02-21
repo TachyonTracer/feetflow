@@ -11,10 +11,10 @@ $color-primary: var(--accent-color, #1e3fae);
   z-index: 50;
   background-color: $bg-white;
   border-bottom: 1px solid $border-light;
-  padding: 1rem 1.5rem;
+  padding: 0.75rem 1rem;
 
   @media (min-width: 1024px) {
-    padding: 1rem 3rem;
+    padding: 0.75rem 1.5rem;
   }
 
   .header-inner {
@@ -40,7 +40,7 @@ $color-primary: var(--accent-color, #1e3fae);
     }
 
     .logo-title {
-      font-size: 1.5rem; // Matched the screenshot size approximately
+      font-size: 1.25rem; // Matched the screenshot size approximately
       font-weight: 700;
       letter-spacing: -0.025em;
       color: $text-primary;
@@ -124,9 +124,10 @@ $color-primary: var(--accent-color, #1e3fae);
       }
     }
 
-    .user-avatar {
-      height: 2.5rem;
-      width: 2.5rem;
+    .user-avatar-initials {
+      height: 2rem;
+      width: 2rem;
+      font-size: 0.8rem;
       border-radius: 9999px;
       background: linear-gradient(140deg, #1e3fae, #2f6bc4);
       border: 1px solid rgba(30, 63, 174, 0.2);
@@ -145,4 +146,8 @@ $color-primary: var(--accent-color, #1e3fae);
       }
     }
   }
+}
+.header-icon {
+  background: white;
+  border-radius: 20px;
 }

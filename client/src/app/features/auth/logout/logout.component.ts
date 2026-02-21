@@ -28,6 +28,8 @@ export class CustomLogoutComponent implements OnInit {
     localStorage.removeItem('jwt_token');
     localStorage.removeItem('application_user_details');
     localStorage.removeItem('payload');
+    localStorage.removeItem('current_user_name');
+    localStorage.removeItem('current_user_role');
 
     this.router.navigate(['/auth/login']);
   }

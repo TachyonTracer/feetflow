@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap');
-
 /* Shared Variables */
 $primary-color: var(--accent-color, #1e3fae);
 $bg-light: var(--bg-primary, #f6f6f8);
@@ -25,14 +23,14 @@ $amber-800: #92400e;
 $purple-100: #f3e8ff;
 
 .heading-font {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-family);
 }
 
 .expenses-layout {
   min-height: 100vh;
   background-color: $bg-light;
   color: $text-primary;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-family);
   display: flex;
   flex-direction: column;
 }

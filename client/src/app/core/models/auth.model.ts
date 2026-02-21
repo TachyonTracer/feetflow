@@ -1,4 +1,5 @@
 export type LoginRole = 'manager' | 'dispatcher' | 'analyst' | 'safety_officer';
+export type ApiUserRole = 'Manager' | 'Dispatcher' | 'FinancialAnalyst' | 'SafetyOfficer';
 
 export interface RoleOption {
   value: LoginRole;
@@ -13,6 +14,17 @@ export const AVAILABLE_ROLES: RoleOption[] = [
   { value: 'safety_officer', label: 'Safety Officer', icon: 'health_and_safety' },
 ];
 
+const UI_ROLE_TO_API_ROLE: Record<LoginRole, ApiUserRole> = {
+  manager: 'Manager',
+  dispatcher: 'Dispatcher',
+  analyst: 'FinancialAnalyst',
+  safety_officer: 'SafetyOfficer',
+};
+
+export function mapRoleToApiRole(role: LoginRole): ApiUserRole {
+  return UI_ROLE_TO_API_ROLE[role] ?? 'Manager';
+}
+
 export interface LoginCredentials {
   email: string;
   password: string;
@@ -23,7 +35,7 @@ export interface LoginCredentials {
 export interface LoginRequest {
   email: string;
   password: string;
-  role: LoginRole;
+  role: ApiUserRole;
 }
 
 export interface LoginResponse {
@@ -46,7 +58,7 @@ export interface RegisterRequest {
   fullName: string;
   email: string;
   password: string;
-  role: LoginRole;
+  role: ApiUserRole;
 }
 
 export interface SignupFormData {

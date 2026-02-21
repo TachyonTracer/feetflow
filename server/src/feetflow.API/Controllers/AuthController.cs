@@ -43,7 +43,7 @@ public class AuthController : ControllerBase
     [AllowAnonymous]
     public async Task<IActionResult> Login([FromBody] LoginRequest request, CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new LoginCommand(request.Email, request.Password), cancellationToken);
+        var result = await _mediator.Send(new LoginCommand(request.Email, request.Password, request.Role), cancellationToken);
 
         if (!result.IsSuccess)
             return StatusCode(result.StatusCode, result.Error);
@@ -90,5 +90,5 @@ public class AuthController : ControllerBase
 }
 
 public record RegisterRequest(string FullName, string Email, string Password, feetflow.Domain.Enums.UserRole Role);
-public record LoginRequest(string Email, string Password);
+public record LoginRequest(string Email, string Password, feetflow.Domain.Enums.UserRole Role);
 public record RefreshRequest(string AccessToken, string RefreshToken);

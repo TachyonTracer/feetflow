@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
 import { RouterModule, ActivatedRoute } from '@angular/router';
 import { NavigationService } from '../../../services/navigation.service';
 import { JwtHelperService } from '../../../services/helpers/jwt-helper.service';
@@ -14,13 +16,14 @@ import {
   LoginRequest,
   LoginResponse,
   AVAILABLE_ROLES,
+  mapRoleToApiRole,
 } from '../../../core/models/auth.model';
 import { ApiResponse } from '../../../core/models/api-response.model';
 
 @Component({
   selector: 'nb-login',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule, MatFormFieldModule, MatSelectModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
@@ -119,7 +122,7 @@ export class CustomLoginComponent implements OnInit {
     const payload: LoginRequest = {
       email: this.user.email,
       password: this.user.password,
-      role: this.user.role,
+      role: mapRoleToApiRole(this.user.role),
     };
 
     this.apiService.post<ApiResponse>(API.auth.login, payload, { rawResponse: true }).subscribe({
@@ -131,7 +134,11 @@ export class CustomLoginComponent implements OnInit {
           return;
         }
 
-        const data = response.result as LoginResponse;
+        const data = response.result as LoginResponse & {
+          full_name?: string;
+          fullName?: string;
+          user?: { full_name?: string; fullName?: string; name?: string };
+        };
 
         // Store access token
         if (data.accessToken) {
@@ -142,6 +149,15 @@ export class CustomLoginComponent implements OnInit {
         if (data.refreshToken) {
           this.jwtHelper.setAuthToken(data.refreshToken);
         }
+
+        const fullNameFromResponse =
+          data.full_name ?? data.fullName ?? data.user?.full_name ?? data.user?.fullName ?? data.user?.name;
+
+        const displayName =
+          fullNameFromResponse ||
+          (this.user.email.includes('@') ? this.user.email.split('@')[0] : this.user.email);
+        localStorage.setItem('current_user_name', displayName);
+        localStorage.setItem('current_user_role', this.user.role);
 
         this.loginRequestProcessing = false;
         this.navigateToFirstMenuRouteLink();

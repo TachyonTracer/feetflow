@@ -115,8 +115,8 @@ public class MaintenanceLogRepository : IMaintenanceLogRepository
 
             await using var cmd = new NpgsqlCommand(sql, connection);
             cmd.Transaction = GetTransaction();
-            cmd.Parameters.AddWithValue("is_closed", isClosed.HasValue ? isClosed.Value : DBNull.Value);
-            cmd.Parameters.AddWithValue("vehicle_id", vehicleId.HasValue ? vehicleId.Value : DBNull.Value);
+            cmd.Parameters.Add(new NpgsqlParameter("is_closed", NpgsqlTypes.NpgsqlDbType.Boolean) { Value = isClosed.HasValue ? (object)isClosed.Value : DBNull.Value });
+            cmd.Parameters.Add(new NpgsqlParameter("vehicle_id", NpgsqlTypes.NpgsqlDbType.Uuid) { Value = vehicleId.HasValue ? (object)vehicleId.Value : DBNull.Value });
             cmd.Parameters.AddWithValue("limit", pageSize);
             cmd.Parameters.AddWithValue("offset", (page - 1) * pageSize);
 
@@ -159,8 +159,8 @@ public class MaintenanceLogRepository : IMaintenanceLogRepository
 
             await using var cmd = new NpgsqlCommand(sql, connection);
             cmd.Transaction = GetTransaction();
-            cmd.Parameters.AddWithValue("is_closed", isClosed.HasValue ? isClosed.Value : DBNull.Value);
-            cmd.Parameters.AddWithValue("vehicle_id", vehicleId.HasValue ? vehicleId.Value : DBNull.Value);
+            cmd.Parameters.Add(new NpgsqlParameter("is_closed", NpgsqlTypes.NpgsqlDbType.Boolean) { Value = isClosed.HasValue ? (object)isClosed.Value : DBNull.Value });
+            cmd.Parameters.Add(new NpgsqlParameter("vehicle_id", NpgsqlTypes.NpgsqlDbType.Uuid) { Value = vehicleId.HasValue ? (object)vehicleId.Value : DBNull.Value });
             
             var result = await cmd.ExecuteScalarAsync(cancellationToken);
             return Convert.ToInt32(result);

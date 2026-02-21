@@ -77,15 +77,14 @@
 
         <!-- Role Dropdown -->
         <div class="role-dropdown-wrapper">
-          <div class="role-select-wrapper">
-            <select class="role-select" [(ngModel)]="user.role" name="role" (ngModelChange)="setRole($event)">
-              <option *ngFor="let roleOption of availableRoles" [value]="roleOption.value">{{ roleOption.label }}
-              </option>
-            </select>
-            <div class="role-select-icon">
-              <span class="material-symbols-outlined">unfold_more</span>
-            </div>
-          </div>
+          <mat-form-field class="role-mat-field" appearance="outline" subscriptSizing="dynamic">
+            <mat-select [(ngModel)]="user.role" name="role" panelClass="fleet-auth-role-select-panel"
+              (selectionChange)="setRole($event.value)">
+              <mat-option *ngFor="let roleOption of availableRoles" [value]="roleOption.value">
+                {{ roleOption.label }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
         </div>
       </div>
 
