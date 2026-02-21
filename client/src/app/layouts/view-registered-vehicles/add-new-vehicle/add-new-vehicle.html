@@ -1,9 +1,5 @@
-<!-- Modal Overlay -->
 <div class="modal-overlay">
-    <!-- Modal Container -->
     <div class="modal-container">
-
-        <!-- Modal Header -->
         <div class="modal-header">
             <h2 class="modal-title">New Vehicle Registration</h2>
             <button class="modal-close-btn" aria-label="Close modal" (click)="closeModal()">
@@ -11,76 +7,70 @@
             </button>
         </div>
 
-        <!-- Modal Body -->
         <div class="modal-body">
+            @if (errorMessage()) {
+                <div class="error-banner">{{ errorMessage() }}</div>
+            }
 
-            <!-- License Plate -->
             <div class="form-group">
-                <label class="form-label">License Plate</label>
-                <div class="input-wrapper">
-                    <input class="form-input" placeholder="Enter license plate number" type="text" />
-                </div>
+                <label class="form-label">Vehicle Name *</label>
+                <input class="form-input" placeholder="e.g. Volvo FH16 #01" type="text"
+                       [(ngModel)]="formData.name" />
             </div>
 
-            <!-- Type & Model Row -->
+            <div class="form-group">
+                <label class="form-label">License Plate *</label>
+                <input class="form-input" placeholder="Enter license plate number" type="text"
+                       [(ngModel)]="formData.licensePlate" />
+            </div>
+
             <div class="form-row">
                 <div class="form-group">
-                    <label class="form-label">Vehicle Type</label>
+                    <label class="form-label">Vehicle Type *</label>
                     <div class="select-wrapper">
-                        <select class="form-select">
+                        <select class="form-select" [(ngModel)]="formData.vehicleType">
                             <option value="">Select Type</option>
-                            <option value="truck">Heavy Truck</option>
-                            <option value="van">Delivery Van</option>
-                            <option value="trailer">Trailer</option>
-                            <option value="pickup">Pickup</option>
+                            <option value="Heavy Truck">Heavy Truck</option>
+                            <option value="Delivery Van">Delivery Van</option>
+                            <option value="Trailer">Trailer</option>
+                            <option value="Pickup">Pickup</option>
                         </select>
                         <span class="material-symbols-outlined select-arrow">expand_more</span>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Model</label>
-                    <input class="form-input" placeholder="e.g. Volvo FH16" type="text" />
+                    <label class="form-label">Acquisition Cost</label>
+                    <input class="form-input" placeholder="e.g. 50000" type="number"
+                           [(ngModel)]="formData.acquisitionCost" />
                 </div>
             </div>
 
-            <!-- Payload Capacity -->
             <div class="form-group">
                 <label class="form-label">Max Payload Capacity</label>
                 <div class="input-group">
-                    <input class="form-input group-input" placeholder="e.g. 15000" type="number" />
-                    <div class="input-addon">kg/tons</div>
+                    <input class="form-input group-input" placeholder="e.g. 15000" type="number"
+                           [(ngModel)]="formData.maxCapacityKg" />
+                    <div class="input-addon">kg</div>
                 </div>
             </div>
 
-            <!-- Initial Odometer -->
             <div class="form-group">
                 <label class="form-label">Initial Odometer Reading</label>
                 <div class="input-group">
-                    <input class="form-input group-input" placeholder="e.g. 1200" type="number" />
-                    <div class="input-addon">km/miles</div>
+                    <input class="form-input group-input" placeholder="e.g. 1200" type="number"
+                           [(ngModel)]="formData.odometerKm" />
+                    <div class="input-addon">km</div>
                 </div>
             </div>
-
-            <!-- Visual Asset Placeholder -->
-            <div class="upload-placeholder">
-                <img alt="Vehicle illustration" class="upload-bg-img"
-                    data-alt="Abstract blueprint of a modern cargo truck"
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuB5CtJE0mRolA0Yx4Gj6FMLKH0baHr1UWGoW_w3ZbdM4_BJ7XnWlArURlhA_GLYcmLiMakr7DSFMgmx-NwToxZuN94dCWhXG36I_hOE4rpO_XD7CdTrzkygdgRJXoR1GX4Dmd5CklP7DfXjXSZN8Cltm1pdoly5RKRCvKeqLVADzcrO_1dK9fSi_RrRHNxbtEQ-Yaxi3qL0Hp1GMj6qHRPaExGKE06mQCZlzUz-Zwi2PVh-4TM0JcJcuL7LADx2nTtG1w4hw5bio9nx" />
-                <span class="material-symbols-outlined upload-icon">add_a_photo</span>
-                <span class="upload-text">Upload vehicle photo (Optional)</span>
-            </div>
-
         </div>
 
-        <!-- Modal Footer -->
         <div class="modal-footer">
             <button class="btn-cancel" (click)="closeModal()">Cancel</button>
-            <button class="btn-primary">
+            <button class="btn-primary" (click)="submitVehicle()" [disabled]="isSubmitting()">
                 <span class="material-symbols-outlined icon-small">save</span>
-                Save Vehicle
+                {{ isSubmitting() ? 'Saving...' : 'Save Vehicle' }}
             </button>
         </div>
-
     </div>
 </div>

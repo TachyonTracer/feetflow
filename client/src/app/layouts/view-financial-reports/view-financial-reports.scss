@@ -497,17 +497,53 @@ $red-100: #fee2e2;
         }
     }
 
-    /* -- Simple Footer -- */
-    .bottom-footer {
-        margin-top: auto;
-        padding: 2rem 2.5rem;
-        border-top: 1px solid $border-light;
-        text-align: center;
+    .vehicle-select {
+        width: 100%;
+        max-width: 400px;
+        padding: 0.6rem 0.75rem;
+        border: 1px solid $border-light;
+        border-radius: 0.5rem;
+        font-size: 0.875rem;
+        background: $bg-white;
 
-        p {
-            font-size: 0.875rem;
-            color: $text-secondary;
-            margin: 0;
+        &:focus {
+            outline: none;
+            border-color: $primary-color;
         }
     }
+
+    .roi-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 1rem;
+    }
+
+    .roi-item {
+        background: $bg-light;
+        padding: 1rem;
+        border-radius: 0.75rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .roi-highlight {
+        background: #eff3ff;
+        border: 1px solid #bfcfff;
+    }
+
+    .roi-label {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: $text-secondary;
+    }
+
+    .roi-value {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: $text-primary;
+    }
+
+    .text-green-val { color: $green-600; }
+    .text-red-val { color: $red-600; }
 }

@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MaintenanceApiService } from '../../services/controllers/maintenance-api.service';
-import { MaintenanceLog } from '../../core/models/maintenance.model';
+import { VehiclesApiService } from '../../services/controllers/vehicles-api.service';
+import { MaintenanceLog, CreateMaintenanceRequest } from '../../core/models/maintenance.model';
+import { Vehicle } from '../../core/models/vehicle.model';
 
 @Component({
   selector: 'app-view-service-log',
@@ -15,14 +17,26 @@ export class ViewServiceLog implements OnInit {
   logs: MaintenanceLog[] = [];
   isLoading = true;
 
-  searchTerm: string = '';
-  currentStatus: string = '';
-  sortBy: string = '';
+  showCreateModal = signal(false);
+  isSubmitting = signal(false);
+  formError = signal('');
+  vehicles = signal<Vehicle[]>([]);
 
-  constructor(private maintenanceService: MaintenanceApiService) {}
+  newLog: CreateMaintenanceRequest = {
+    vehicleId: '',
+    description: '',
+    cost: 0,
+    serviceDate: '',
+  };
+
+  constructor(
+    private maintenanceService: MaintenanceApiService,
+    private vehiclesService: VehiclesApiService,
+  ) {}
 
   ngOnInit() {
     this.loadLogs();
+    this.loadVehicles();
   }
 
   loadLogs() {
@@ -39,49 +53,46 @@ export class ViewServiceLog implements OnInit {
     });
   }
 
-  get filteredLogs(): MaintenanceLog[] {
-    let filtered = this.logs;
-
-    if (this.currentStatus) {
-      const isClosedMatches = this.currentStatus === 'Completed';
-      filtered = filtered.filter((l) => Boolean(l.isClosed) === isClosedMatches);
-    }
-
-    if (this.searchTerm) {
-      const term = this.searchTerm.toLowerCase();
-      filtered = filtered.filter(
-        (l) =>
-          l.maintenance_id.toLowerCase().includes(term) ||
-          l.description.toLowerCase().includes(term) ||
-          (l.vehicleName && l.vehicleName.toLowerCase().includes(term)),
-      );
-    }
-
-    if (this.sortBy) {
-      filtered = [...filtered].sort((a, b) => {
-        if (this.sortBy === 'date-desc') {
-          return new Date(b.serviceDate || 0).getTime() - new Date(a.serviceDate || 0).getTime();
-        } else if (this.sortBy === 'date-asc') {
-          return new Date(a.serviceDate || 0).getTime() - new Date(b.serviceDate || 0).getTime();
-        } else if (this.sortBy === 'cost-desc') {
-          return (b.cost || 0) - (a.cost || 0);
-        } else if (this.sortBy === 'cost-asc') {
-          return (a.cost || 0) - (b.cost || 0);
-        }
-        return 0;
-      });
-    }
-
-    return filtered;
+  loadVehicles() {
+    this.vehiclesService.getVehicles(1, 100).subscribe({
+      next: (res) => this.vehicles.set(res.items || []),
+      error: (err) => console.error('Failed to load vehicles', err),
+    });
   }
 
   closeLog(id: string) {
     this.maintenanceService.closeMaintenance(id).subscribe({
+      next: () => this.loadLogs(),
+      error: (err) => console.error('Failed to close log', err),
+    });
+  }
+
+  openCreateModal() {
+    this.newLog = { vehicleId: '', description: '', cost: 0, serviceDate: '' };
+    this.formError.set('');
+    this.showCreateModal.set(true);
+  }
+
+  closeCreateModal() {
+    this.showCreateModal.set(false);
+  }
+
+  submitNewLog() {
+    if (!this.newLog.vehicleId || !this.newLog.description || !this.newLog.serviceDate) {
+      this.formError.set('Please fill in all required fields.');
+      return;
+    }
+    this.isSubmitting.set(true);
+    this.formError.set('');
+    this.maintenanceService.createMaintenance(this.newLog).subscribe({
       next: () => {
+        this.isSubmitting.set(false);
+        this.showCreateModal.set(false);
         this.loadLogs();
       },
       error: (err) => {
-        console.error('Failed to close log', err);
+        this.isSubmitting.set(false);
+        this.formError.set(err.error?.errorMessage || 'Failed to create maintenance log.');
       },
     });
   }

@@ -32,7 +32,7 @@
                             <select class="form-control form-select" id="vehicle-select" name="vehicleId"
                                 [(ngModel)]="formData.vehicleId" required>
                                 <option value="" disabled>Select a vehicle</option>
-                                <option *ngFor="let v of vehicles" [value]="v.vehicle_id">
+                                <option *ngFor="let v of vehicles" [value]="v.id">
                                     {{ v.name }} - {{ v.licensePlate }}
                                 </option>
                             </select>

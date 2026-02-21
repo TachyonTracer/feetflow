@@ -87,8 +87,8 @@
                             </tr>
                         </ng-container>
                         <ng-template #vehicleList>
-                            <tr *ngFor="let v of paginatedVehicles; let i = index">
-                                <td class="td-sr">{{ v.vehicle_id.substring(0,8) | uppercase }}</td>
+                            <tr *ngFor="let v of vehicles; let i = index">
+                                <td class="td-sr">{{ v.id.substring(0,8) | uppercase }}</td>
                                 <td>{{ v.licensePlate || 'N/A' }}</td>
                                 <td>
                                     <span class="status-badge" [ngClass]="{
@@ -107,17 +107,18 @@
                                 <td class="td-actions">
                                     <div class="action-group">
                                         <button class="action-btn" title="Retire vehicle"
-                                            (click)="retireVehicle(v.vehicle_id)" [disabled]="v.status === 'Retired'">
+                                            (click)="retireVehicle(v.id)"
+                                            [disabled]="v.status === 'Retired'">
                                             <span class="material-symbols-outlined">block</span>
                                         </button>
                                         <button class="action-btn danger" title="Delete vehicle"
-                                            (click)="deleteVehicle(v.vehicle_id)">
+                                            (click)="deleteVehicle(v.id)">
                                             <span class="material-symbols-outlined">delete</span>
                                         </button>
                                     </div>
                                 </td>
                             </tr>
-                            <tr *ngIf="paginatedVehicles.length === 0">
+                            <tr *ngIf="vehicles.length === 0">
                                 <td colspan="8" style="text-align: center; padding: 2rem;">No vehicles found.</td>
                             </tr>
                         </ng-template>

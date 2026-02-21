@@ -1,6 +1,6 @@
-export interface ApiResponse {
+export interface ApiResponse<T = any> {
   status: number;
   errorMessage: string | null;
-  result: any;
+  result: T;
   timestamp: string;
 }

@@ -45,49 +45,53 @@
     <!-- 3. Summary Cards -->
     <div class="summary-cards">
         <ng-container *ngIf="metrics$ | async as metrics">
-            <!-- Active Fleet Card -->
             <div class="card">
                 <div class="card-header">
-                    <span class="card-title">Active Fleet</span>
+                    <span class="card-title">Total Vehicles</span>
                     <div class="card-icon primary">
                         <span class="material-symbols-outlined">directions_car</span>
                     </div>
                 </div>
                 <div class="card-body">
-                    <h3>{{ metrics.activeVehicles }}</h3>
-                    <span class="badge positive" *ngIf="metrics.activeVehiclesDelta">{{ metrics.activeVehiclesDelta
-                        }}</span>
+                    <h3>{{ metrics.totalVehicles }}</h3>
                 </div>
-                <p class="card-footer">Vehicles currently on road</p>
+                <p class="card-footer">Registered in fleet</p>
             </div>
-            <!-- Maintenance Alert Card -->
             <div class="card">
                 <div class="card-header">
-                    <span class="card-title">Maintenance Alert</span>
-                    <div class="card-icon warning">
-                        <span class="material-symbols-outlined">build</span>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <h3>{{ metrics.vehiclesInMaintenance }}</h3>
-                    <span class="badge negative" *ngIf="metrics.vehiclesInMaintenance > 0">Urgent</span>
-                </div>
-                <p class="card-footer">Units in workshop</p>
-            </div>
-            <!-- Pending Cargo Card -->
-            <div class="card">
-                <div class="card-header">
-                    <span class="card-title">Pending Cargo</span>
+                    <span class="card-title">Available Vehicles</span>
                     <div class="card-icon primary">
-                        <span class="material-symbols-outlined">inventory_2</span>
+                        <span class="material-symbols-outlined">check_circle</span>
                     </div>
                 </div>
                 <div class="card-body">
-                    <h3>{{ metrics.pendingTrips }}</h3>
-                    <span class="badge positive" *ngIf="metrics.pendingTripsDelta">{{ metrics.pendingTripsDelta
-                        }}</span>
+                    <h3>{{ metrics.availableVehicles }}</h3>
                 </div>
-                <p class="card-footer">Loads awaiting assignment</p>
+                <p class="card-footer">Ready for dispatch</p>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">Active Trips</span>
+                    <div class="card-icon warning">
+                        <span class="material-symbols-outlined">route</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <h3>{{ metrics.activeTrips }}</h3>
+                </div>
+                <p class="card-footer">Currently on road</p>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">On Duty Drivers</span>
+                    <div class="card-icon primary">
+                        <span class="material-symbols-outlined">group</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <h3>{{ metrics.onDutyDrivers }}</h3>
+                </div>
+                <p class="card-footer">Active drivers</p>
             </div>
         </ng-container>
     </div>
@@ -116,7 +120,7 @@
                     <ng-template #tripsList>
                         <tr *ngFor="let trip of filteredTrips">
                             <td>
-                                <div class="trip-id" style="text-transform: uppercase;">{{ trip.trip_id.substring(0,8)
+                                <div class="trip-id" style="text-transform: uppercase;">{{ trip.id.substring(0,8)
                                     || 'TRIP' }}</div>
                                 <div class="trip-route">Cross Country</div>
                             </td>
@@ -124,7 +128,7 @@
                                 <div class="vehicle-info">
                                     <span class="material-symbols-outlined vehicle-icon">front_loader</span>
                                     <span class="vehicle-name">{{ trip.vehicleName || 'Vehicle ' +
-                                        trip.vehicle_id.substring(0,4) }}</span>
+                                        trip.vehicleId.substring(0,4) }}</span>
                                 </div>
                             </td>
                             <td>
@@ -134,7 +138,7 @@
                                         <span class="material-symbols-outlined"
                                             style="color: var(--text-secondary);">person</span>
                                     </div>
-                                    <span class="name">{{ trip.driverName || 'Driver ' + trip.driver_id.substring(0,4)
+                                    <span class="name">{{ trip.driverName || 'Driver ' + trip.driverId.substring(0,4)
                                         }}</span>
                                 </div>
                             </td>

@@ -1,301 +1,146 @@
 <div class="performance-layout">
-    <!-- Top Navigation Bar -->
-    <header class="top-header">
-        <div class="header-inner">
-            <div class="logo-section">
-                <div class="logo-icon">
-                    <span class="material-symbols-outlined">local_shipping</span>
-                </div>
-                <h1 class="logo-title heading-font">Fleet Flow</h1>
-            </div>
-            <nav class="main-nav">
-                <a class="nav-item" href="#">Dashboard</a>
-                <a class="nav-item" href="#">Trips</a>
-                <a class="nav-item" href="#">Expenses</a>
-                <a class="nav-item" href="#">Fleet</a>
-                <a class="nav-item active" href="#">Drivers</a>
-            </nav>
-            <div class="user-actions">
-                <button class="action-btn">
-                    <span class="material-symbols-outlined">notifications</span>
-                </button>
-                <div class="user-avatar">
-                    <img alt="User Profile" data-alt="Manager profile avatar with professional look"
-                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuAL1EpSXCU3qZab6_bqdziKZQcRdQRRI4X2jRzVaPuQ_t9oUFopvR9qOctPFJwfvVBvNpTNhkOxWLTxP8xCjlnY9YH5JZzLksr7uqoVdBvmgHmwF-fRRJHsVxmCqxldvfa2hgCQ8BYIB1_D-OXZbef7zcZWVvM8d6l4iI1sIhONVzLc6wbb01gHCB1z1Zvap6eyXR0Pcq3oEPWg5oTtxAUeawRXYBkgS8fyqHdAHxkUIEMlxj8rr1Hd0X1eceWn8Ynae3xPf99oilw6" />
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <!-- Main Content -->
     <main class="main-content">
-        <!-- Page Title Section -->
         <div class="page-title-section">
-            <h2 class="heading-font">Driver Performance & Safety Profiles</h2>
-            <p class="subtitle">Monitor fleet compliance, licensing status, and safety metrics in real-time.</p>
+            <div>
+                <h2 class="heading-font">Driver Management</h2>
+                <p class="subtitle">Manage drivers, licensing status, and performance.</p>
+            </div>
+            <button class="btn-primary" (click)="openCreateModal()">
+                <span class="material-symbols-outlined icon-small">person_add</span>
+                Add Driver
+            </button>
         </div>
 
-        <!-- Controls Row -->
         <div class="controls-row">
             <div class="search-box">
                 <span class="material-symbols-outlined search-icon">search</span>
-                <input class="search-input" placeholder="Search drivers..." type="text" />
-            </div>
-            <div class="action-filters">
-                <button class="btn-outline">
-                    <span class="material-symbols-outlined icon">group_work</span>
-                    <span>Group By</span>
-                </button>
-                <button class="btn-outline">
-                    <span class="material-symbols-outlined icon">filter_alt</span>
-                    <span>Filter</span>
-                </button>
-                <button class="btn-outline">
-                    <span class="material-symbols-outlined icon">swap_vert</span>
-                    <span>Sort</span>
-                </button>
+                <input class="search-input" placeholder="Search drivers..."
+                       type="text" [(ngModel)]="searchTerm" (ngModelChange)="filterDrivers()" />
             </div>
         </div>
 
-        <!-- Data Table Card -->
         <div class="data-table-container">
             <div class="table-wrapper">
                 <table>
                     <thead>
                         <tr>
                             <th>Driver Name</th>
-                            <th>License ID</th>
-                            <th>Expiry Date</th>
-                            <th>Completion Rate</th>
-                            <th>Safety Score</th>
-                            <th>Complaints</th>
+                            <th>License Number</th>
+                            <th>Category</th>
+                            <th>License Expiry</th>
+                            <th>Status</th>
                             <th class="text-right">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Driver Row 1 -->
-                        <tr>
-                            <td>
-                                <div class="driver-info">
-                                    <img alt="Alex Rivera" class="driver-avatar"
-                                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuAR2QBj_2K8NhCEoUvJuSM2QXHmwVJLJF4BXDynPKbvDk2qEbFas4-MJvvsf_T2aJj1155Kue7HBGJ9Ma1TZn9j0jYTK9QnXyEuTZP4NTB9jwmVs4KEuKrxc74Flx2EqPdueHH0WUjBJ021EiflUwVXHKP87KZNvlL6LKPH7hFisdQnWqcKUtqokeiYgWJO4RjemSsxXA0ZBnut2TdXd4F2SAk_AexQPpGg8o2ADpvxtptUXzAR5X5RtX5Knh0CCGD2t8DCYkZCUTaO" />
-                                    <div class="driver-details">
-                                        <div class="driver-name">Alex Rivera</div>
-                                        <div class="driver-status">Active • ID-4421</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="font-mono">TX-992031-M</td>
-                            <td>Jan 12, 2026</td>
-                            <td>
-                                <div class="progress-cell">
-                                    <div class="progress-bar-bg">
-                                        <div class="progress-bar-fill bg-primary" style="width: 100%"></div>
-                                    </div>
-                                    <span class="progress-text">100%</span>
-                                </div>
-                            </td>
-                            <td>
-                                <span class="badge badge-emerald">
-                                    <span class="badge-dot dot-emerald"></span>
-                                    98 High
-                                </span>
-                            </td>
-                            <td>0</td>
-                            <td class="text-right">
-                                <button class="action-btn-sm">
-                                    <span class="material-symbols-outlined">more_vert</span>
-                                </button>
-                            </td>
-                        </tr>
-
-                        <!-- Driver Row 2 -->
-                        <tr>
-                            <td>
-                                <div class="driver-info">
-                                    <img alt="Sarah Jenkins" class="driver-avatar"
-                                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuD2stycRIl5Sx8Lqezy2dr0cXax0xuPnoT84knN8JchRVVCpEQD7NisnRRpZ8VNj8QsaGCuD7JRpz7vLJXo7CbWEzjpYHp2nVHmqglKTMhBT127UHyYg6crYSyJNslsqVWysQDwiojWm3qa8x2WQRnpHWI-d1vW1lo4zSM7ub4emSzmxsTJ0LRyf3TOFERhX-AKAXZdBt9MZxlyZgCKXrTTsu0x5Si0snUFe7nnk69YVGpGMQz3HgFoC7Suwg0y8mrXIwti5YyghLCz" />
-                                    <div class="driver-details">
-                                        <div class="driver-name">Sarah Jenkins</div>
-                                        <div class="driver-status">Active • ID-1029</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="font-mono">CA-441022-L</td>
-                            <td>
-                                <div class="expiry-cell">
-                                    <span>Aug 14, 2024</span>
-                                    <span class="expiring-warning">
-                                        <span class="material-symbols-outlined">warning</span>
-                                        EXPIRING SOON
-                                    </span>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="progress-cell">
-                                    <div class="progress-bar-bg">
-                                        <div class="progress-bar-fill bg-primary" style="width: 85%"></div>
-                                    </div>
-                                    <span class="progress-text">85%</span>
-                                </div>
-                            </td>
-                            <td>
-                                <span class="badge badge-emerald">
-                                    <span class="badge-dot dot-emerald"></span>
-                                    92 High
-                                </span>
-                            </td>
-                            <td>1</td>
-                            <td class="text-right">
-                                <button class="action-btn-sm">
-                                    <span class="material-symbols-outlined">more_vert</span>
-                                </button>
-                            </td>
-                        </tr>
-
-                        <!-- Driver Row 3 -->
-                        <tr>
-                            <td>
-                                <div class="driver-info">
-                                    <img alt="Michael Chen" class="driver-avatar"
-                                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuB0n3D720BjBxzICBImDpQBCUNAW4_Lq9-2BjOcGjyE65R9YldV6Yn0qIcWsuyEtOO5qfzwP8Y_-xG2q8kS8hfx7-2X8h8kpYeU1wm8WdT4SFtyGCXqNGk82tyeygdx45P70MJRF5-nxDOwDdt_lpQAkaVdU3E9bKtMcrYjrFVMbIFqyrehWEig28GGvE53XlhIfrWATNDzkyuga-nDf86F99HLBC9l-rRHtr52RYP8Zm7Wqe6cR4VuD6fq_tpnRUlKOg0SvfWQfdJn" />
-                                    <div class="driver-details">
-                                        <div class="driver-name">Michael Chen</div>
-                                        <div class="driver-status">On Break • ID-8832</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="font-mono">NY-110293-K</td>
-                            <td>Oct 05, 2025</td>
-                            <td>
-                                <div class="progress-cell">
-                                    <div class="progress-bar-bg">
-                                        <div class="progress-bar-fill bg-primary" style="width: 72%"></div>
-                                    </div>
-                                    <span class="progress-text">72%</span>
-                                </div>
-                            </td>
-                            <td>
-                                <span class="badge badge-amber">
-                                    <span class="badge-dot dot-amber"></span>
-                                    74 Medium
-                                </span>
-                            </td>
-                            <td>2</td>
-                            <td class="text-right">
-                                <button class="action-btn-sm">
-                                    <span class="material-symbols-outlined">more_vert</span>
-                                </button>
-                            </td>
-                        </tr>
-
-                        <!-- Driver Row 4 -->
-                        <tr>
-                            <td>
-                                <div class="driver-info">
-                                    <img alt="Jordan Smith" class="driver-avatar"
-                                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuDZWdnZ9TJk-x7Y506G-ixAtZgl2oiuSi9m4bpJu8gHDiiG2LM5SZAJ9U3QTQ24cQ7exYwdoMzKqW9cIHyDJulppiiRMc-eHu0PObvep8qKuT1JUZop21MpKY3-pw2xuWuhoMHObUK8XBjLYhphVbA_agFYt72bCbfmwlOwU7aBh8PotHHBAc8P5UejEli4DZOLpbgabCdG87C9xA2swquF5cv19yFQMgXQMRl60d6oaM0qHeAIb-X8x6ghrfWBYv8vr6tVnRHA9C_U" />
-                                    <div class="driver-details">
-                                        <div class="driver-name">Jordan Smith</div>
-                                        <div class="driver-status">Active • ID-5512</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="font-mono">FL-771223-X</td>
-                            <td>May 21, 2026</td>
-                            <td>
-                                <div class="progress-cell">
-                                    <div class="progress-bar-bg">
-                                        <div class="progress-bar-fill bg-primary" style="width: 45%"></div>
-                                    </div>
-                                    <span class="progress-text">45%</span>
-                                </div>
-                            </td>
-                            <td>
-                                <span class="badge badge-rose">
-                                    <span class="badge-dot dot-rose"></span>
-                                    58 Low
-                                </span>
-                            </td>
-                            <td>5</td>
-                            <td class="text-right">
-                                <button class="action-btn-sm">
-                                    <span class="material-symbols-outlined">more_vert</span>
-                                </button>
-                            </td>
-                        </tr>
+                        @if (isLoading()) {
+                            <tr><td colspan="6" class="text-center">Loading drivers...</td></tr>
+                        } @else if (filteredDrivers().length === 0) {
+                            <tr><td colspan="6" class="text-center">No drivers found.</td></tr>
+                        } @else {
+                            @for (driver of filteredDrivers(); track driver.id) {
+                                <tr>
+                                    <td>
+                                        <div class="driver-info">
+                                            <div class="driver-avatar-placeholder">
+                                                <span class="material-symbols-outlined">person</span>
+                                            </div>
+                                            <div class="driver-details">
+                                                <div class="driver-name">{{ driver.fullName }}</div>
+                                                <div class="driver-status-sub">{{ driver.status }}</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="font-mono">{{ driver.licenseNumber }}</td>
+                                    <td>{{ driver.licenseCategory }}</td>
+                                    <td>
+                                        <div class="expiry-cell">
+                                            <span>{{ driver.licenseExpiry }}</span>
+                                            @if (isLicenseExpired(driver.licenseExpiry)) {
+                                                <span class="expiring-warning expired">
+                                                    <span class="material-symbols-outlined">error</span>
+                                                    EXPIRED
+                                                </span>
+                                            } @else if (isLicenseExpiringSoon(driver.licenseExpiry)) {
+                                                <span class="expiring-warning">
+                                                    <span class="material-symbols-outlined">warning</span>
+                                                    EXPIRING SOON
+                                                </span>
+                                            }
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge" [ngClass]="getStatusBadgeClass(driver.status)">
+                                            {{ driver.status }}
+                                        </span>
+                                    </td>
+                                    <td class="text-right">
+                                        @if (driver.status !== 'Suspended') {
+                                            <button class="btn-action btn-suspend" (click)="suspendDriver(driver.id)" title="Suspend driver">
+                                                <span class="material-symbols-outlined">block</span>
+                                            </button>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        }
                     </tbody>
                 </table>
             </div>
 
-            <!-- Pagination -->
             <div class="table-footer">
-                <span class="pagination-text">Showing 4 of 128 drivers</span>
-                <div class="pagination-actions">
-                    <button class="btn-page" disabled>Previous</button>
-                    <button class="btn-page">Next</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Summary Stats Grid -->
-        <div class="summary-grid">
-            <div class="stat-card">
-                <div class="stat-header">
-                    <span class="stat-label">Avg Safety Score</span>
-                    <span class="material-symbols-outlined icon-primary">security</span>
-                </div>
-                <div class="stat-value">86.4</div>
-                <div class="stat-trend trend-up">
-                    <span class="material-symbols-outlined text-sm">trending_up</span>
-                    2.4% vs last month
-                </div>
-            </div>
-
-            <div class="stat-card">
-                <div class="stat-header">
-                    <span class="stat-label">Expiring Licenses</span>
-                    <span class="material-symbols-outlined icon-rose">contact_emergency</span>
-                </div>
-                <div class="stat-value">3</div>
-                <div class="stat-trend trend-down-alert">
-                    <span class="material-symbols-outlined text-sm">priority_high</span>
-                    Needs immediate attention
-                </div>
-            </div>
-
-            <div class="stat-card">
-                <div class="stat-header">
-                    <span class="stat-label">Completion Rate</span>
-                    <span class="material-symbols-outlined icon-primary">task_alt</span>
-                </div>
-                <div class="stat-value">92%</div>
-                <div class="stat-desc">Global fleet average</div>
-            </div>
-
-            <div class="stat-card">
-                <div class="stat-header">
-                    <span class="stat-label">Open Complaints</span>
-                    <span class="material-symbols-outlined icon-muted">feedback</span>
-                </div>
-                <div class="stat-value">12</div>
-                <div class="stat-trend trend-up">
-                    <span class="material-symbols-outlined text-sm">trending_down</span>
-                    Reduced by 4 this week
-                </div>
+                <span class="pagination-text">Showing {{ filteredDrivers().length }} of {{ drivers().length }} drivers</span>
             </div>
         </div>
     </main>
+</div>
 
-    <!-- Footer -->
-    <footer class="bottom-footer">
-        <div class="footer-inner">
-            <p>© 2024 Fleet Flow Logistics Management Systems. All rights reserved.</p>
-            <div class="footer-links">
-                <a href="#">Privacy Policy</a>
-                <a href="#">Terms of Service</a>
-                <a href="#">Support</a>
+<!-- Create Driver Modal -->
+@if (showCreateModal()) {
+<div class="modal-overlay" (click)="closeCreateModal()">
+    <div class="modal-container" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h2 class="modal-title">Add New Driver</h2>
+            <button class="modal-close-btn" (click)="closeCreateModal()">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            @if (formError()) {
+                <div class="error-banner">{{ formError() }}</div>
+            }
+            <div class="form-group">
+                <label class="form-label">Full Name *</label>
+                <input class="form-input" type="text" placeholder="Enter driver name" [(ngModel)]="newDriver.fullName" />
+            </div>
+            <div class="form-group">
+                <label class="form-label">License Number *</label>
+                <input class="form-input" type="text" placeholder="Enter license number" [(ngModel)]="newDriver.licenseNumber" />
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">License Category *</label>
+                    <select class="form-select" [(ngModel)]="newDriver.licenseCategory">
+                        <option value="">Select Category</option>
+                        <option value="A">A - Motorcycle</option>
+                        <option value="B">B - Car</option>
+                        <option value="C">C - Truck</option>
+                        <option value="D">D - Bus</option>
+                        <option value="CE">CE - Heavy Truck</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">License Expiry *</label>
+                    <input class="form-input" type="date" [(ngModel)]="newDriver.licenseExpiry" />
+                </div>
             </div>
         </div>
-    </footer>
+        <div class="modal-footer">
+            <button class="btn-cancel" (click)="closeCreateModal()">Cancel</button>
+            <button class="btn-primary" (click)="submitNewDriver()" [disabled]="isSubmitting()">
+                {{ isSubmitting() ? 'Saving...' : 'Save Driver' }}
+            </button>
+        </div>
+    </div>
 </div>
+}

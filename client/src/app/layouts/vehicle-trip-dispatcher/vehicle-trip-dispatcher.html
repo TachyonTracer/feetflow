@@ -66,7 +66,7 @@
                 <section class="log-table-section">
                     <div class="section-header">
                         <h2 class="section-title">Active Trip Dispatch Log</h2>
-                        <span class="section-subtitle">Showing {{ filteredTrips.length }} active deliveries</span>
+                        <span class="section-subtitle">Showing {{ trips.length }} active deliveries</span>
                     </div>
 
                     <div class="data-table-container">
@@ -83,10 +83,10 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr *ngFor="let trip of filteredTrips">
-                                        <td class="td-id">{{ trip.trip_id.substring(0,8) | uppercase }}</td>
-                                        <td class="td-text">{{ getVehicleName(trip.vehicle_id) }}</td>
-                                        <td class="td-text">{{ getDriverName(trip.driver_id) }}</td>
+                                    <tr *ngFor="let trip of trips">
+                                        <td class="td-id">{{ trip.id.substring(0,8) | uppercase }}</td>
+                                        <td class="td-text">{{ getVehicleName(trip.vehicleId) }}</td>
+                                        <td class="td-text">{{ getDriverName(trip.driverId) }}</td>
                                         <td class="td-text">{{ trip.cargoWeightKg | number:'1.0-0' }}</td>
                                         <td>
                                             <span class="status-badge" [ngClass]="{
@@ -100,21 +100,21 @@
                                         </td>
                                         <td class="td-actions">
                                             <button *ngIf="trip.status === 'Draft'" class="btn-outline btn-sm"
-                                                (click)="dispatchTrip(trip.trip_id)" title="Dispatch">
+                                                (click)="dispatchTrip(trip.id)" title="Dispatch">
                                                 <span class="material-symbols-outlined">send</span>
                                             </button>
                                             <button *ngIf="trip.status === 'Dispatched'" class="btn-outline btn-sm"
-                                                (click)="openCompleteModal(trip.trip_id)" title="Complete">
+                                                (click)="openCompleteModal(trip.id)" title="Complete">
                                                 <span class="material-symbols-outlined">check_circle</span>
                                             </button>
                                             <button *ngIf="trip.status === 'Draft' || trip.status === 'Dispatched'"
-                                                class="btn-outline btn-sm" (click)="cancelTrip(trip.trip_id)"
+                                                class="btn-outline btn-sm" (click)="cancelTrip(trip.id)"
                                                 title="Cancel">
                                                 <span class="material-symbols-outlined">cancel</span>
                                             </button>
                                         </td>
                                     </tr>
-                                    <tr *ngIf="filteredTrips.length === 0 && !isLoadingLogs">
+                                    <tr *ngIf="trips.length === 0 && !isLoadingLogs">
                                         <td colspan="6" style="text-align: center; padding: 2rem;">No active trips
                                             found.</td>
                                     </tr>
@@ -142,7 +142,7 @@
                                     <select class="form-select" name="vehicleId" [(ngModel)]="newTrip.vehicleId"
                                         required>
                                         <option value="">Select a fleet unit...</option>
-                                        <option *ngFor="let v of vehicles" [value]="v.vehicle_id">{{ v.name }} - {{
+                                        <option *ngFor="let v of vehicles" [value]="v.id">{{ v.name }} - {{
                                             v.licensePlate }}</option>
                                     </select>
                                     <span class="material-symbols-outlined select-icon">expand_more</span>
@@ -163,7 +163,7 @@
                                 <div class="select-wrapper">
                                     <select class="form-select" name="driverId" [(ngModel)]="newTrip.driverId" required>
                                         <option value="">Assign a driver...</option>
-                                        <option *ngFor="let d of drivers" [value]="d.driver_id">{{ d.fullName }} (ID: {{
+                                        <option *ngFor="let d of drivers" [value]="d.id">{{ d.fullName }} (ID: {{
                                             d.licenseNumber }})</option>
                                     </select>
                                     <span class="material-symbols-outlined select-icon">expand_more</span>

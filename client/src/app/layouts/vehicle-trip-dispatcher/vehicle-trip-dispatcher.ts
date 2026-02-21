@@ -182,12 +182,12 @@ export class VehicleTripDispatcher implements OnInit {
   }
 
   getVehicleName(vehicleId: string): string {
-    const vehicle = this.vehicles.find((v) => v.vehicle_id === vehicleId);
+    const vehicle = this.vehicles.find((v) => v.id === vehicleId);
     return vehicle ? `${vehicle.name}` : `Vehicle ${vehicleId.substring(0, 5)}`;
   }
 
   getDriverName(driverId: string): string {
-    const driver = this.drivers.find((d) => d.driver_id === driverId);
+    const driver = this.drivers.find((d) => d.id === driverId);
     return driver ? driver.fullName : `Driver ${driverId.substring(0, 5)}`;
   }
 }

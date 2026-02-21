@@ -1,7 +1,7 @@
-export type VehicleStatus = 'Available' | 'OnTrip' | 'InShop' | 'Retired';
+export type VehicleStatus = 'Available' | 'Active' | 'OnTrip' | 'InShop' | 'InMaintenance' | 'Retired';
 
 export interface Vehicle {
-  vehicle_id: string;
+  id: string;
   name: string;
   licensePlate: string;
   vehicleType: string;
@@ -9,6 +9,7 @@ export interface Vehicle {
   odometerKm: number;
   acquisitionCost: number;
   status: VehicleStatus;
+  isDeleted: boolean;
   createdAt: string;
   updatedAt?: string;
   xmin: number;

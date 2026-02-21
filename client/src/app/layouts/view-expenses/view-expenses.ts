@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { AddExpenses } from '../add-expenses/add-expenses';
 import { VehiclesApiService } from '../../services/controllers/vehicles-api.service';
 import { FuelApiService } from '../../services/controllers/fuel-api.service';
-import { AnalyticsApiService } from '../../services/controllers/analytics-api.service';
 import { Vehicle } from '../../core/models/vehicle.model';
 import { FuelLog } from '../../core/models/fuel.model';
 
@@ -36,7 +35,7 @@ export class ViewExpenses implements OnInit {
       next: (res) => {
         this.vehicles = res.items || [];
         if (this.vehicles.length > 0) {
-          this.selectedVehicleId = this.vehicles[0].vehicle_id;
+          this.selectedVehicleId = this.vehicles[0].id;
           this.loadFuelLogs();
         }
       },
@@ -65,7 +64,7 @@ export class ViewExpenses implements OnInit {
   }
 
   getVehicleName(vehicleId: string): string {
-    const vehicle = this.vehicles.find((v) => v.vehicle_id === vehicleId);
+    const vehicle = this.vehicles.find((v) => v.id === vehicleId);
     return vehicle ? `${vehicle.name} (${vehicle.licensePlate})` : vehicleId.substring(0, 8);
   }
 

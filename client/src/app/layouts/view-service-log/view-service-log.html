@@ -34,9 +34,9 @@
                 <h2>Maintenance & Service Logs</h2>
                 <p>Manage and track your vehicle service history and upcoming repairs.</p>
             </div>
-            <button class="btn-primary">
+            <button class="btn-primary" (click)="openCreateModal()">
                 <span class="material-symbols-outlined icon-small">add</span>
-                <span>Create New Services</span>
+                <span>Create New Service</span>
             </button>
         </div>
 
@@ -90,8 +90,8 @@
                             </tr>
                         </ng-container>
                         <ng-template #logsList>
-                            <tr *ngFor="let log of filteredLogs">
-                                <td class="td-id">#{{ log.maintenance_id.substring(0,8) | uppercase }}</td>
+                            <tr *ngFor="let log of logs">
+                                <td class="td-id">#{{ log.maintenanceId.substring(0,8) | uppercase }}</td>
                                 <td>
                                     <div class="vehicle-info">
                                         <div class="vehicle-icon">
@@ -99,7 +99,7 @@
                                         </div>
                                         <div class="vehicle-details">
                                             <p class="vehicle-name">{{ log.vehicleName || 'Vehicle ' +
-                                                log.vehicle_id.substring(0,5) }}</p>
+                                                log.vehicleId.substring(0,5) }}</p>
                                         </div>
                                     </div>
                                 </td>
@@ -116,7 +116,7 @@
                                 </td>
                                 <td class="td-actions">
                                     <button class="action-btn-sm" *ngIf="!log.isClosed"
-                                        (click)="closeLog(log.maintenance_id)" title="Mark as Closed">
+                                        (click)="closeLog(log.maintenanceId)" title="Mark as Closed">
                                         <span class="material-symbols-outlined">check_circle</span>
                                     </button>
                                 </td>
@@ -137,8 +137,53 @@
         </div>
 
     </main>
-
-    <footer class="bottom-footer">
-        <p>© 2023 Fleet Flow Logistics Management. All rights reserved.</p>
-    </footer>
 </div>
+
+<!-- Create Maintenance Modal -->
+@if (showCreateModal()) {
+<div class="modal-overlay" (click)="closeCreateModal()">
+    <div class="modal-container" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h2 class="modal-title">Create Maintenance Log</h2>
+            <button class="modal-close-btn" (click)="closeCreateModal()">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            @if (formError()) {
+                <div class="error-banner">{{ formError() }}</div>
+            }
+            <div class="form-group">
+                <label class="form-label">Vehicle *</label>
+                <select class="form-select" [(ngModel)]="newLog.vehicleId">
+                    <option value="">Select Vehicle</option>
+                    <option *ngFor="let v of vehicles()" [value]="v.id">
+                        {{ v.name }} ({{ v.licensePlate }})
+                    </option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Description *</label>
+                <input class="form-input" type="text" placeholder="e.g. Oil change, brake repair"
+                       [(ngModel)]="newLog.description" />
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Cost</label>
+                    <input class="form-input" type="number" placeholder="0.00" [(ngModel)]="newLog.cost" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Service Date *</label>
+                    <input class="form-input" type="date" [(ngModel)]="newLog.serviceDate" />
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-cancel" (click)="closeCreateModal()">Cancel</button>
+            <button class="btn-primary" (click)="submitNewLog()" [disabled]="isSubmitting()">
+                {{ isSubmitting() ? 'Saving...' : 'Save Log' }}
+            </button>
+        </div>
+    </div>
+</div>
+}

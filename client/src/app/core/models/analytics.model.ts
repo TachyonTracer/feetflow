@@ -1,26 +1,16 @@
 export interface DashboardMetrics {
-  activeVehicles: number;
-  vehiclesInMaintenance: number;
-  pendingTrips: number;
+  totalVehicles: number;
   activeTrips: number;
-  completedTrips: number;
-  totalRevenue: number;
-
-  // Optional delta percentages if API returns them
-  activeVehiclesDelta?: string;
-  pendingTripsDelta?: string;
+  availableVehicles: number;
+  onDutyDrivers: number;
 }
 
 export interface VehicleRoi {
-  vehicle_id: string;
   totalRevenue: number;
+  totalFuelCost: number;
   totalMaintenanceCost: number;
   acquisitionCost: number;
-  roiPercentage: number;
+  roi: number;
 }
 
-export interface FuelEfficiency {
-  vehicle_id: string;
-  totalKm: number;
-  // Based on the fields, assuming there is more depending on exact implementation
-}
+export type FuelEfficiency = number | null;

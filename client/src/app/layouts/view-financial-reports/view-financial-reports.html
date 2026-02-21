@@ -1,34 +1,5 @@
 <div class="financial-layout">
-    <!-- Top Navigation -->
-    <header class="top-header">
-        <div class="header-inner">
-            <div class="logo-section">
-                <div class="logo-icon block-icon">
-                    <span class="material-symbols-outlined">analytics</span>
-                </div>
-                <h2 class="logo-title font-display">Fleet Flow</h2>
-            </div>
-
-            <div class="user-actions">
-                <div class="action-btn-group">
-                    <button class="action-btn">
-                        <span class="material-symbols-outlined">notifications</span>
-                    </button>
-                    <button class="action-btn">
-                        <span class="material-symbols-outlined">settings</span>
-                    </button>
-                </div>
-
-                <div class="user-avatar">
-                    <img alt="User Profile" data-alt="Close-up professional headshot of a person"
-                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKFOinrDIL71mPXr8Yk6Z9wa0AdXZMQL9FsrCQCR5FI9FmmjoulvPGm_yRL7EngSv7RyquQDy9pLnRKVOtUGykuyvDy7bg1DhOuOpSensa_j_8QCB75b7VySf1-Du8XnPCYhfDB2exZqO3WGFmO7o1XVS9qBQcy9DaZOCUXfZZzsQiCq2whwS-asnWnIzBK07MzeWkhr7k5YqQFPyk0J8SQSI0t5i8mJgYY20M-a3VO67rUEnlIx9y1VNVso2-sG4aiuX4cvUPH37V" />
-                </div>
-            </div>
-        </div>
-    </header>
-
     <main class="main-content">
-        <!-- Header Title -->
         <div class="page-title-section">
             <h1 class="font-display">Operational Analytics & Financial Reports</h1>
             <p class="subtitle">Comprehensive overview of your fleet performance and financial health.</p>
@@ -36,192 +7,103 @@
 
         <!-- Metrics Section -->
         <div class="metrics-grid">
-            <!-- Total Fuel Cost -->
-            <div class="metric-card">
-                <div class="metric-header">
-                    <p class="metric-label">Total Fuel Cost</p>
-                    <span class="metric-icon bg-red text-red">
-                        <span class="material-symbols-outlined">local_gas_station</span>
-                    </span>
+            @if (isLoadingMetrics()) {
+                <div class="metric-card"><p class="metric-label">Loading metrics...</p></div>
+            } @else if (dashboardMetrics(); as metrics) {
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <p class="metric-label">Total Vehicles</p>
+                        <span class="metric-icon bg-primary text-primary">
+                            <span class="material-symbols-outlined">local_shipping</span>
+                        </span>
+                    </div>
+                    <div class="metric-row">
+                        <p class="metric-value">{{ metrics.totalVehicles }}</p>
+                    </div>
+                    <p class="metric-desc">Fleet size</p>
                 </div>
-                <div class="metric-row">
-                    <p class="metric-value">$42,850</p>
-                    <p class="metric-trend trend-up-red">+12.4%</p>
-                </div>
-                <p class="metric-desc">vs. last month period</p>
-            </div>
 
-            <!-- Fleet ROI -->
-            <div class="metric-card">
-                <div class="metric-header">
-                    <p class="metric-label">Fleet ROI</p>
-                    <span class="metric-icon bg-green text-green">
-                        <span class="material-symbols-outlined">show_chart</span>
-                    </span>
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <p class="metric-label">Available Vehicles</p>
+                        <span class="metric-icon bg-green text-green">
+                            <span class="material-symbols-outlined">check_circle</span>
+                        </span>
+                    </div>
+                    <div class="metric-row">
+                        <p class="metric-value">{{ metrics.availableVehicles }}</p>
+                    </div>
+                    <p class="metric-desc">Ready for dispatch</p>
                 </div>
-                <div class="metric-row">
-                    <p class="metric-value">24.5%</p>
-                    <p class="metric-trend trend-down-green">-2.1%</p>
-                </div>
-                <p class="metric-desc">Net return on assets</p>
-            </div>
 
-            <!-- Utilization Rate -->
-            <div class="metric-card">
-                <div class="metric-header">
-                    <p class="metric-label">Utilization Rate</p>
-                    <span class="metric-icon bg-primary text-primary">
-                        <span class="material-symbols-outlined">precision_manufacturing</span>
-                    </span>
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <p class="metric-label">Active Trips</p>
+                        <span class="metric-icon bg-red text-red">
+                            <span class="material-symbols-outlined">route</span>
+                        </span>
+                    </div>
+                    <div class="metric-row">
+                        <p class="metric-value">{{ metrics.activeTrips }}</p>
+                    </div>
+                    <p class="metric-desc">Currently on road</p>
                 </div>
-                <div class="metric-row">
-                    <p class="metric-value">88.2%</p>
-                    <p class="metric-trend trend-up-green">+4.5%</p>
-                </div>
-                <p class="metric-desc">Average active hours</p>
-            </div>
+            }
         </div>
 
-        <!-- Graphs Section -->
+        <!-- Vehicle ROI Section -->
         <div class="charts-grid">
-            <!-- Fuel Efficiency Trend -->
-            <div class="chart-card">
+            <div class="chart-card" style="grid-column: span 2;">
                 <div class="chart-header">
-                    <p class="chart-title">Fuel Efficiency Trend (km/l)</p>
-                    <p class="chart-subtitle">Monthly average over last 6 months</p>
+                    <p class="chart-title">Vehicle ROI Analysis</p>
+                    <p class="chart-subtitle">Select a vehicle to view return on investment</p>
                 </div>
-                <div class="chart-body">
-                    <svg class="line-chart-svg" fill="none" preserveaspectratio="none" viewbox="0 0 478 150"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M0 109C18.1538 109 18.1538 21 36.3077 21C54.4615 21 54.4615 41 72.6154 41C90.7692 41 90.7692 93 108.923 93C127.077 93 127.077 33 145.231 33C163.385 33 163.385 101 181.538 101C199.692 101 199.692 61 217.846 61C236 61 236 45 254.154 45C272.308 45 272.308 121 290.462 121C308.615 121 308.615 149 326.769 149C344.923 149 344.923 1 363.077 1C381.231 1 381.231 81 399.385 81C417.538 81 417.538 129 435.692 129C453.846 129 453.846 25 472 25"
-                            stroke="#1e3fae" stroke-linecap="round" stroke-width="3"></path>
-                        <path
-                            d="M0 109C18.1538 109 18.1538 21 36.3077 21C54.4615 21 54.4615 41 72.6154 41C90.7692 41 90.7692 93 108.923 93C127.077 93 127.077 33 145.231 33C163.385 33 163.385 101 181.538 101C199.692 101 199.692 61 217.846 61C236 61 236 45 254.154 45C272.308 45 272.308 121 290.462 121C308.615 121 308.615 149 326.769 149C344.923 149 344.923 1 363.077 1C381.231 1 381.231 81 399.385 81C417.538 81 417.538 129 435.692 129C453.846 129 453.846 25 472 25V150H0V109Z"
-                            fill="url(#gradient_line)"></path>
-                        <defs>
-                            <lineargradient id="gradient_line" x1="0" x2="0" y1="0" y2="1">
-                                <stop offset="0%" stop-color="#1e3fae" stop-opacity="0.2"></stop>
-                                <stop offset="100%" stop-color="#1e3fae" stop-opacity="0"></stop>
-                            </lineargradient>
-                        </defs>
-                    </svg>
-                    <div class="chart-x-axis">
-                        <span>JAN</span>
-                        <span>FEB</span>
-                        <span>MAR</span>
-                        <span>APR</span>
-                        <span>MAY</span>
-                        <span>JUN</span>
+                <div class="chart-body" style="padding: 1rem;">
+                    <div style="margin-bottom: 1rem;">
+                        <select class="vehicle-select"
+                                [(ngModel)]="selectedVehicleId"
+                                (ngModelChange)="loadVehicleRoi()">
+                            <option value="">Select a vehicle</option>
+                            <option *ngFor="let v of vehicles()" [value]="v.id">
+                                {{ v.name }} ({{ v.licensePlate }})
+                            </option>
+                        </select>
                     </div>
-                </div>
-            </div>
 
-            <!-- Top 5 Costliest Vehicles -->
-            <div class="chart-card">
-                <div class="chart-header">
-                    <p class="chart-title">Top 5 Costliest Vehicles</p>
-                    <p class="chart-subtitle">Maintenance & fuel costs by ID</p>
+                    @if (isLoadingRoi()) {
+                        <p style="color: #64748b;">Loading ROI data...</p>
+                    } @else if (vehicleRoi(); as roi) {
+                        <div class="roi-grid">
+                            <div class="roi-item">
+                                <span class="roi-label">Total Revenue</span>
+                                <span class="roi-value text-green-val">{{ formatCurrency(roi.totalRevenue) }}</span>
+                            </div>
+                            <div class="roi-item">
+                                <span class="roi-label">Fuel Cost</span>
+                                <span class="roi-value text-red-val">{{ formatCurrency(roi.totalFuelCost) }}</span>
+                            </div>
+                            <div class="roi-item">
+                                <span class="roi-label">Maintenance Cost</span>
+                                <span class="roi-value text-red-val">{{ formatCurrency(roi.totalMaintenanceCost) }}</span>
+                            </div>
+                            <div class="roi-item">
+                                <span class="roi-label">Acquisition Cost</span>
+                                <span class="roi-value">{{ formatCurrency(roi.acquisitionCost) }}</span>
+                            </div>
+                            <div class="roi-item roi-highlight">
+                                <span class="roi-label">ROI</span>
+                                <span class="roi-value" [class.text-green-val]="roi.roi >= 0" [class.text-red-val]="roi.roi < 0">
+                                    {{ roi.roi.toFixed(1) }}%
+                                </span>
+                            </div>
+                        </div>
+                    } @else if (selectedVehicleId) {
+                        <p style="color: #64748b;">No ROI data available for this vehicle.</p>
+                    } @else {
+                        <p style="color: #94a3b8;">Select a vehicle above to view its financial analysis.</p>
+                    }
                 </div>
-                <div class="chart-body auto-bars">
-                    <div class="bar-col">
-                        <div class="bar bar-partial" style="height: 65%;"></div>
-                        <span class="bar-label">TRK-01</span>
-                    </div>
-                    <div class="bar-col">
-                        <div class="bar bar-full" style="height: 100%;"></div>
-                        <span class="bar-label">TRK-05</span>
-                    </div>
-                    <div class="bar-col">
-                        <div class="bar bar-partial" style="height: 80%;"></div>
-                        <span class="bar-label">VAN-12</span>
-                    </div>
-                    <div class="bar-col">
-                        <div class="bar bar-partial" style="height: 90%;"></div>
-                        <span class="bar-label">TRK-09</span>
-                    </div>
-                    <div class="bar-col">
-                        <div class="bar bar-partial" style="height: 45%;"></div>
-                        <span class="bar-label">VAN-03</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Table Section -->
-        <div class="data-table-container">
-            <div class="table-header">
-                <h2>Financial Summary</h2>
-                <button class="btn-export">
-                    <span class="material-symbols-outlined">download</span>
-                    Export CSV
-                </button>
-            </div>
-            <div class="table-wrapper">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Month</th>
-                            <th>Revenue</th>
-                            <th>Fuel Cost</th>
-                            <th>Maintenance</th>
-                            <th>Net Profit</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="font-medium text-primary-dark">June</td>
-                            <td>$120,000</td>
-                            <td>$32,000</td>
-                            <td>$8,500</td>
-                            <td>
-                                <span class="badge badge-green">+$79,500</span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="font-medium text-primary-dark">May</td>
-                            <td>$115,000</td>
-                            <td>$31,000</td>
-                            <td>$12,000</td>
-                            <td>
-                                <span class="badge badge-green">+$72,000</span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="font-medium text-primary-dark">April</td>
-                            <td>$98,000</td>
-                            <td>$34,000</td>
-                            <td>$15,000</td>
-                            <td>
-                                <span class="badge badge-green">+$49,000</span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="font-medium text-primary-dark">March</td>
-                            <td>$105,000</td>
-                            <td>$30,000</td>
-                            <td>$9,000</td>
-                            <td>
-                                <span class="badge badge-green">+$66,000</span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="font-medium text-primary-dark">February</td>
-                            <td>$88,000</td>
-                            <td>$35,000</td>
-                            <td>$18,000</td>
-                            <td>
-                                <span class="badge badge-red">+$35,000</span>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
             </div>
         </div>
     </main>
-
-    <!-- Simple Footer -->
-    <footer class="bottom-footer">
-        <p>© 2024 Fleet Flow Operational Analytics. All Rights Reserved.</p>
-    </footer>
 </div>

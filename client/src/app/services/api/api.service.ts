@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, throwError, timer } from 'rxjs';
 import { retry, finalize, shareReplay, map } from 'rxjs/operators';
-import { ApiServiceService } from './api-service.service';
 import { environment } from '../../../environments/environment';
 
 export interface ApiOptions {
@@ -21,10 +20,7 @@ export interface ApiOptions {
 export class ApiService {
   private cache = new Map<string, Observable<any>>();
 
-  constructor(
-    private http: HttpClient,
-    private legacyApi: ApiServiceService,
-  ) {}
+  constructor(private http: HttpClient) {}
 
   /**
    * Resolves the full URL by prepending apiBasePath from environment config
@@ -48,7 +44,7 @@ export class ApiService {
   }
 
   private buildOptions(options?: ApiOptions): { headers: HttpHeaders; params: HttpParams } {
-    let headers = this.legacyApi.getHttpHeaders();
+    let headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     if (options?.headers) {
       for (const [key, value] of Object.entries(options.headers)) {
         headers = headers.set(key, value);

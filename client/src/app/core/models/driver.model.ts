@@ -1,12 +1,13 @@
 export type DriverStatus = 'OnDuty' | 'OnTrip' | 'OffDuty' | 'Suspended';
 
 export interface Driver {
-  driver_id: string;
+  id: string;
   fullName: string;
   licenseNumber: string;
   licenseCategory: string;
   licenseExpiry: string;
   status: DriverStatus;
+  isDeleted: boolean;
   createdAt: string;
   updatedAt?: string;
   xmin: number;

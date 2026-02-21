@@ -37,7 +37,7 @@
                 <div class="search-box">
                     <span class="material-symbols-outlined search-icon">local_shipping</span>
                     <select class="search-input" [(ngModel)]="selectedVehicleId" (change)="onVehicleChange()">
-                        <option *ngFor="let v of vehicles" [value]="v.vehicle_id">
+                        <option *ngFor="let v of vehicles" [value]="v.id">
                             {{ v.name }} - {{ v.licensePlate }}
                         </option>
                     </select>
@@ -66,8 +66,8 @@
                         </ng-container>
                         <ng-container *ngIf="!isLoading">
                             <tr *ngFor="let log of fuelLogs">
-                                <td class="td-id">{{ log.fuel_id.substring(0,8) | uppercase }}</td>
-                                <td>{{ getVehicleName(log.vehicle_id) }}</td>
+                                <td class="td-id">{{ log.id?.substring(0,8) | uppercase }}</td>
+                                <td>{{ getVehicleName(log.vehicleId) }}</td>
                                 <td class="td-text">{{ log.fuelDate }}</td>
                                 <td class="td-cost-sm text-right">{{ log.liters | number:'1.2-2' }} L</td>
                                 <td class="td-cost-lg text-right">${{ log.cost | number:'1.2-2' }}</td>

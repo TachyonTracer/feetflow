@@ -1,21 +1,19 @@
-export type TripStatus = 'Draft' | 'Dispatched' | 'Completed' | 'Cancelled';
+export type TripStatus = 'Draft' | 'Dispatched' | 'Completed' | 'Cancelled' | 'OnTrip' | 'Delivered' | 'Pending';
 
 export interface Trip {
-  trip_id: string;
-  vehicle_id: string;
-  driver_id: string;
+  id: string;
+  vehicleId: string;
+  driverId: string;
   status: TripStatus;
   cargoWeightKg: number;
   startOdometer?: number;
   endOdometer?: number;
   revenue?: number;
-  dispatchedAt?: string;
   completedAt?: string;
-  cancelledAt?: string;
+  isDeleted: boolean;
   createdAt: string;
-  updatedAt?: string;
+  xmin: number;
 
-  // Useful navigation properties that might be returned by the GET API if it includes them
   vehicleName?: string;
   driverName?: string;
 }
