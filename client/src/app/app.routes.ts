@@ -8,6 +8,10 @@ export const routes: Routes = [
   { path: 'login', redirectTo: '/auth/login', pathMatch: 'full' },
   { path: 'signup', redirectTo: '/auth/signup', pathMatch: 'full' },
   {
+    path: 'dashboard',
+    loadComponent: () => import('./layouts/users/users').then((m) => m.Users),
+  },
+  {
     path: 'users',
     loadComponent: () => import('./layouts/users/users').then((m) => m.Users),
   },

@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, throwError, timer } from 'rxjs';
 import { retry, finalize, shareReplay } from 'rxjs/operators';
 import { ApiServiceService } from './api-service.service';
+import { AppConfigService } from '../app-config.service';
 
 export interface ApiOptions {
   routeParams?: { [key: string]: string | number };
@@ -22,10 +23,23 @@ export class ApiService {
   constructor(
     private http: HttpClient,
     private legacyApi: ApiServiceService,
+    private appConfigService: AppConfigService,
   ) {}
 
+  /**
+   * Resolves the full URL by prepending apiBasePath from app_config.json
+   * for relative paths (starting with '/'). Absolute URLs are left unchanged.
+   */
+  private resolveUrl(url: string): string {
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      return url;
+    }
+    const basePath = AppConfigService.staticAppConfig?.apiBasePath || '';
+    return basePath + url;
+  }
+
   private buildUrl(url: string, options?: ApiOptions): string {
-    let finalUrl = url;
+    let finalUrl = this.resolveUrl(url);
     if (options?.routeParams) {
       for (const [key, value] of Object.entries(options.routeParams)) {
         finalUrl = finalUrl.replace(`{${key}}`, String(value));
