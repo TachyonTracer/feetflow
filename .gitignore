@@ -34,3 +34,5 @@ bin/*
 # NuGet Packages
 *.nupkg
 client/public/*.html
+server/src/feetflow.API/appsettings.Development.json
+server/src/feetflow.API/appsettings.json

@@ -153,8 +153,14 @@ builder.Services.AddHealthChecks()
 builder.Services.AddSignalR();
 
 // --- Controllers + Swagger ---
+builder.Services.Configure<Microsoft.AspNetCore.Mvc.ApiBehaviorOptions>(options =>
+{
+    options.SuppressModelStateInvalidFilter = true;
+});
+
 builder.Services.AddControllers(options =>
     {
+        options.Filters.Add<ModelValidationFilter>();
         options.Filters.Add<ApiResponseWrapperFilter>();
     })
     .AddJsonOptions(options =>
