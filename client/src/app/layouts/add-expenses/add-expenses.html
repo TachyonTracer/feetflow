@@ -1,0 +1,112 @@
+<div class="modal-overlay">
+    <div class="modal-container">
+        <!-- Modal Header -->
+        <div class="modal-header">
+            <div class="title-row">
+                <span class="material-symbols-outlined title-icon">receipt_long</span>
+                <h2 class="modal-title">New Expenses</h2>
+            </div>
+            <button class="modal-close-btn" aria-label="Close modal" (click)="closeModal()">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+
+        <!-- Modal Body & Form -->
+        <div class="modal-body">
+            <p class="subtitle">Enter the details for fleet operational costs below to update the system.</p>
+
+            <form class="expense-form">
+                <!-- Hero Image -->
+                <div class="hero-image-container">
+                    <div class="hero-overlay"></div>
+                    <img alt="Logistics background" class="hero-img"
+                        data-alt="Modern logistics truck on a highway at dusk"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuCouR_XUV6_q_1RRgRpP_nmmhbKtNTvtYjoaqKHvYCm7mGvpcAb_gQz3jspIUUm2Hql6QmLMHhMvhahWmQJFjsxiE5Rh2w9H8m-BjL8AMIyMtHsZXTRdVs8D3w34yfmdNzV5twng6OfmPBF24GK6S2FZGoyszNxUvOKuGqV5CPpKusBjzPnOA9aophFhQMRb0Zp_Ww1h5bkEK7ARQrjm5t92dXX0U4ZYR-GT7sPinjC4JBvIVEeMMgdVyRqYQFLpoXYn-NWl1mrbItC" />
+                    <div class="hero-text">
+                        <span class="hero-label">Operational Tracking</span>
+                        <h3 class="hero-title">Expense Registration</h3>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <!-- Trip ID -->
+                    <div class="form-group">
+                        <label class="form-label" for="trip-id">
+                            <span class="material-symbols-outlined label-icon">route</span>
+                            Trip ID
+                        </label>
+                        <div class="input-wrapper">
+                            <select class="form-control form-select" id="trip-id">
+                                <option disabled selected value="">Select or enter Trip ID</option>
+                                <option value="TRP-9021">TRP-9021 - Chicago Express</option>
+                                <option value="TRP-8842">TRP-8842 - West Coast Hub</option>
+                                <option value="TRP-7721">TRP-7721 - Dallas Delivery</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Driver -->
+                    <div class="form-group">
+                        <label class="form-label" for="driver">
+                            <span class="material-symbols-outlined label-icon">badge</span>
+                            Driver
+                        </label>
+                        <div class="input-wrapper">
+                            <select class="form-control form-select" id="driver">
+                                <option disabled selected value="">Select a driver</option>
+                                <option value="d1">Michael Rodriguez</option>
+                                <option value="d2">Sarah Jenkins</option>
+                                <option value="d3">David Chen</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Fuel Cost -->
+                    <div class="form-group">
+                        <label class="form-label" for="fuel-cost">
+                            <span class="material-symbols-outlined label-icon">local_gas_station</span>
+                            Fuel Cost
+                        </label>
+                        <div class="input-wrapper has-prefix">
+                            <span class="input-prefix">$</span>
+                            <input class="form-control pr-input" id="fuel-cost" placeholder="0.00" step="0.01"
+                                type="number" />
+                        </div>
+                    </div>
+
+                    <!-- Misc Expenses -->
+                    <div class="form-group">
+                        <label class="form-label" for="misc-expenses">
+                            <span class="material-symbols-outlined label-icon">payments</span>
+                            Miscellaneous Expenses
+                        </label>
+                        <div class="input-wrapper has-prefix">
+                            <span class="input-prefix">$</span>
+                            <input class="form-control pr-input" id="misc-expenses" placeholder="0.00" step="0.01"
+                                type="number" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notes -->
+                <div class="form-group mt-large">
+                    <label class="form-label" for="notes">
+                        <span class="material-symbols-outlined label-icon">description</span>
+                        Notes (Optional)
+                    </label>
+                    <textarea class="form-control form-textarea" id="notes"
+                        placeholder="Add any specific details about the expenses..." rows="3"></textarea>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="form-actions">
+                    <button class="btn-cancel" type="button" (click)="closeModal()">Cancel</button>
+                    <button class="btn-primary" type="submit">
+                        <span class="material-symbols-outlined btn-icon">add_circle</span>
+                        Create Expense
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

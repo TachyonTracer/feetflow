@@ -32,6 +32,14 @@ export const routes: Routes = [
     path: 'expenses',
     loadComponent: () => import('./layouts/view-expenses/view-expenses').then((m) => m.ViewExpenses),
   },
+  {
+    path: 'drivers',
+    loadComponent: () => import('./layouts/view-driver-performance/view-driver-performance').then((m) => m.ViewDriverPerformance),
+  },
+  {
+    path: 'financials',
+    loadComponent: () => import('./layouts/view-financial-reports/view-financial-reports').then((m) => m.ViewFinancialReports),
+  },
 
   { path: '', redirectTo: '/auth', pathMatch: 'full' },
 ];

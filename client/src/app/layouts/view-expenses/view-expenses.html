@@ -1,3 +1,5 @@
+<app-add-expenses *ngIf="isAddExpenseModalOpen" (close)="toggleModal()"></app-add-expenses>
+
 <div class="expenses-layout">
     <!-- Top Navigation Bar -->
     <header class="top-header">
@@ -40,7 +42,7 @@
                     <h2 class="heading-font">Expenses & Fuel Logging</h2>
                     <p>Manage and audit operational costs across your fleet in real-time.</p>
                 </div>
-                <button class="btn-primary">
+                <button class="btn-primary" (click)="toggleModal()">
                     <span class="material-symbols-outlined">add</span>
                     <span>Add On Expenses</span>
                 </button>
