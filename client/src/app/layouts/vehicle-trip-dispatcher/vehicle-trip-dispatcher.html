@@ -3,7 +3,7 @@
         <div class="header-inner">
             <div class="logo-section">
                 <div class="logo-icon">
-                    <span class="material-symbols-outlined icon-large">local_shipping</span>
+                    <img alt="FleetFlow logo" src="assets/logo.png" />
                 </div>
                 <h1 class="logo-title">Fleet Flow</h1>
             </div>
@@ -82,49 +82,29 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td class="td-id">FF-102</td>
-                                        <td class="td-text">Semi-Truck</td>
-                                        <td class="td-text">Chicago, IL</td>
-                                        <td class="td-text">Detroit, MI</td>
+                                    <tr *ngFor="let trip of trips">
+                                        <td class="td-id">{{ trip.trip_id.substring(0,8) | uppercase }}</td>
+                                        <td class="td-text">{{ trip.vehicleName || 'Vehicle ' +
+                                            trip.vehicle_id.substring(0,5) }}</td>
+                                        <td class="td-text">TBD Origin</td>
+                                        <td class="td-text">TBD Destination</td>
                                         <td>
-                                            <span class="status-badge status-primary">
-                                                On the Way
+                                            <span class="status-badge" [ngClass]="{
+                                                'status-primary': trip.status === 'OnTrip',
+                                                'status-success': trip.status === 'Delivered',
+                                                'status-warning': trip.status === 'Pending',
+                                                'status-danger': trip.status === 'Cancelled'
+                                            }">
+                                                {{ trip.status }}
                                             </span>
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <td class="td-id">FF-105</td>
-                                        <td class="td-text">Delivery Van</td>
-                                        <td class="td-text">Austin, TX</td>
-                                        <td class="td-text">Dallas, TX</td>
-                                        <td>
-                                            <span class="status-badge status-success">
-                                                Delivered
-                                            </span>
-                                        </td>
+                                    <tr *ngIf="trips.length === 0 && !isLoadingLogs">
+                                        <td colspan="5" style="text-align: center; padding: 2rem;">No active trips
+                                            found.</td>
                                     </tr>
-                                    <tr>
-                                        <td class="td-id">FF-108</td>
-                                        <td class="td-text">Heavy Hauler</td>
-                                        <td class="td-text">Phoenix, AZ</td>
-                                        <td class="td-text">Los Angeles, CA</td>
-                                        <td>
-                                            <span class="status-badge status-warning">
-                                                Delayed
-                                            </span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="td-id">FF-110</td>
-                                        <td class="td-text">Box Truck</td>
-                                        <td class="td-text">Atlanta, GA</td>
-                                        <td class="td-text">Orlando, FL</td>
-                                        <td>
-                                            <span class="status-badge status-primary">
-                                                On the Way
-                                            </span>
-                                        </td>
+                                    <tr *ngIf="isLoadingLogs">
+                                        <td colspan="5" style="text-align: center; padding: 2rem;">Loading trips...</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -138,17 +118,17 @@
                 <h2 class="section-title">Add New Trip</h2>
 
                 <div class="form-container">
-                    <form class="trip-form">
+                    <form class="trip-form" (ngSubmit)="submitNewTrip()">
                         <div class="form-grid">
 
                             <div class="form-group">
                                 <label class="form-label">Select Vehicle</label>
                                 <div class="select-wrapper">
-                                    <select class="form-select">
-                                        <option>Select a fleet unit...</option>
-                                        <option>Truck #502 - Volvo FH16</option>
-                                        <option>Van #12 - Mercedes Sprinter</option>
-                                        <option>Hauler #99 - Kenworth T680</option>
+                                    <select class="form-select" name="vehicleId" [(ngModel)]="newTrip.vehicle_id"
+                                        required>
+                                        <option value="">Select a fleet unit...</option>
+                                        <option *ngFor="let v of vehicles" [value]="v.vehicle_id">{{ v.name }} - {{
+                                            v.licensePlate }}</option>
                                     </select>
                                     <span class="material-symbols-outlined select-icon">expand_more</span>
                                 </div>
@@ -157,7 +137,8 @@
                             <div class="form-group">
                                 <label class="form-label">Cargo Weight (kg)</label>
                                 <div class="input-wrapper">
-                                    <input class="form-input text-left" placeholder="0.00" type="number" />
+                                    <input class="form-input text-left" placeholder="0.00" type="number"
+                                        name="cargoWeight" [(ngModel)]="newTrip.cargoWeightKg" required />
                                     <span class="input-suffix">KG</span>
                                 </div>
                             </div>
@@ -165,11 +146,11 @@
                             <div class="form-group">
                                 <label class="form-label">Select Driver</label>
                                 <div class="select-wrapper">
-                                    <select class="form-select">
-                                        <option>Assign a driver...</option>
-                                        <option>Sarah Jenkins (ID: 884)</option>
-                                        <option>Marcus Thorne (ID: 219)</option>
-                                        <option>Elena Rodriguez (ID: 552)</option>
+                                    <select class="form-select" name="driverId" [(ngModel)]="newTrip.driver_id"
+                                        required>
+                                        <option value="">Assign a driver...</option>
+                                        <option *ngFor="let d of drivers" [value]="d.driver_id">{{ d.fullName }} (ID: {{
+                                            d.licenseNumber }})</option>
                                     </select>
                                     <span class="material-symbols-outlined select-icon">expand_more</span>
                                 </div>
@@ -179,7 +160,8 @@
                                 <label class="form-label">Est. Fuel Cost</label>
                                 <div class="input-wrapper">
                                     <span class="input-prefix">$</span>
-                                    <input class="form-input pl-prefix" placeholder="0.00" type="number" />
+                                    <input class="form-input pl-prefix" placeholder="0.00" type="number" name="estFuel"
+                                        [(ngModel)]="uiEstimatedFuelCost" />
                                 </div>
                             </div>
 
@@ -187,8 +169,8 @@
                                 <label class="form-label">Origin Address</label>
                                 <div class="input-wrapper">
                                     <span class="material-symbols-outlined input-icon">location_on</span>
-                                    <input class="form-input pl-icon" placeholder="Street, City, Zip Code"
-                                        type="text" />
+                                    <input class="form-input pl-icon" placeholder="Street, City, Zip Code" type="text"
+                                        name="origin" [(ngModel)]="uiOrigin" required />
                                 </div>
                             </div>
 
@@ -196,15 +178,15 @@
                                 <label class="form-label">Destination Address</label>
                                 <div class="input-wrapper">
                                     <span class="material-symbols-outlined input-icon">flag</span>
-                                    <input class="form-input pl-icon" placeholder="Street, City, Zip Code"
-                                        type="text" />
+                                    <input class="form-input pl-icon" placeholder="Street, City, Zip Code" type="text"
+                                        name="destination" [(ngModel)]="uiDestination" required />
                                 </div>
                             </div>
 
                         </div>
 
                         <div class="form-actions">
-                            <button class="btn-primary" type="submit">
+                            <button class="btn-primary" type="submit" [disabled]="isSubmitting">
                                 <span class="material-symbols-outlined">send</span>
                                 Confirm and Dispatch
                             </button>

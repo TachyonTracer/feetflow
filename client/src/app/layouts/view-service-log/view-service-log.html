@@ -4,7 +4,7 @@
         <div class="header-inner">
             <div class="logo-section">
                 <div class="logo-icon">
-                    <span class="material-symbols-outlined">local_shipping</span>
+                    <img alt="FleetFlow logo" src="assets/logo.png" />
                 </div>
                 <h1 class="logo-title">Fleet Flow</h1>
             </div>
@@ -86,147 +86,56 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Row 1: Completed -->
-                        <tr>
-                            <td class="td-id">#LOG-882</td>
-                            <td>
-                                <div class="vehicle-info">
-                                    <div class="vehicle-icon">
-                                        <span class="material-symbols-outlined">directions_car</span>
+                        <ng-container *ngIf="isLoading; else logsList">
+                            <tr>
+                                <td colspan="7" style="text-align: center; padding: 2rem;">Loading maintenance logs...
+                                </td>
+                            </tr>
+                        </ng-container>
+                        <ng-template #logsList>
+                            <tr *ngFor="let log of logs">
+                                <td class="td-id">#{{ log.maintenance_id.substring(0,8) | uppercase }}</td>
+                                <td>
+                                    <div class="vehicle-info">
+                                        <div class="vehicle-icon">
+                                            <span class="material-symbols-outlined">directions_car</span>
+                                        </div>
+                                        <div class="vehicle-details">
+                                            <p class="vehicle-name">{{ log.vehicleName || 'Vehicle ' +
+                                                log.vehicle_id.substring(0,5) }}</p>
+                                        </div>
                                     </div>
-                                    <div class="vehicle-details">
-                                        <p class="vehicle-name">Ford Transit</p>
-                                        <p class="vehicle-plate">ABC-123</p>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                <p class="service-name">Brake Pad Replacement</p>
-                                <p class="service-desc">Routine Safety Check</p>
-                            </td>
-                            <td class="td-date">Oct 24, 2023</td>
-                            <td class="td-cost">$450.00</td>
-                            <td class="td-status">
-                                <span class="status-badge status-completed">
-                                    <span class="dot"></span> Completed
-                                </span>
-                            </td>
-                            <td class="td-actions">
-                                <button class="action-btn-sm"><span
-                                        class="material-symbols-outlined">more_vert</span></button>
-                            </td>
-                        </tr>
-
-                        <!-- Row 2: In Progress -->
-                        <tr>
-                            <td class="td-id">#LOG-883</td>
-                            <td>
-                                <div class="vehicle-info">
-                                    <div class="vehicle-icon">
-                                        <span class="material-symbols-outlined">local_shipping</span>
-                                    </div>
-                                    <div class="vehicle-details">
-                                        <p class="vehicle-name">Freightliner M2</p>
-                                        <p class="vehicle-plate">XYZ-987</p>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                <p class="service-name">Engine Check</p>
-                                <p class="service-desc">Unexpected failure</p>
-                            </td>
-                            <td class="td-date">Oct 25, 2023</td>
-                            <td class="td-cost">$1,200.00</td>
-                            <td class="td-status">
-                                <span class="status-badge status-progress">
-                                    <span class="dot"></span> In Progress
-                                </span>
-                            </td>
-                            <td class="td-actions">
-                                <button class="action-btn-sm"><span
-                                        class="material-symbols-outlined">more_vert</span></button>
-                            </td>
-                        </tr>
-
-                        <!-- Row 3: Pending -->
-                        <tr>
-                            <td class="td-id">#LOG-884</td>
-                            <td>
-                                <div class="vehicle-info">
-                                    <div class="vehicle-icon">
-                                        <span class="material-symbols-outlined">directions_car</span>
-                                    </div>
-                                    <div class="vehicle-details">
-                                        <p class="vehicle-name">Toyota Hiace</p>
-                                        <p class="vehicle-plate">HI-772</p>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                <p class="service-name">Oil Change</p>
-                                <p class="service-desc">Scheduled maintenance</p>
-                            </td>
-                            <td class="td-date">Oct 26, 2023</td>
-                            <td class="td-cost">$85.00</td>
-                            <td class="td-status">
-                                <span class="status-badge status-pending">
-                                    <span class="dot"></span> Pending
-                                </span>
-                            </td>
-                            <td class="td-actions">
-                                <button class="action-btn-sm"><span
-                                        class="material-symbols-outlined">more_vert</span></button>
-                            </td>
-                        </tr>
-
-                        <!-- Row 4: Completed -->
-                        <tr>
-                            <td class="td-id">#LOG-885</td>
-                            <td>
-                                <div class="vehicle-info">
-                                    <div class="vehicle-icon">
-                                        <span class="material-symbols-outlined">airport_shuttle</span>
-                                    </div>
-                                    <div class="vehicle-details">
-                                        <p class="vehicle-name">Mercedes Sprinter</p>
-                                        <p class="vehicle-plate">MS-550</p>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                <p class="service-name">Tire Rotation</p>
-                                <p class="service-desc">Post-trip inspection</p>
-                            </td>
-                            <td class="td-date">Oct 27, 2023</td>
-                            <td class="td-cost">$120.00</td>
-                            <td class="td-status">
-                                <span class="status-badge status-completed">
-                                    <span class="dot"></span> Completed
-                                </span>
-                            </td>
-                            <td class="td-actions">
-                                <button class="action-btn-sm"><span
-                                        class="material-symbols-outlined">more_vert</span></button>
-                            </td>
-                        </tr>
+                                </td>
+                                <td>
+                                    <p class="service-name">{{ log.description }}</p>
+                                </td>
+                                <td class="td-date">{{ log.serviceDate | date:'mediumDate' }}</td>
+                                <td class="td-cost">{{ log.cost | currency }}</td>
+                                <td class="td-status">
+                                    <span class="status-badge"
+                                        [ngClass]="log.isClosed ? 'status-completed' : 'status-progress'">
+                                        <span class="dot"></span> {{ log.isClosed ? 'Completed' : 'In Progress' }}
+                                    </span>
+                                </td>
+                                <td class="td-actions">
+                                    <button class="action-btn-sm" *ngIf="!log.isClosed"
+                                        (click)="closeLog(log.maintenance_id)" title="Mark as Closed">
+                                        <span class="material-symbols-outlined">check_circle</span>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr *ngIf="logs.length === 0">
+                                <td colspan="7" style="text-align: center; padding: 2rem;">No maintenance logs found.
+                                </td>
+                            </tr>
+                        </ng-template>
                     </tbody>
                 </table>
             </div>
 
             <!-- Pagination -->
-            <div class="table-footer">
-                <span class="pagination-text">Showing 1 to 4 of 48 logs</span>
-                <div class="pagination">
-                    <button class="page-nav disabled" disabled>
-                        <span class="material-symbols-outlined icon-small">chevron_left</span>
-                    </button>
-                    <button class="page-num active">1</button>
-                    <button class="page-num">2</button>
-                    <button class="page-num">3</button>
-                    <button class="page-nav">
-                        <span class="material-symbols-outlined icon-small">chevron_right</span>
-                    </button>
-                </div>
+            <div class="table-footer" *ngIf="!isLoading">
+                <span class="pagination-text">Showing {{ logs.length }} logs</span>
             </div>
         </div>
 

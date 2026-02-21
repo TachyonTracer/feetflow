@@ -62,12 +62,13 @@
             </thead>
             <tbody>
                 <tr *ngFor="let user of users()">
-                    <td class="text-muted">{{ user.id }}</td>
+                    <td class="text-muted">{{ user.userId }}</td>
                     <td class="font-weight-bold">{{ user.name }}</td>
                     <td>{{ user.description || '-' }}</td>
                     <td class="actions-col">
                         <button class="btn btn-sm btn-outline-primary" (click)="openEditForm(user)">Edit</button>
-                        <button class="btn btn-sm btn-outline-danger ml-2" (click)="deleteUser(user.id)">Delete</button>
+                        <button class="btn btn-sm btn-outline-danger ml-2"
+                            (click)="deleteUser(user.userId)">Delete</button>
                     </td>
                 </tr>
             </tbody>

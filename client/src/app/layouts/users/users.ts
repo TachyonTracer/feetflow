@@ -98,7 +98,7 @@ export class Users implements OnInit {
 
   public openEditForm(user: User): void {
     this.userForm.set({ name: user.name, description: user.description || '' });
-    this.editingUserId.set(user.id);
+    this.editingUserId.set(user.userId);
     this.isAddingUser.set(false);
   }
 
@@ -116,7 +116,7 @@ export class Users implements OnInit {
       next: (updatedUser: User) => {
         // Optimistically update the list
         this.users.update((currentUsers) =>
-          currentUsers.map((u) => (u.id === userId ? updatedUser : u)),
+          currentUsers.map((u) => (u.userId === userId ? updatedUser : u)),
         );
         this.cancelForm();
       },
@@ -143,7 +143,7 @@ export class Users implements OnInit {
     this.usersApiService.deleteUser(userId).subscribe({
       next: () => {
         // Optimistically remove from list
-        this.users.update((currentUsers) => currentUsers.filter((u) => u.id !== userId));
+        this.users.update((currentUsers) => currentUsers.filter((u) => u.userId !== userId));
       },
       error: (error) => {
         console.error('Error deleting user:', error);

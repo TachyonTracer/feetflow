@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AddNewVehicle } from './add-new-vehicle/add-new-vehicle';
+import { VehiclesApiService } from '../../services/controllers/vehicles-api.service';
+import { Vehicle } from '../../core/models/vehicle.model';
 
 @Component({
   selector: 'app-register',
@@ -9,10 +11,56 @@ import { AddNewVehicle } from './add-new-vehicle/add-new-vehicle';
   templateUrl: './view-registered-vehicles.html',
   styleUrl: './view-registered-vehicles.scss',
 })
-export class VehicleRegister {
+export class VehicleRegister implements OnInit {
   isModalOpen = false;
+  vehicles: Vehicle[] = [];
+  isLoading = true;
+  pageNumber = 1;
+  pageSize = 10;
+  totalCount = 0;
+  totalPages = 0;
+
+  constructor(private vehiclesService: VehiclesApiService) {}
+
+  ngOnInit() {
+    this.loadVehicles();
+  }
+
+  loadVehicles() {
+    this.isLoading = true;
+    this.vehiclesService.getVehicles(this.pageNumber, this.pageSize).subscribe({
+      next: (res) => {
+        this.vehicles = res.items || [];
+        this.totalCount = res.totalCount || 0;
+        this.totalPages = res.totalPages || 1;
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Failed to load vehicles', err);
+        this.isLoading = false;
+      },
+    });
+  }
+
+  changePage(newPage: number) {
+    if (newPage >= 1 && newPage <= this.totalPages) {
+      this.pageNumber = newPage;
+      this.loadVehicles();
+    }
+  }
+
+  getPages(): number[] {
+    const pages = [];
+    for (let i = 1; i <= this.totalPages; i++) {
+      pages.push(i);
+    }
+    return pages;
+  }
 
   toggleModal() {
     this.isModalOpen = !this.isModalOpen;
+    if (!this.isModalOpen) {
+      this.loadVehicles();
+    }
   }
 }

@@ -9,8 +9,9 @@ export const environment = {
   apiBasePath: 'http://localhost:5180',
   api: {
     auth: {
-      login: '/api/auth/login',
-      signup: '/api/auth/signup',
+      login: '/api/Auth/login',
+      signup: '/api/Auth/signup',
+      refresh: '/api/Auth/refresh',
       getAccessToken: '/api/get_access_token',
       resetPassword: '/api/custom/public/accounts/reset_password',
     },
@@ -20,6 +21,22 @@ export const environment = {
       create: '/api/users',
       update: '/api/users',
       delete: '/api/users',
+    },
+    vehicles: {
+      base: '/api/Vehicles',
+    },
+    trips: {
+      base: '/api/Trips',
+    },
+    drivers: {
+      base: '/api/Drivers',
+    },
+    maintenance: {
+      base: '/api/maintenance',
+    },
+    analytics: {
+      base: '/api/analytics',
+      dashboard: '/api/analytics/dashboard',
     },
   },
 };

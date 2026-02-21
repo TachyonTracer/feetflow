@@ -98,6 +98,80 @@ public class MaintenanceLogRepository : IMaintenanceLogRepository
         }
     }
 
+    public async Task<IReadOnlyList<MaintenanceLogDto>> GetPagedDtoAsync(int page, int pageSize, bool? isClosed = null, Guid? vehicleId = null, CancellationToken cancellationToken = default)
+    {
+        var connection = await GetConnectionAsync(cancellationToken);
+        var fromUow = _unitOfWork.GetConnection() != null;
+        try
+        {
+            var sql = @"
+                SELECT m.maintenance_id, m.vehicle_id, v.name as vehicle_name, v.license_plate, m.description, m.cost, m.service_date, m.is_closed, m.created_at
+                FROM maintenance_logs m
+                LEFT JOIN vehicles v ON v.vehicle_id = m.vehicle_id
+                WHERE (@is_closed IS NULL OR m.is_closed = @is_closed)
+                  AND (@vehicle_id IS NULL OR m.vehicle_id = @vehicle_id)
+                ORDER BY m.created_at DESC
+                LIMIT @limit OFFSET @offset";
+
+            await using var cmd = new NpgsqlCommand(sql, connection);
+            cmd.Transaction = GetTransaction();
+            cmd.Parameters.AddWithValue("is_closed", isClosed.HasValue ? isClosed.Value : DBNull.Value);
+            cmd.Parameters.AddWithValue("vehicle_id", vehicleId.HasValue ? vehicleId.Value : DBNull.Value);
+            cmd.Parameters.AddWithValue("limit", pageSize);
+            cmd.Parameters.AddWithValue("offset", (page - 1) * pageSize);
+
+            var result = new List<MaintenanceLogDto>();
+            await using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
+            while (await reader.ReadAsync(cancellationToken))
+            {
+                result.Add(new MaintenanceLogDto(
+                    reader.GetGuid(0),
+                    reader.GetGuid(1),
+                    reader.IsDBNull(2) ? "" : reader.GetString(2),
+                    reader.IsDBNull(3) ? "" : reader.GetString(3),
+                    reader.GetString(4),
+                    reader.GetDecimal(5),
+                    reader.GetFieldValue<DateOnly>(6),
+                    reader.GetBoolean(7),
+                    reader.GetDateTime(8)
+                ));
+            }
+            return result;
+        }
+        finally
+        {
+            if (!fromUow)
+                await connection.DisposeAsync();
+        }
+    }
+
+    public async Task<int> CountAsync(bool? isClosed = null, Guid? vehicleId = null, CancellationToken cancellationToken = default)
+    {
+        var connection = await GetConnectionAsync(cancellationToken);
+        var fromUow = _unitOfWork.GetConnection() != null;
+        try
+        {
+            var sql = @"
+                SELECT COUNT(*)
+                FROM maintenance_logs m
+                WHERE (@is_closed IS NULL OR m.is_closed = @is_closed)
+                  AND (@vehicle_id IS NULL OR m.vehicle_id = @vehicle_id)";
+
+            await using var cmd = new NpgsqlCommand(sql, connection);
+            cmd.Transaction = GetTransaction();
+            cmd.Parameters.AddWithValue("is_closed", isClosed.HasValue ? isClosed.Value : DBNull.Value);
+            cmd.Parameters.AddWithValue("vehicle_id", vehicleId.HasValue ? vehicleId.Value : DBNull.Value);
+            
+            var result = await cmd.ExecuteScalarAsync(cancellationToken);
+            return Convert.ToInt32(result);
+        }
+        finally
+        {
+            if (!fromUow)
+                await connection.DisposeAsync();
+        }
+    }
+
     private static MaintenanceLog Map(NpgsqlDataReader reader)
     {
         return new MaintenanceLog

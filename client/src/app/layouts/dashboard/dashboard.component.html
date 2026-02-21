@@ -3,7 +3,8 @@
     <header class="dashboard-header">
         <div class="logo-section">
             <div class="logo-icon">
-                <span class="material-symbols-outlined">local_shipping</span>
+                <!-- use actual logo file as requested -->
+                <img alt="FleetFlow logo" src="assets/logo.png" />
             </div>
             <h1>Fleet Flow</h1>
         </div>
@@ -43,48 +44,52 @@
     </div>
     <!-- 3. Summary Cards -->
     <div class="summary-cards">
-        <!-- Active Fleet Card -->
-        <div class="card">
-            <div class="card-header">
-                <span class="card-title">Active Fleet</span>
-                <div class="card-icon primary">
-                    <span class="material-symbols-outlined">directions_car</span>
+        <ng-container *ngIf="metrics$ | async as metrics">
+            <!-- Active Fleet Card -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">Active Fleet</span>
+                    <div class="card-icon primary">
+                        <span class="material-symbols-outlined">directions_car</span>
+                    </div>
                 </div>
-            </div>
-            <div class="card-body">
-                <h3>142</h3>
-                <span class="badge positive">+2.5%</span>
-            </div>
-            <p class="card-footer">Vehicles currently on road</p>
-        </div>
-        <!-- Maintenance Alert Card -->
-        <div class="card">
-            <div class="card-header">
-                <span class="card-title">Maintenance Alert</span>
-                <div class="card-icon warning">
-                    <span class="material-symbols-outlined">build</span>
+                <div class="card-body">
+                    <h3>{{ metrics.activeVehicles }}</h3>
+                    <span class="badge positive" *ngIf="metrics.activeVehiclesDelta">{{ metrics.activeVehiclesDelta
+                        }}</span>
                 </div>
+                <p class="card-footer">Vehicles currently on road</p>
             </div>
-            <div class="card-body">
-                <h3>5</h3>
-                <span class="badge negative">Urgent</span>
-            </div>
-            <p class="card-footer">Units in workshop</p>
-        </div>
-        <!-- Pending Cargo Card -->
-        <div class="card">
-            <div class="card-header">
-                <span class="card-title">Pending Cargo</span>
-                <div class="card-icon primary">
-                    <span class="material-symbols-outlined">inventory_2</span>
+            <!-- Maintenance Alert Card -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">Maintenance Alert</span>
+                    <div class="card-icon warning">
+                        <span class="material-symbols-outlined">build</span>
+                    </div>
                 </div>
+                <div class="card-body">
+                    <h3>{{ metrics.vehiclesInMaintenance }}</h3>
+                    <span class="badge negative" *ngIf="metrics.vehiclesInMaintenance > 0">Urgent</span>
+                </div>
+                <p class="card-footer">Units in workshop</p>
             </div>
-            <div class="card-body">
-                <h3>28</h3>
-                <span class="badge positive">+5.0%</span>
+            <!-- Pending Cargo Card -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">Pending Cargo</span>
+                    <div class="card-icon primary">
+                        <span class="material-symbols-outlined">inventory_2</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <h3>{{ metrics.pendingTrips }}</h3>
+                    <span class="badge positive" *ngIf="metrics.pendingTripsDelta">{{ metrics.pendingTripsDelta
+                        }}</span>
+                </div>
+                <p class="card-footer">Loads awaiting assignment</p>
             </div>
-            <p class="card-footer">Loads awaiting assignment</p>
-        </div>
+        </ng-container>
     </div>
     <!-- 4. Data Table -->
     <div class="data-table-container">
@@ -103,131 +108,49 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Row 1 -->
-                    <tr>
-                        <td>
-                            <div class="trip-id">NY-1042</div>
-                            <div class="trip-route">New York → Boston</div>
-                        </td>
-                        <td>
-                            <div class="vehicle-info">
-                                <span class="material-symbols-outlined vehicle-icon">front_loader</span>
-                                <span class="vehicle-name">Volvo VNL - #882</span>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="driver-info">
-                                <div class="avatar">
-                                    <img data-alt="Portrait of driver Alex Rivera"
-                                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdUuGw62t_q3drJ9idKgU-1GNP_2ImiMdmN4XrvdL37wMfdJgnDWpv_jP0yMwYZy8fkO9uiOFf0i-5_GIRMYJ6DSwNn--euqBveNpG-kuapq6PY_yRvdumkxMbIQZhEQuJEyYZaSQ2gX8RgZWiE9ZoR1cyQkn4WGSY6ZLqQUBXl4TRbWdR1NzaKMbyaf7LY3F9oHul-W0OzJPhS2c19G0JpH3aefTcbJM8K8D_3VKoRatl7G07eBfGLpZENX0YpJgLfOSKi4DKioWK" />
+                    <ng-container *ngIf="isLoadingTrips; else tripsList">
+                        <tr>
+                            <td colspan="4" style="text-align: center; padding: 2rem;">Loading fleet operations...</td>
+                        </tr>
+                    </ng-container>
+                    <ng-template #tripsList>
+                        <tr *ngFor="let trip of trips">
+                            <td>
+                                <div class="trip-id" style="text-transform: uppercase;">{{ trip.trip_id.substring(0,8)
+                                    || 'TRIP' }}</div>
+                                <div class="trip-route">Cross Country</div>
+                            </td>
+                            <td>
+                                <div class="vehicle-info">
+                                    <span class="material-symbols-outlined vehicle-icon">front_loader</span>
+                                    <span class="vehicle-name">{{ trip.vehicleName || 'Vehicle ' +
+                                        trip.vehicle_id.substring(0,4) }}</span>
                                 </div>
-                                <span class="name">Alex Rivera</span>
-                            </div>
-                        </td>
-                        <td>
-                            <span class="status-badge status-ontrip">On Trip</span>
-                        </td>
-                    </tr>
-                    <!-- Row 2 -->
-                    <tr>
-                        <td>
-                            <div class="trip-id">CH-3391</div>
-                            <div class="trip-route">Chicago → Detroit</div>
-                        </td>
-                        <td>
-                            <div class="vehicle-info">
-                                <span class="material-symbols-outlined vehicle-icon">front_loader</span>
-                                <span class="vehicle-name">Freightliner Cascadia</span>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="driver-info">
-                                <div class="avatar">
-                                    <img data-alt="Portrait of driver Sarah Jenkins"
-                                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_A5ZtI-LZmMJqikT4fp4U0B6zpg65O7WakgqNp3_5qsbA9j-x5CVwiRscHMsLldqXAyn-3rFpgLuizXfopdh631wq7frQhHsI6iAISzMXwaIpe8UK1dWCclXjStaxA2IgR2HUtZ_ytEP08EBYZo-ve4KuWREE0mqTE4DPI68EOj5GpEKqvMlFSBju8oyfYanJJ0OPitEhO5rKihSeEnQpzTQkF4eauqy5SMhTDxDM8hvH9fOb3GgNzEvdCCaQttp5Bu_MM-JXVnar" />
+                            </td>
+                            <td>
+                                <div class="driver-info">
+                                    <div class="avatar"
+                                        style="display: flex; align-items: center; justify-content: center;">
+                                        <span class="material-symbols-outlined"
+                                            style="color: var(--text-secondary);">person</span>
+                                    </div>
+                                    <span class="name">{{ trip.driverName || 'Driver ' + trip.driver_id.substring(0,4)
+                                        }}</span>
                                 </div>
-                                <span class="name">Sarah Jenkins</span>
-                            </div>
-                        </td>
-                        <td>
-                            <span class="status-badge status-delivered">Delivered</span>
-                        </td>
-                    </tr>
-                    <!-- Row 3 -->
-                    <tr>
-                        <td>
-                            <div class="trip-id">LA-9002</div>
-                            <div class="trip-route">Los Angeles → Phoenix</div>
-                        </td>
-                        <td>
-                            <div class="vehicle-info">
-                                <span class="material-symbols-outlined vehicle-icon">front_loader</span>
-                                <span class="vehicle-name">Kenworth T680</span>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="driver-info">
-                                <div class="avatar">
-                                    <img data-alt="Portrait of driver Michael Chen"
-                                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2u_OFgc7QnkdfMr9Kx_TititlAIqJk4k_Q16YcD5r2Vxa-rTEMl3CB9FHCw7IXDHu1w-OBWj7iSBN85aFzoiZ8GWIo3m12e-CmHjLs-ZyQbTPxua0nFyHM9FuVtPuEeWylrdpkdJG9NKBJEXTmrjBjk2fxH2T1XJriuvn1ojl1T7kYVqGJx9KnVMa-1feuSGLBego4dwFh86Y1etZy5ClbnOYXkYuJ4S_NUuvqgVmXjloycYjhJbOFRrVy-pmCnt0oZMOWr16tQJ5" />
-                                </div>
-                                <span class="name">Michael Chen</span>
-                            </div>
-                        </td>
-                        <td>
-                            <span class="status-badge status-pending">Pending</span>
-                        </td>
-                    </tr>
-                    <!-- Row 4 -->
-                    <tr>
-                        <td>
-                            <div class="trip-id">SF-4482</div>
-                            <div class="trip-route">San Francisco → Seattle</div>
-                        </td>
-                        <td>
-                            <div class="vehicle-info">
-                                <span class="material-symbols-outlined vehicle-icon">front_loader</span>
-                                <span class="vehicle-name">Volvo VNL - #901</span>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="driver-info">
-                                <div class="avatar">
-                                    <img data-alt="Portrait of driver Elena Rodriguez"
-                                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuBAP4ehMPxKHJLILjLs1b-qh-9hbqorHkHDAVa_BisTaeIiG-Xj0Eabl8tIhH_7vG1_O8c4NqtI17xQJU2uD42hU3b1_zKqZ8FhZzVsWeAvvIdv6xQGNzlwgpz6Ndt2aKdU01vos4NRrhl6xHPY4HTBcdRNqcr5Q99qi5otC13ekzWvWH6xbcpiKuEOe7Va6FrWTiDefVWHDTnp6x3tFCpJNt3GxakT2Wp5k6cPb5iLiiPfKL2_RNnlpBAJ0vtTR_luUz98YLIYpTbX" />
-                                </div>
-                                <span class="name">Elena Rodriguez</span>
-                            </div>
-                        </td>
-                        <td>
-                            <span class="status-badge status-ontrip">On Trip</span>
-                        </td>
-                    </tr>
-                    <!-- Row 5 -->
-                    <tr>
-                        <td>
-                            <div class="trip-id">TX-1109</div>
-                            <div class="trip-route">Austin → Dallas</div>
-                        </td>
-                        <td>
-                            <div class="vehicle-info">
-                                <span class="material-symbols-outlined vehicle-icon">front_loader</span>
-                                <span class="vehicle-name">Peterbilt 579</span>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="driver-info">
-                                <div class="avatar">
-                                    <img data-alt="Portrait of driver James Wilson"
-                                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuDJvlfQIIQC-gGfTOz4MMvZcnE2sTTaOOn3AjVn0CvXhvXQnd_y1qDD2rogpazXW697NfaHNad27RbR_4IAAENlBvLpxZFjeG4Qdls_GZQOCyarC1MRWJW0Slr-S9B4QRuz6m-NhPudpwCfY4Xlz-l8muKRqfdpzkLMEPgfpKJ60w_omsau3u9O2hmZOMxcqCE-y8CL6lbgjYDIsFiNIgjL4zV9U18nZmMU0B2YdZYZiPiUFR3dmrlZUK71br-WORUljQ0ysF3w5UU_" />
-                                </div>
-                                <span class="name">James Wilson</span>
-                            </div>
-                        </td>
-                        <td>
-                            <span class="status-badge status-delivered">Delivered</span>
-                        </td>
-                    </tr>
+                            </td>
+                            <td>
+                                <span class="status-badge" [ngClass]="{
+                                    'status-ontrip': trip.status === 'OnTrip',
+                                    'status-delivered': trip.status === 'Delivered',
+                                    'status-pending': trip.status === 'Pending'
+                                }">{{ trip.status === 'OnTrip' ? 'On Trip' : trip.status }}</span>
+                            </td>
+                        </tr>
+                        <tr *ngIf="trips.length === 0">
+                            <td colspan="4" style="text-align: center; padding: 2rem;">No trips currently scheduled.
+                            </td>
+                        </tr>
+                    </ng-template>
                 </tbody>
             </table>
         </div>

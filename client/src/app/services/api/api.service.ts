@@ -117,6 +117,13 @@ export class ApiService {
     return this.handleObservables(req, options);
   }
 
+  patch<T>(url: string, body: any, options?: ApiOptions): Observable<T> {
+    const finalUrl = this.buildUrl(url, options);
+    const httpOptions = this.buildOptions(options);
+    const req = this.http.patch<T>(finalUrl, body, httpOptions);
+    return this.handleObservables(req, options);
+  }
+
   delete<T>(url: string, options?: ApiOptions): Observable<T> {
     const finalUrl = this.buildUrl(url, options);
     const httpOptions = this.buildOptions(options);
