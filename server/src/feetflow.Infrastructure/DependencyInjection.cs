@@ -20,6 +20,16 @@ public static class DependencyInjection
 
         services.AddScoped<IRepository<SampleEntity>, SampleRepository>();
 
+        // FleetFlow
+        services.AddScoped<IUnitOfWork, feetflow.Infrastructure.FleetFlow.UnitOfWork>();
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IVehicleRepository, VehicleRepository>();
+        services.AddScoped<IDriverRepository, DriverRepository>();
+        services.AddScoped<ITripRepository, TripRepository>();
+        services.AddScoped<IMaintenanceLogRepository, MaintenanceLogRepository>();
+        services.AddScoped<IFuelLogRepository, FuelLogRepository>();
+        services.AddScoped<IAnalyticsRepository, AnalyticsRepository>();
+
         services.AddSingleton<IMessagePublisher, RabbitMqPublisher>();
         services.AddSingleton<IMessageConsumer, RabbitMqConsumer>();
 

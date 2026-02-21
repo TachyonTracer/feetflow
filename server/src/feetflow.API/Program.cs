@@ -8,7 +8,9 @@ using feetflow.Infrastructure;
 using feetflow.Infrastructure.Notifications;
 using feetflow.Infrastructure.Persistence;
 using feetflow.API.Auth;
+using feetflow.API.Filters;
 using feetflow.API.Middleware;
+using Microsoft.OpenApi;
 using Serilog;
 using Serilog.Events;
 
@@ -151,13 +153,30 @@ builder.Services.AddHealthChecks()
 builder.Services.AddSignalR();
 
 // --- Controllers + Swagger ---
-builder.Services.AddControllers()
+builder.Services.AddControllers(options =>
+    {
+        options.Filters.Add<ApiResponseWrapperFilter>();
+    })
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
     });
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        Description = "Enter your JWT token"
+    });
+
+    options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
+    {
+        [new OpenApiSecuritySchemeReference("Bearer", document)] = []
+    });
+});
 
 var app = builder.Build();
 

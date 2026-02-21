@@ -29,4 +29,7 @@ public class Result<T>
 
     public static Result<T> Unauthorized(string error = "Unauthorized")
         => new(default, false, error, 401);
+
+    public static Result<T> Conflict(string error = "Resource was modified by another user")
+        => new(default, false, error, 409);
 }

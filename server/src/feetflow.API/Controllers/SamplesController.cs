@@ -21,7 +21,9 @@ public class SamplesController : ControllerBase
     public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
     {
         var result = await _mediator.Send(new GetSamplesQuery(), cancellationToken);
-        return result.IsSuccess ? Ok(result.Value) : StatusCode(result.StatusCode, result.Error);
+        return result.IsSuccess
+            ? Ok(result.Value)
+            : StatusCode(result.StatusCode, result.Error);
     }
 
     [HttpPost]
@@ -30,7 +32,7 @@ public class SamplesController : ControllerBase
     {
         var result = await _mediator.Send(command, cancellationToken);
         return result.IsSuccess
-            ? CreatedAtAction(nameof(GetAll), result.Value)
+            ? StatusCode(StatusCodes.Status201Created, result.Value)
             : StatusCode(result.StatusCode, result.Error);
     }
 }

@@ -1,0 +1,24 @@
+using MediatR;
+using feetflow.Domain.Common;
+using feetflow.Domain.Entities;
+using feetflow.Domain.Interfaces;
+
+namespace feetflow.Application.Features.FleetFlow.Vehicles;
+
+public record GetVehicleByIdQuery(Guid Id) : IRequest<Result<Vehicle>>;
+
+public class GetVehicleByIdQueryHandler : IRequestHandler<GetVehicleByIdQuery, Result<Vehicle>>
+{
+    private readonly IVehicleRepository _vehicleRepository;
+
+    public GetVehicleByIdQueryHandler(IVehicleRepository vehicleRepository)
+    {
+        _vehicleRepository = vehicleRepository;
+    }
+
+    public async Task<Result<Vehicle>> Handle(GetVehicleByIdQuery request, CancellationToken cancellationToken)
+    {
+        var vehicle = await _vehicleRepository.GetByIdAsync(request.Id, cancellationToken);
+        return vehicle == null ? Result<Vehicle>.NotFound("Vehicle not found.") : Result<Vehicle>.Success(vehicle);
+    }
+}
