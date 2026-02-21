@@ -32,7 +32,7 @@ export class CustomLoginComponent implements OnInit {
   ];
 
   public user: LoginCredentials = {
-    username: '',
+    email: '',
     password: '',
     role: 'manager',
     rememberMe: false,
@@ -60,7 +60,7 @@ export class CustomLoginComponent implements OnInit {
 
   public get profileInitials(): string {
     const fallbackInitials = this.selectedRoleLabel.slice(0, 2).toUpperCase();
-    const username = this.user.username?.trim();
+    const username = this.user.email?.trim().toLowerCase();
 
     if (!username) {
       return fallbackInitials;
@@ -121,7 +121,7 @@ export class CustomLoginComponent implements OnInit {
     this.loginError = '';
 
     const payload: LoginRequest = {
-      username: this.user.username,
+      email: this.user.email,
       password: this.user.password,
       role: this.user.role,
     };

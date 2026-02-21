@@ -7,14 +7,14 @@ export interface RoleOption {
 }
 
 export interface LoginCredentials {
-  username: string;
+  email: string;
   password: string;
   role: LoginRole;
   rememberMe: boolean;
 }
 
 export interface LoginRequest {
-  username: string;
+  email: string;
   password: string;
   role: LoginRole;
 }

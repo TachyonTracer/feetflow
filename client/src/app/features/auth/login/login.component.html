@@ -103,8 +103,8 @@
           <div class="input-wrapper">
             <span class="input-icon material-symbols-outlined">mail</span>
             <input #emailInput="ngModel" class="form-input input-focus-glow"
-              [class.input-error]="emailInput.invalid && (emailInput.dirty || emailInput.touched)"
-              placeholder="Username / Email" type="email" [(ngModel)]="user.username" name="username" required email />
+              [class.input-error]="emailInput.invalid && (emailInput.dirty || emailInput.touched)" placeholder="Email"
+              type="email" [(ngModel)]="user.email" name="email" required email />
           </div>
           <div *ngIf="emailInput.invalid && (emailInput.dirty || emailInput.touched)" class="field-error">
             <span class="material-symbols-outlined">error</span>
@@ -167,7 +167,7 @@
 
     <!-- Footer -->
     <div class="page-footer">
-      © 2024 FleetFlow Inc. All rights reserved.
+      © 2026 FleetFlow Inc. All rights reserved.
     </div>
   </div>
 </div>
