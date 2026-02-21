@@ -25,6 +25,10 @@ export class VehicleTripDispatcher implements OnInit {
   isLoadingLogs = false;
   isSubmitting = false;
 
+  searchTerm: string = '';
+  currentStatus: string = '';
+  sortBy: string = '';
+
   newTrip: CreateTripRequest = {
     vehicleId: '',
     driverId: '',
@@ -49,6 +53,33 @@ export class VehicleTripDispatcher implements OnInit {
   ngOnInit() {
     this.loadActiveTrips();
     this.loadDropdownData();
+  }
+
+  get filteredTrips(): Trip[] {
+    let filtered = this.trips;
+
+    if (this.currentStatus) {
+      filtered = filtered.filter((t) => t.status === this.currentStatus);
+    }
+
+    if (this.searchTerm) {
+      const term = this.searchTerm.toLowerCase();
+      filtered = filtered.filter(
+        (t) =>
+          t.trip_id.toLowerCase().includes(term) ||
+          (t.vehicleName && t.vehicleName.toLowerCase().includes(term)),
+      );
+    }
+
+    if (this.sortBy) {
+      filtered = [...filtered].sort((a, b) => {
+        if (this.sortBy === 'status') return a.status.localeCompare(b.status);
+        if (this.sortBy === 'id') return a.trip_id.localeCompare(b.trip_id);
+        return 0;
+      });
+    }
+
+    return filtered;
   }
 
   loadActiveTrips() {

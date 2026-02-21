@@ -46,26 +46,23 @@
                 <!-- Search -->
                 <div class="search-box">
                     <span class="material-symbols-outlined search-icon">search</span>
-                    <input class="search-input" placeholder="Search by Vehicle, Log ID, or Service Type..."
-                        type="text" />
+                    <input class="search-input" placeholder="Search by Vehicle, Log ID, or Service Type..." type="text"
+                        [(ngModel)]="searchTerm" />
                 </div>
                 <!-- Controls Group -->
                 <div class="filter-actions">
-                    <button class="btn-outline">
-                        <span class="material-symbols-outlined icon">group_work</span>
-                        Group By
-                        <span class="material-symbols-outlined icon-chevron">expand_more</span>
-                    </button>
-                    <button class="btn-outline">
-                        <span class="material-symbols-outlined icon">filter_list</span>
-                        Filter
-                        <span class="material-symbols-outlined icon-chevron">expand_more</span>
-                    </button>
-                    <button class="btn-outline">
-                        <span class="material-symbols-outlined icon">swap_vert</span>
-                        Sort
-                        <span class="material-symbols-outlined icon-chevron">expand_more</span>
-                    </button>
+                    <select class="btn-outline form-select-style" [(ngModel)]="currentStatus">
+                        <option value="">All Statuses</option>
+                        <option value="Completed">Completed</option>
+                        <option value="In Progress">In Progress</option>
+                    </select>
+                    <select class="btn-outline form-select-style" [(ngModel)]="sortBy">
+                        <option value="">Sort By...</option>
+                        <option value="date-desc">Date (Newest First)</option>
+                        <option value="date-asc">Date (Oldest First)</option>
+                        <option value="cost-desc">Cost (High to Low)</option>
+                        <option value="cost-asc">Cost (Low to High)</option>
+                    </select>
                 </div>
             </div>
         </div>
@@ -93,7 +90,7 @@
                             </tr>
                         </ng-container>
                         <ng-template #logsList>
-                            <tr *ngFor="let log of logs">
+                            <tr *ngFor="let log of filteredLogs">
                                 <td class="td-id">#{{ log.maintenance_id.substring(0,8) | uppercase }}</td>
                                 <td>
                                     <div class="vehicle-info">
@@ -124,7 +121,7 @@
                                     </button>
                                 </td>
                             </tr>
-                            <tr *ngIf="logs.length === 0">
+                            <tr *ngIf="filteredLogs.length === 0">
                                 <td colspan="7" style="text-align: center; padding: 2rem;">No maintenance logs found.
                                 </td>
                             </tr>
@@ -135,7 +132,7 @@
 
             <!-- Pagination -->
             <div class="table-footer" *ngIf="!isLoading">
-                <span class="pagination-text">Showing {{ logs.length }} logs</span>
+                <span class="pagination-text">Showing {{ filteredLogs.length }} logs</span>
             </div>
         </div>
 

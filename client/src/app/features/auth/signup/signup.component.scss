@@ -106,19 +106,10 @@ $font-family: 'Inter', sans-serif;
   margin-bottom: 1.5rem;
 }
 
-.brand-logo-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 2.5rem;
+.brand-logo-image {
   height: 2.5rem;
-  border-radius: $radius-lg;
-  background: $primary;
-  color: #fff;
-
-  .material-symbols-outlined {
-    font-size: 1.5rem;
-  }
+  width: auto;
+  display: block;
 }
 
 .brand-name {

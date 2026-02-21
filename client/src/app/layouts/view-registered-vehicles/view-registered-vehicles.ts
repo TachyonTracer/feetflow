@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { AddNewVehicle } from './add-new-vehicle/add-new-vehicle';
 import { VehiclesApiService } from '../../services/controllers/vehicles-api.service';
 import { Vehicle } from '../../core/models/vehicle.model';
@@ -7,7 +8,7 @@ import { Vehicle } from '../../core/models/vehicle.model';
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, AddNewVehicle],
+  imports: [CommonModule, FormsModule, AddNewVehicle],
   templateUrl: './view-registered-vehicles.html',
   styleUrl: './view-registered-vehicles.scss',
 })
@@ -17,8 +18,11 @@ export class VehicleRegister implements OnInit {
   isLoading = true;
   pageNumber = 1;
   pageSize = 10;
-  totalCount = 0;
-  totalPages = 0;
+
+  // Filter & Sort States
+  searchTerm: string = '';
+  currentStatus: string = '';
+  sortBy: string = '';
 
   constructor(private vehiclesService: VehiclesApiService) {}
 
@@ -28,11 +32,11 @@ export class VehicleRegister implements OnInit {
 
   loadVehicles() {
     this.isLoading = true;
-    this.vehiclesService.getVehicles(this.pageNumber, this.pageSize).subscribe({
+    // Fetch a larger set for client-side filtering
+    this.vehiclesService.getVehicles(1, 200).subscribe({
       next: (res) => {
         this.vehicles = res.items || [];
-        this.totalCount = res.totalCount || 0;
-        this.totalPages = Math.ceil(this.totalCount / this.pageSize) || 1;
+
         this.isLoading = false;
       },
       error: (err) => {
@@ -62,6 +66,53 @@ export class VehicleRegister implements OnInit {
         alert('Failed to delete vehicle.');
       },
     });
+  }
+  get filteredVehicles(): Vehicle[] {
+    let filtered = this.vehicles;
+
+    if (this.currentStatus) {
+      filtered = filtered.filter((v) => v.status === this.currentStatus);
+    }
+
+    if (this.searchTerm) {
+      const term = this.searchTerm.toLowerCase();
+      filtered = filtered.filter(
+        (v) =>
+          v.vehicle_id.toLowerCase().includes(term) ||
+          v.name.toLowerCase().includes(term) ||
+          (v.licensePlate && v.licensePlate.toLowerCase().includes(term)),
+      );
+    }
+
+    if (this.sortBy) {
+      filtered = [...filtered].sort((a, b) => {
+        if (this.sortBy === 'capacity') {
+          return (b.maxCapacityKg || 0) - (a.maxCapacityKg || 0);
+        } else if (this.sortBy === 'odometer') {
+          return (b.odometerKm || 0) - (a.odometerKm || 0);
+        }
+        return 0;
+      });
+    }
+
+    return filtered;
+  }
+
+  get paginatedVehicles(): Vehicle[] {
+    const startIndex = (this.pageNumber - 1) * this.pageSize;
+    return this.filteredVehicles.slice(startIndex, startIndex + this.pageSize);
+  }
+
+  get totalCount(): number {
+    return this.filteredVehicles.length;
+  }
+
+  get totalPages(): number {
+    return Math.ceil(this.totalCount / this.pageSize);
+  }
+
+  get endCount(): number {
+    return Math.min(this.pageNumber * this.pageSize, this.totalCount);
   }
 
   changePage(newPage: number) {

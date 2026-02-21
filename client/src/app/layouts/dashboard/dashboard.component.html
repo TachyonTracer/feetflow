@@ -25,21 +25,21 @@
             <div class="search-icon">
                 <span class="material-symbols-outlined">search</span>
             </div>
-            <input placeholder="Search vehicles, drivers, or trips..." type="text" />
+            <input placeholder="Search vehicles, drivers, or trips..." type="text" [(ngModel)]="searchTerm" />
         </div>
         <div class="action-buttons">
-            <button>
-                <span class="material-symbols-outlined">layers</span>
-                Group By
-            </button>
-            <button>
-                <span class="material-symbols-outlined">filter_list</span>
-                Filter
-            </button>
-            <button>
-                <span class="material-symbols-outlined">swap_vert</span>
-                Sort
-            </button>
+            <select class="btn-outline form-select-style" [(ngModel)]="currentStatus">
+                <option value="">All Statuses</option>
+                <option value="Dispatched">Dispatched</option>
+                <option value="Completed">Completed</option>
+                <option value="Draft">Draft</option>
+                <option value="Cancelled">Cancelled</option>
+            </select>
+            <select class="btn-outline form-select-style" [(ngModel)]="sortBy">
+                <option value="">Sort By...</option>
+                <option value="status">Status</option>
+                <option value="id">Trip ID</option>
+            </select>
         </div>
     </div>
     <!-- 3. Summary Cards -->
@@ -114,7 +114,7 @@
                         </tr>
                     </ng-container>
                     <ng-template #tripsList>
-                        <tr *ngFor="let trip of trips">
+                        <tr *ngFor="let trip of filteredTrips">
                             <td>
                                 <div class="trip-id" style="text-transform: uppercase;">{{ trip.trip_id.substring(0,8)
                                     || 'TRIP' }}</div>
@@ -140,13 +140,13 @@
                             </td>
                             <td>
                                 <span class="status-badge" [ngClass]="{
-                                    'status-ontrip': trip.status === 'OnTrip',
-                                    'status-delivered': trip.status === 'Delivered',
-                                    'status-pending': trip.status === 'Pending'
-                                }">{{ trip.status === 'OnTrip' ? 'On Trip' : trip.status }}</span>
+                                    'status-ontrip': trip.status === 'Dispatched',
+                                    'status-delivered': trip.status === 'Completed',
+                                    'status-pending': trip.status === 'Draft'
+                                }">{{ trip.status }}</span>
                             </td>
                         </tr>
-                        <tr *ngIf="trips.length === 0">
+                        <tr *ngIf="filteredTrips.length === 0">
                             <td colspan="4" style="text-align: center; padding: 2rem;">No trips currently scheduled.
                             </td>
                         </tr>
@@ -155,7 +155,7 @@
             </table>
         </div>
         <div class="table-footer">
-            <p>Showing 5 of 42 trips</p>
+            <p>Showing {{ filteredTrips.length }} of {{ trips.length }} trips</p>
             <div class="pagination">
                 <button disabled="">
                     <span class="material-symbols-outlined">chevron_left</span>

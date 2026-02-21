@@ -44,21 +44,21 @@
                         <div class="search-box">
                             <span class="material-symbols-outlined search-icon">search</span>
                             <input class="search-input" placeholder="Search Trip ID, driver, or destination..."
-                                type="text" />
+                                type="text" [(ngModel)]="searchTerm" />
                         </div>
                         <div class="filter-actions">
-                            <button class="btn-outline">
-                                <span class="material-symbols-outlined icon">layers</span>
-                                Group By
-                            </button>
-                            <button class="btn-outline">
-                                <span class="material-symbols-outlined icon">filter_list</span>
-                                Filter
-                            </button>
-                            <button class="btn-outline">
-                                <span class="material-symbols-outlined icon">sort</span>
-                                Sort
-                            </button>
+                            <select class="btn-outline form-select-style" [(ngModel)]="currentStatus">
+                                <option value="">All Statuses</option>
+                                <option value="OnTrip">On Trip</option>
+                                <option value="Delivered">Delivered</option>
+                                <option value="Pending">Pending</option>
+                                <option value="Cancelled">Cancelled</option>
+                            </select>
+                            <select class="btn-outline form-select-style" [(ngModel)]="sortBy">
+                                <option value="">Sort By...</option>
+                                <option value="status">Status</option>
+                                <option value="id">Trip ID</option>
+                            </select>
                         </div>
                     </div>
                 </section>
@@ -66,7 +66,7 @@
                 <section class="log-table-section">
                     <div class="section-header">
                         <h2 class="section-title">Active Trip Dispatch Log</h2>
-                        <span class="section-subtitle">Showing 4 active deliveries</span>
+                        <span class="section-subtitle">Showing {{ filteredTrips.length }} active deliveries</span>
                     </div>
 
                     <div class="data-table-container">
@@ -83,7 +83,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr *ngFor="let trip of trips">
+                                    <tr *ngFor="let trip of filteredTrips">
                                         <td class="td-id">{{ trip.trip_id.substring(0,8) | uppercase }}</td>
                                         <td class="td-text">{{ getVehicleName(trip.vehicle_id) }}</td>
                                         <td class="td-text">{{ getDriverName(trip.driver_id) }}</td>
@@ -114,7 +114,7 @@
                                             </button>
                                         </td>
                                     </tr>
-                                    <tr *ngIf="trips.length === 0 && !isLoadingLogs">
+                                    <tr *ngIf="filteredTrips.length === 0 && !isLoadingLogs">
                                         <td colspan="6" style="text-align: center; padding: 2rem;">No active trips
                                             found.</td>
                                     </tr>
@@ -161,8 +161,7 @@
                             <div class="form-group">
                                 <label class="form-label">Select Driver</label>
                                 <div class="select-wrapper">
-                                    <select class="form-select" name="driverId" [(ngModel)]="newTrip.driverId"
-                                        required>
+                                    <select class="form-select" name="driverId" [(ngModel)]="newTrip.driverId" required>
                                         <option value="">Assign a driver...</option>
                                         <option *ngFor="let d of drivers" [value]="d.driver_id">{{ d.fullName }} (ID: {{
                                             d.licenseNumber }})</option>
