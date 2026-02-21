@@ -1,0 +1,37 @@
+<div class="col-lg-10 m-auto">
+    <h1 id="title" class="title">Call Manager</h1>
+    <hr>
+    <p class="sub-title">Welcome! Sign up for a new account.</p>
+</div>
+
+<form (ngSubmit)="signup()" #form="ngForm" aria-labelledby="title">
+    <div class="col-lg-10 mb-4 ms-auto me-auto">
+        <label class="label" for="input-username">Username:</label>
+        <input class="form-control" [(ngModel)]="user.username" name="username" id="input-username"
+            placeholder="Enter Username" autofocus required>
+    </div>
+    <div class="col-lg-10 mb-4 ms-auto me-auto">
+        <label class="label" for="input-email">Email:</label>
+        <input class="form-control" [(ngModel)]="user.email" name="email" id="input-email"
+            placeholder="Enter Email Address" type="email" required>
+    </div>
+    <div class="col-lg-10 mb-4 ms-auto me-auto">
+        <label class="label" for="input-password">Password:</label>
+        <input class="form-control" [(ngModel)]="user.password" name="password" type="password" id="input-password"
+            placeholder="Enter Password" required minlength="6" maxlength="50">
+    </div>
+    <div class="col-lg-10 mb-4 ms-auto me-auto">
+        <label class="label" for="input-re-password">Repeat Password:</label>
+        <input class="form-control" [(ngModel)]="user.confirmPassword" name="confirmPassword" type="password"
+            id="input-re-password" placeholder="Confirm Password" required minlength="6" maxlength="50">
+    </div>
+    <div class="col-lg-10 ms-auto me-auto">
+        <button class="btn btn-primary" type="submit"
+            [disabled]="!form.valid || user.password !== user.confirmPassword">
+            Sign Up
+        </button>
+    </div>
+    <div class="col-lg-10 mt-3 ms-auto me-auto text-center">
+        <p>Already have an account? <a routerLink="../login">Log In</a></p>
+    </div>
+</form>

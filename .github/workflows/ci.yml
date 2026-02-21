@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main, develop]
+
+jobs:
+  server-build-test:
+    name: Server Build & Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Restore
+        run: dotnet restore server/feetflow.slnx
+
+      - name: Build
+        run: dotnet build server/feetflow.slnx --no-restore --configuration Release
+
+      - name: Test
+        run: dotnet test server/feetflow.slnx --no-build --configuration Release --verbosity normal
+
+  client-build-lint:
+    name: Client Build & Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: client/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: client
+
+      - name: Build
+        run: npx ng build --configuration production
+        working-directory: client

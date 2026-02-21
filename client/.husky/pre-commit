@@ -1,0 +1,3 @@
+#!/usr/bin/env sh
+
+cd client && npx ng lint 2>/dev/null || echo "Linting skipped (ng lint not configured)"

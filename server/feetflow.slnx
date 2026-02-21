@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/feetflow.API/feetflow.API.csproj" />
+    <Project Path="src/feetflow.Application/feetflow.Application.csproj" />
+    <Project Path="src/feetflow.Domain/feetflow.Domain.csproj" />
+    <Project Path="src/feetflow.Infrastructure/feetflow.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/feetflow.Application.Tests/feetflow.Application.Tests.csproj" />
+    <Project Path="tests/feetflow.Domain.Tests/feetflow.Domain.Tests.csproj" />
+    <Project Path="tests/feetflow.Infrastructure.Tests/feetflow.Infrastructure.Tests.csproj" />
+  </Folder>
+</Solution>

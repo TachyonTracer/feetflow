@@ -1,0 +1,29 @@
+{
+  "project": {
+    "name": "feetflow",
+    "type": "fullstack-monorepo",
+    "description": "Angular 20 + .NET 10 Clean Architecture monorepo"
+  },
+  "conventions": {
+    "backend": {
+      "framework": ".NET 10",
+      "architecture": "Clean Architecture (Domain, Application, Infrastructure, API)",
+      "dataAccess": "ADO.NET + Npgsql + Dapper (no EF Core)",
+      "logging": "Serilog (structured, date-based folders)",
+      "auth": "JWT + Refresh Tokens + API Keys"
+    },
+    "frontend": {
+      "framework": "Angular 20 LTS",
+      "style": "standalone components, signals, functional patterns",
+      "stateManagement": "services with BehaviorSubject/signals",
+      "httpInterceptors": "functional (authInterceptor)",
+      "realtime": "@microsoft/signalr"
+    }
+  },
+  "paths": {
+    "backend": "server/",
+    "frontend": "client/",
+    "migrations": "server/migrations/",
+    "cicd": ".github/workflows/"
+  }
+}

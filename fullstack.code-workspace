@@ -1,0 +1,50 @@
+{
+  "folders": [
+    {
+      "name": "Client",
+      "path": "client",
+    },
+    {
+      "name": "Server",
+      "path": "server/src",
+    },
+    {
+      "name": "Tests",
+      "path": "server/tests",
+    },
+    {
+      "name": "DevOps",
+      "path": ".",
+    },
+  ],
+  "settings": {
+    "files.exclude": {
+      "node_modules/**": true,
+      "dist/**": true,
+      ".angular/**": true,
+      "**/bin/**": true,
+      "**/obj/**": true,
+      "client/**": true,
+      "server/**": true,
+      "nupkg/**": true,
+      "TachyonTracer.Templates.csproj": true,
+      ".template.config/**": true,
+      "*.code-workspace": true,
+    },
+    "search.exclude": {
+      "node_modules/**": true,
+      "dist/**": true,
+      "**/bin/**": true,
+      "**/obj/**": true,
+    },
+  },
+  "extensions": {
+    "recommendations": [
+      "angular.ng-template",
+      "ms-dotnettools.csharp",
+      "ms-dotnettools.csdevkit",
+      "esbenp.prettier-vscode",
+      "humao.rest-client",
+    ],
+  },
+}

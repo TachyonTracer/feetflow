@@ -1,0 +1,23 @@
+<div class="col-lg-10 m-auto">
+    <h1 id="title" class="title">Login</h1>
+    <hr>
+    <p class="sub-title">Hello! Log in with your username.</p>
+</div>
+
+<form (ngSubmit)="login()" #form="ngForm" aria-labelledby="title">
+    <div class="col-lg-10 mb-4 ms-auto me-auto">
+        <label class="label" for="input-username">Username:</label>
+        <input class="form-control" [(ngModel)]="user.username" name="username" id="input-username"
+            placeholder="Enter Username" autofocus required>
+    </div>
+    <div class="col-lg-10 mb-4 ms-auto me-auto">
+        <label class="label" for="input-password">Password:</label>
+        <input class="form-control" [(ngModel)]="user.password" name="password" type="password" id="input-password"
+            placeholder="Enter Password" required minlength="6" maxlength="50">
+    </div>
+    <div class="col-lg-10 ms-auto me-auto">
+        <button class="btn btn-primary" type="submit" [disabled]="!form.valid">
+            Log In
+        </button>
+    </div>
+</form>

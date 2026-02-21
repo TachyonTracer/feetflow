@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <PackageType>Template</PackageType>
+    <PackageVersion>1.0.8</PackageVersion>
+    <PackageId>TachyonTracer.Templates</PackageId>
+    <Title>TachyonTracer Fullstack Templates</Title>
+    <Authors>TachyonTracer</Authors>
+    <Description>Fullstack Angular 20 + .NET 10 Clean Architecture project template with RabbitMQ, SignalR, Serilog, JWT auth, and CI/CD.</Description>
+    <PackageTags>dotnet-new;templates;angular;dotnet;clean-architecture;fullstack</PackageTags>
+    <TargetFramework>net10.0</TargetFramework>
+    <IncludeContentInPack>true</IncludeContentInPack>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <ContentTargetFolders>content</ContentTargetFolders>
+    <NoWarn>$(NoWarn);NU5128</NoWarn>
+    <NoDefaultExcludes>true</NoDefaultExcludes>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="**\*" Exclude="**\bin\**;**\obj\**;**\node_modules\**;**\dist\**;**\.angular\**;**\nupkg*\**;**\feetflowLogs\**" />
+    <Compile Remove="**\*" />
+  </ItemGroup>
+</Project>

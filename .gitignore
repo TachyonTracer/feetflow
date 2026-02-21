@@ -1,0 +1,35 @@
+
+# Dependencies
+node_modules/
+client/node_modules/
+
+# Build
+client/dist/
+server/**/bin/
+server/**/obj/
+bin/
+obj/
+# IDE
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+
+# Logs
+**/feetflowLogs/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+docker-compose.override.yml
+
+# Angular
+client/.angular/
+bin/*
+
+# NuGet Packages
+*.nupkg

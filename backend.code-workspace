@@ -1,0 +1,40 @@
+{
+  "folders": [
+    {
+      "name": "Source",
+      "path": "server/src"
+    },
+    {
+      "name": "Tests",
+      "path": "server/tests"
+    },
+    {
+      "name": "Migrations",
+      "path": "server/migrations"
+    },
+  ],
+  "settings": {
+    "files.exclude": {
+      "client/**": true,
+      "server/**": true,
+      "nupkg/**": true,
+      "**/bin/**": true,
+      "**/obj/**": true,
+      "TachyonTracer.Templates.csproj": true,
+      ".template.config/**": true,
+      "*.code-workspace": true
+    },
+    "search.exclude": {
+      "client/**": true,
+      "**/bin/**": true,
+      "**/obj/**": true
+    }
+  },
+  "extensions": {
+    "recommendations": [
+      "ms-dotnettools.csharp",
+      "ms-dotnettools.csdevkit",
+      "humao.rest-client"
+    ]
+  }
+}
