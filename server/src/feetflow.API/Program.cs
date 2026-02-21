@@ -8,44 +8,59 @@ using feetflow.Infrastructure;
 using feetflow.Infrastructure.Notifications;
 using feetflow.Infrastructure.Persistence;
 using feetflow.API.Auth;
+using feetflow.API.Filters;
 using feetflow.API.Middleware;
+using Microsoft.OpenApi;
 using Serilog;
 using Serilog.Events;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // --- Serilog ---
-var logPath = Path.Combine(AppContext.BaseDirectory, "feetflowLogs");
+var configuredLogPath = builder.Configuration["Serilog:LogPath"];
+var logPath = string.IsNullOrWhiteSpace(configuredLogPath)
+    ? @"C:\FeetFlow\Logs"
+    : Environment.ExpandEnvironmentVariables(configuredLogPath);
+const string requestCompletionTemplate = "HTTP {RequestMethod} {RequestPath} responded {StatusCode} in {Elapsed:0.0000} ms";
+
+if (!Path.IsPathRooted(logPath))
+{
+    logPath = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, logPath));
+}
+
+Directory.CreateDirectory(logPath);
+var datedLogPath = Path.Combine(logPath, DateTime.UtcNow.ToString("yyyy-MM-dd"));
+Directory.CreateDirectory(datedLogPath);
 builder.Host.UseSerilog((context, services, configuration) =>
 {
     configuration
         .ReadFrom.Configuration(context.Configuration)
         .Enrich.FromLogContext()
         .Enrich.WithProperty("Application", "feetflow")
-        .WriteTo.Console()
         .WriteTo.Logger(lc => lc
-            .Filter.ByIncludingOnly(e => e.Properties.ContainsKey("SourceContext")
-                && e.Properties["SourceContext"].ToString().Contains("RequestLog"))
+            .Filter.ByIncludingOnly(e => e.MessageTemplate.Text == requestCompletionTemplate)
             .WriteTo.File(
-                Path.Combine(logPath, "{Date}", "requests.log"),
-                rollingInterval: RollingInterval.Day,
+                Path.Combine(datedLogPath, "requests.log"),
+                rollingInterval: RollingInterval.Infinite,
                 fileSizeLimitBytes: 10_485_760,
                 rollOnFileSizeLimit: true,
                 retainedFileCountLimit: null))
         .WriteTo.Logger(lc => lc
             .Filter.ByIncludingOnly(e => e.Level >= LogEventLevel.Error)
             .WriteTo.File(
-                Path.Combine(logPath, "{Date}", "errors.log"),
-                rollingInterval: RollingInterval.Day,
+                Path.Combine(datedLogPath, "errors.log"),
+                rollingInterval: RollingInterval.Infinite,
                 fileSizeLimitBytes: 10_485_760,
                 rollOnFileSizeLimit: true,
                 retainedFileCountLimit: null))
         .WriteTo.Logger(lc => lc
-            .Filter.ByIncludingOnly(e => e.Properties.ContainsKey("SourceContext")
-                && e.Properties["SourceContext"].ToString().Contains("QueryLog"))
+            .Filter.ByIncludingOnly(e =>
+                e.MessageTemplate.Text.Contains("SQL Query")
+                || (e.Properties.TryGetValue("RequestName", out var requestName)
+                    && requestName.ToString().Contains("Query")))
             .WriteTo.File(
-                Path.Combine(logPath, "{Date}", "queries.log"),
-                rollingInterval: RollingInterval.Day,
+                Path.Combine(datedLogPath, "queries.log"),
+                rollingInterval: RollingInterval.Infinite,
                 fileSizeLimitBytes: 10_485_760,
                 rollOnFileSizeLimit: true,
                 retainedFileCountLimit: null));
@@ -133,31 +148,42 @@ builder.Services.AddCors(options =>
 
 // --- Health Checks ---
 builder.Services.AddHealthChecks()
-    .AddNpgSql(builder.Configuration.GetConnectionString("DefaultConnection") ?? "", name: "postgresql")
-    .AddRabbitMQ(async sp =>
-    {
-        var config = sp.GetRequiredService<IConfiguration>();
-        var factory = new RabbitMQ.Client.ConnectionFactory
-        {
-            HostName = config["RabbitMq:HostName"] ?? "localhost",
-            Port = int.Parse(config["RabbitMq:Port"] ?? "5672"),
-            UserName = config["RabbitMq:UserName"] ?? "guest",
-            Password = config["RabbitMq:Password"] ?? "guest"
-        };
-        return await factory.CreateConnectionAsync();
-    }, name: "rabbitmq");
+    .AddNpgSql(builder.Configuration.GetConnectionString("DefaultConnection") ?? "", name: "postgresql");
 
 // --- SignalR ---
 builder.Services.AddSignalR();
 
 // --- Controllers + Swagger ---
-builder.Services.AddControllers()
+builder.Services.Configure<Microsoft.AspNetCore.Mvc.ApiBehaviorOptions>(options =>
+{
+    options.SuppressModelStateInvalidFilter = true;
+});
+
+builder.Services.AddControllers(options =>
+    {
+        options.Filters.Add<ModelValidationFilter>();
+        options.Filters.Add<ApiResponseWrapperFilter>();
+    })
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
     });
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        Description = "Enter your JWT token"
+    });
+
+    options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
+    {
+        [new OpenApiSecuritySchemeReference("Bearer", document)] = []
+    });
+});
 
 var app = builder.Build();
 
@@ -172,7 +198,10 @@ using (var scope = app.Services.CreateScope())
 app.UseMiddleware<SecurityHeadersMiddleware>();
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
-app.UseSerilogRequestLogging();
+app.UseSerilogRequestLogging(options =>
+{
+    options.MessageTemplate = requestCompletionTemplate;
+});
 
 if (app.Environment.IsDevelopment())
 {

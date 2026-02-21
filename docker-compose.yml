@@ -5,19 +5,17 @@ services:
       dockerfile: Dockerfile
     container_name: feetflow-server
     ports:
-      - "5000:5000"
+      - "5180:5180"
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=feetflow;Username=app_user;Password=app_pass
-      - RabbitMq__HostName=rabbitmq
-    depends_on:
-      postgres:
-        condition: service_healthy
-      rabbitmq:
-        condition: service_healthy
+      - ConnectionStrings__DefaultConnection=Host=db.tachyontracer.in;Port=5432;Database=odoo;Username=odoo;Password=sQRM59Emcm5A7e6
+      - RabbitMq__HostName=rabbitmq.tachyontracer.in
+      - Jwt__SecretKey=REPLACE_WITH_SECURE_KEY_AT_LEAST_32_CHARACTERS
+      - Jwt__Issuer=https://fleetflow.tachyontracer.in
+      - Jwt__Audience=https://fleetflow.tachyontracer.in
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:5180/health"]
       interval: 30s
       timeout: 5s
       retries: 3
@@ -38,43 +36,3 @@ services:
       interval: 30s
       timeout: 5s
       retries: 3
-
-  postgres:
-    image: postgres:17-alpine
-    container_name: feetflow-postgres
-    environment:
-      POSTGRES_DB: feetflow
-      POSTGRES_USER: app_user
-      POSTGRES_PASSWORD: app_pass
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U app_user -d feetflow"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-  rabbitmq:
-    image: rabbitmq:4-management-alpine
-    container_name: feetflow-rabbitmq
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-    environment:
-      RABBITMQ_DEFAULT_USER: guest
-      RABBITMQ_DEFAULT_PASS: guest
-    volumes:
-      - rabbitmq_data:/var/lib/rabbitmq
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "rabbitmq-diagnostics", "check_running"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-volumes:
-  postgres_data:
-  rabbitmq_data:

@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, throwError, timer } from 'rxjs';
-import { retry, finalize, shareReplay } from 'rxjs/operators';
-import { ApiServiceService } from './api-service.service';
+import { retry, finalize, shareReplay, map } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 
 export interface ApiOptions {
   routeParams?: { [key: string]: string | number };
@@ -11,6 +11,7 @@ export interface ApiOptions {
   retryCount?: number;
   retryDelay?: number;
   cache?: boolean;
+  rawResponse?: boolean;
 }
 
 @Injectable({
@@ -19,13 +20,21 @@ export interface ApiOptions {
 export class ApiService {
   private cache = new Map<string, Observable<any>>();
 
-  constructor(
-    private http: HttpClient,
-    private legacyApi: ApiServiceService,
-  ) {}
+  constructor(private http: HttpClient) {}
+
+  /**
+   * Resolves the full URL by prepending apiBasePath from environment config
+   * for relative paths (starting with '/'). Absolute URLs are left unchanged.
+   */
+  private resolveUrl(url: string): string {
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      return url;
+    }
+    return environment.apiBasePath + url;
+  }
 
   private buildUrl(url: string, options?: ApiOptions): string {
-    let finalUrl = url;
+    let finalUrl = this.resolveUrl(url);
     if (options?.routeParams) {
       for (const [key, value] of Object.entries(options.routeParams)) {
         finalUrl = finalUrl.replace(`{${key}}`, String(value));
@@ -35,7 +44,7 @@ export class ApiService {
   }
 
   private buildOptions(options?: ApiOptions): { headers: HttpHeaders; params: HttpParams } {
-    let headers = this.legacyApi.getHttpHeaders();
+    let headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     if (options?.headers) {
       for (const [key, value] of Object.entries(options.headers)) {
         headers = headers.set(key, value);
@@ -52,6 +61,19 @@ export class ApiService {
     return { headers, params };
   }
 
+  private unwrapApiResponse<T>(response: any): T {
+    if (
+      response &&
+      typeof response === 'object' &&
+      'result' in response &&
+      'status' in response &&
+      'timestamp' in response
+    ) {
+      return response.result as T;
+    }
+    return response as T;
+  }
+
   private handleObservables<T>(
     req: Observable<T>,
     options?: ApiOptions,
@@ -61,6 +83,10 @@ export class ApiService {
     const retryDelay = options?.retryDelay ?? 1000;
 
     let obs = req;
+
+    if (!options?.rawResponse) {
+      obs = obs.pipe(map((response: any) => this.unwrapApiResponse<T>(response)));
+    }
 
     if (retryCount > 0) {
       obs = obs.pipe(retry({ count: retryCount, delay: retryDelay }));
@@ -102,6 +128,13 @@ export class ApiService {
     const finalUrl = this.buildUrl(url, options);
     const httpOptions = this.buildOptions(options);
     const req = this.http.put<T>(finalUrl, body, httpOptions);
+    return this.handleObservables(req, options);
+  }
+
+  patch<T>(url: string, body: any, options?: ApiOptions): Observable<T> {
+    const finalUrl = this.buildUrl(url, options);
+    const httpOptions = this.buildOptions(options);
+    const req = this.http.patch<T>(finalUrl, body, httpOptions);
     return this.handleObservables(req, options);
   }
 

@@ -1,0 +1,127 @@
+$bg-white: var(--bg-secondary, #ffffff);
+$text-primary: var(--text-primary, #0f172a);
+$text-secondary: #64748b;
+$text-muted: #94a3b8;
+$border-light: var(--border-color, #e2e8f0);
+$border-focus: var(--accent-color, #1e3fae);
+$color-primary: var(--accent-color, #1e3fae);
+
+$bg-blue-100: #dbeafe;
+$text-blue-800: #1e40af;
+$bg-green-100: #dcfce7;
+$text-green-800: #166534;
+$bg-amber-100: #fef3c7;
+$text-amber-800: #92400e;
+
+/* ---- Projected table content styles ----
+   Top-level so Angular view encapsulation matches
+   ng-content projected elements correctly. */
+
+/* Projected content placeholder */
+
+.td-text {
+  color: #475569;
+}
+
+.td-actions {
+  text-align: center;
+  white-space: nowrap;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.625rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+
+  &.status-primary {
+    background-color: $bg-blue-100;
+    color: $text-blue-800;
+  }
+
+  &.status-success {
+    background-color: $bg-green-100;
+    color: $text-green-800;
+  }
+
+  &.status-warning {
+    background-color: $bg-amber-100;
+    color: $text-amber-800;
+  }
+
+  &.status-danger {
+    background-color: #fee2e2;
+    color: #b91c1c;
+  }
+}
+
+.table-empty-cell {
+  text-align: center;
+  padding: 2rem 1rem;
+  color: $text-secondary;
+}
+
+/* Complete Trip Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 1200;
+}
+
+.complete-trip-modal {
+  width: min(92vw, 420px);
+  background: $bg-white;
+  border-radius: 12px;
+  padding: 1.25rem;
+  border: 1px solid $border-light;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
+
+  .modal-title {
+    margin: 0 0 1rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: $text-primary;
+  }
+
+  .form-group {
+    margin-bottom: 0.75rem;
+  }
+
+  .form-label {
+    display: block;
+    font-size: 0.82rem;
+    font-weight: 600;
+    margin-bottom: 0.35rem;
+    color: #334155;
+  }
+
+  .form-input {
+    width: 100%;
+    padding: 0.625rem 0.75rem;
+    border: 1px solid $border-light;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    box-sizing: border-box;
+
+    &:focus {
+      outline: none;
+      border-color: $border-focus;
+      box-shadow: 0 0 0 2px rgba(30, 63, 174, 0.15);
+    }
+  }
+}
+
+.complete-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}

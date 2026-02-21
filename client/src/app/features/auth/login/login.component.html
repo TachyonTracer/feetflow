@@ -1,23 +1,175 @@
-<div class="col-lg-10 m-auto">
-    <h1 id="title" class="title">Login</h1>
-    <hr>
-    <p class="sub-title">Hello! Log in with your username.</p>
-</div>
+<div class="auth-page">
+  <!-- Left Side: Brand & Visuals -->
+  <div class="brand-panel">
+    <!-- Background Image with Overlay -->
+    <div class="brand-bg">
+      <div class="brand-overlay"></div>
+      <img alt="Logistics warehouse with automated shipping containers and blue lighting" class="brand-img"
+        src="https://lh3.googleusercontent.com/aida-public/AB6AXuAXzElL20dXOx_NTi5PmgHSoiUcVhACtgz0kAdyW3meDrg32IfQYouJLnnEiYY2Hq9sk98uWpa4fuSkxnWJlhISbqi6XXq8QOt_oSrIIDaZb7ibohLTN8M0Ld9iN3rJj_EIZzaKIZ4uqMtkGNZSyHLWrxdOH8dg7-BaJCPTSAi8y3eHNkcQ5N14ISrMXifuFleAHj6gRDRIkFmB9VnAfJeeJGQ0D48CBMsAjkWRdUAy7WNANUzYRgv6r8v2AfhY31Mn3H98M_I9gR2J" />
+    </div>
+    <!-- Brand Content -->
+    <div class="brand-content">
+      <div class="brand-logo">
+        <img alt="FleetFlow logo" src="assets/logo.png" class="brand-logo-image" />
+        <h1 class="brand-name">FleetFlow</h1>
+      </div>
+      <h2 class="brand-headline">
+        Optimize your entire fleet operations in real-time.
+      </h2>
+      <p class="brand-description">
+        Join over 4,000 logistics companies using FleetFlow to track assets, manage
+        drivers, and reduce operational costs with AI-driven analytics.
+      </p>
+    </div>
+    <!-- Trust Indicators -->
+    <div class="trust-indicators">
+      <div class="trust-avatars">
+        <img alt="User portrait" class="trust-avatar"
+          src="https://lh3.googleusercontent.com/aida-public/AB6AXuBowGKOW3V1UXwgTgAYUS-yr4Q-mCwaRKbHYb5TX6fC6D1a7gU3H1WY66cfpw2gNA_STfROcjrU_hcQjUhZ15lAk-p3b-Y1iOz74Bp1vseqXIVj1Y5pLIH3ihZn1shxBQ2mV07K1GSVe-VfQnXXli-KXP8UrWRkV2jRiR3p9xnnqNx0emqhF-A7sjN96QU5-QvvD9QwD37TnMaDDpoUM9X5MRTnGHLuYNDKYLMlvYoeCbv9c_Mf-t3u7UVL5nEMIsQsCz1_pjYSka45" />
+        <img alt="User portrait" class="trust-avatar"
+          src="https://lh3.googleusercontent.com/aida-public/AB6AXuBDguXslcQNZslJXnWxb2m4oc9LpLhOjyNurwMzt0RnFbAXSIAJMgTXk7_MrmLcUvl4yL71RPfAJWnNDiNYqT2v0P_gl7CLL2dHTffowgiUIZm_8Pd5AmY92BtXdUnzAe4v1LMJTNsMxlh6h4g3xBHtxzonluw4LbyNBiIsWs7v_TUIAB878ix1VsjLbrlsRjIi2ryHZXehLCGWOP6vWiTgjagTAReVyX_37A6jRhlo6OoQg0N_UJ7bu_oazQwiYxG2TvB2XIw5mBDC" />
+        <img alt="User portrait" class="trust-avatar"
+          src="https://lh3.googleusercontent.com/aida-public/AB6AXuBj9BmoC1_6mx8Vb5fMb4by0f7vKOJAm7XzI32T54MOoamIJSjY2rsjN2VYrk90KMZ_mBtXHwyHUvoxlI91MI6MLxcxj10WUR6Xy3HXTS-ijwUiSOPrxxxV_Hy50vdvOlRZieZLuj_kvA0Bw5hjKaDfFrv8bBRAxlsLpaF1L7CIIUKaHvzSR0KzkKYARrBsDQ0xfHswNuHnJSmb4G6kiYubbn0SYllc4BwV5g51V6T8vL7vHkEc3YBIthcP1yfm4xK2PSbKa9RsZ0QA" />
+      </div>
+      <div class="trust-details">
+        <div class="trust-stars">
+          <span class="material-symbols-outlined">star</span>
+          <span class="material-symbols-outlined">star</span>
+          <span class="material-symbols-outlined">star</span>
+          <span class="material-symbols-outlined">star</span>
+          <span class="material-symbols-outlined">star</span>
+        </div>
+        <span class="trust-label">Trusted by industry leaders</span>
+      </div>
+    </div>
+  </div>
 
-<form (ngSubmit)="login()" #form="ngForm" aria-labelledby="title">
-    <div class="col-lg-10 mb-4 ms-auto me-auto">
-        <label class="label" for="input-username">Username:</label>
-        <input class="form-control" [(ngModel)]="user.username" name="username" id="input-username"
-            placeholder="Enter Username" autofocus required>
-    </div>
-    <div class="col-lg-10 mb-4 ms-auto me-auto">
-        <label class="label" for="input-password">Password:</label>
-        <input class="form-control" [(ngModel)]="user.password" name="password" type="password" id="input-password"
-            placeholder="Enter Password" required minlength="6" maxlength="50">
-    </div>
-    <div class="col-lg-10 ms-auto me-auto">
-        <button class="btn btn-primary" type="submit" [disabled]="!form.valid">
-            Log In
+  <!-- Right Side: Login Form -->
+  <div class="form-panel">
+
+    <!-- Decorative blobs -->
+    <div class="blob blob--top"></div>
+    <div class="blob blob--bottom"></div>
+    <div class="blob blob--center"></div>
+
+    <!-- Login Card -->
+    <div class="auth-card login-card glass-card">
+
+      <!-- Top accent line -->
+      <div class="accent-line"></div>
+
+      <!-- Top Row: Profile Avatar + Role Dropdown -->
+      <div class="card-header">
+
+        <!-- Profile Avatar with animated ring -->
+        <div class="avatar-wrapper">
+          <div class="avatar-ring">
+            <div class="avatar-ring-inner"></div>
+          </div>
+          <div class="avatar-circle">
+            <span class="avatar-initials">{{ profileInitials }}</span>
+          </div>
+          <!-- Role badge -->
+          <div class="avatar-badge">
+            <span class="material-symbols-outlined">{{ selectedRoleIcon }}</span>
+          </div>
+        </div>
+
+        <!-- Role Dropdown -->
+        <div class="role-dropdown-wrapper">
+          <mat-form-field class="role-mat-field" appearance="outline" subscriptSizing="dynamic">
+            <mat-select [(ngModel)]="user.role" name="role" panelClass="fleet-auth-role-select-panel"
+              (selectionChange)="setRole($event.value)">
+              <mat-option *ngFor="let roleOption of availableRoles" [value]="roleOption.value">
+                {{ roleOption.label }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- Label showing selected role -->
+      <p class="role-label">
+        Signing in as <span class="role-label-value">{{ selectedRoleLabel }}</span>
+      </p>
+
+      <!-- Login Form -->
+      <form (ngSubmit)="login()" #form="ngForm" class="auth-form">
+        <!-- Username Input -->
+        <div class="form-group">
+          <div class="input-wrapper">
+            <span class="input-icon material-symbols-outlined">mail</span>
+            <input #emailInput="ngModel" class="form-input input-focus-glow"
+              [class.input-error]="emailInput.invalid && (emailInput.dirty || emailInput.touched)" placeholder="Email"
+              type="email" [(ngModel)]="user.email" name="email" required email />
+          </div>
+          <div *ngIf="emailInput.invalid && (emailInput.dirty || emailInput.touched)" class="field-error">
+            <span class="material-symbols-outlined">error</span>
+            <span *ngIf="emailInput.errors?.['required']">Email is required.</span>
+            <span *ngIf="emailInput.errors?.['email']">Enter a valid email.</span>
+          </div>
+        </div>
+
+        <!-- Password Input -->
+        <div class="form-group">
+          <div class="input-wrapper">
+            <span class="input-icon material-symbols-outlined">lock</span>
+            <input #passwordInput="ngModel" class="form-input input-focus-glow"
+              [class.input-error]="passwordInput.invalid && (passwordInput.dirty || passwordInput.touched)"
+              placeholder="Password" [type]="showPassword ? 'text' : 'password'" [(ngModel)]="user.password"
+              name="password" required minlength="6" maxlength="50" />
+            <button class="password-toggle" type="button" (click)="togglePasswordVisibility()">
+              <span class="material-symbols-outlined">{{ showPassword ? 'visibility_off' : 'visibility' }}</span>
+            </button>
+          </div>
+          <div *ngIf="passwordInput.invalid && (passwordInput.dirty || passwordInput.touched)" class="field-error">
+            <span class="material-symbols-outlined">error</span>
+            <span *ngIf="passwordInput.errors?.['required']">Password is required.</span>
+            <span *ngIf="passwordInput.errors?.['minlength']">Min 6 characters.</span>
+          </div>
+        </div>
+
+        <!-- Spacer -->
+        <div class="form-spacer"></div>
+
+        <!-- Forgot password link -->
+        <p class="small-text text-right" style="margin-top: -0.5rem;">
+          <a routerLink="../resetpassword" class="link-secondary">Forgot password?</a>
+        </p>
+
+        <!-- Login Error -->
+        <div *ngIf="loginError" class="error-alert">
+          <span class="material-symbols-outlined">error</span>
+          <span>{{ loginError }}</span>
+        </div>
+
+        <!-- Login Button -->
+        <button class="submit-btn login-btn" type="submit" [disabled]="!form.valid || loginRequestProcessing">
+          <ng-container *ngIf="!loginRequestProcessing">
+            <span class="material-symbols-outlined">login</span>
+            <span>Sign In</span>
+          </ng-container>
+          <ng-container *ngIf="loginRequestProcessing">
+            <svg class="spinner" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="spinner-track" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="spinner-fill" fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+              </path>
+            </svg>
+            <span>Signing in...</span>
+          </ng-container>
         </button>
+      </form>
+
+      <!-- Footer link -->
+      <p class="card-footer-link">
+        Need an account? <a routerLink="../signup" class="link-primary">Sign Up</a>
+      </p>
     </div>
-</form>
+
+    <!-- Footer -->
+    <div class="page-footer">
+      © 2026 FleetFlow Inc. All rights reserved.
+    </div>
+  </div>
+</div>

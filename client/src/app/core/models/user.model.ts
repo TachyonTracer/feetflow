@@ -1,10 +1,12 @@
 export interface User {
-  id: string;
-  name: string;
-  description?: string;
+  userId: string;
+  fullName: string;
+  email: string;
+  role: string;
+  createdAt: string;
 }
 
-export interface CreateUserRequest {
-  name: string;
-  description?: string;
+export interface UpdateUserRequest {
+  fullName: string;
+  role: string;
 }

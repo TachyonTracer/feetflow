@@ -1,0 +1,164 @@
+/* View Expenses – component-specific styles only */
+/* Layout, table, pagination, search, and filters are handled by DataPageLayout */
+
+/* Summary cards grid and consistent metric-card styling copied from dashboard */
+.summary-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+
+  @media (min-width: 640px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.metric-card {
+  background-color: var(--bg-secondary);
+  padding: 1rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  position: relative;
+  overflow: hidden;
+  transition:
+    transform 0.22s ease,
+    box-shadow 0.22s ease;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(15, 23, 42, 0.08);
+  }
+
+  &.accent-blue::before {
+    background: linear-gradient(90deg, #3b82f6, #60a5fa);
+  }
+  &.accent-emerald::before {
+    background: linear-gradient(90deg, #10b981, #34d399);
+  }
+  &.accent-amber::before {
+    background: linear-gradient(90deg, #f59e0b, #fbbf24);
+  }
+  &.accent-rose::before {
+    background: linear-gradient(90deg, #f43f5e, #fb7185);
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+
+    .card-title {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .card-icon {
+      padding: 0.4rem;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      .material-symbols-outlined {
+        font-size: 1.25rem;
+      }
+
+      &.primary {
+        background-color: rgba(59, 130, 246, 0.1);
+        color: #3b82f6;
+      }
+      &.warning {
+        background-color: rgba(245, 158, 11, 0.1);
+        color: #d97706;
+      }
+      &.success {
+        background-color: rgba(16, 185, 129, 0.1);
+        color: #059669;
+      }
+      &.indigo {
+        background-color: rgba(99, 102, 241, 0.1);
+        color: #6366f1;
+      }
+      &.danger {
+        background-color: rgba(244, 63, 94, 0.1);
+        color: #f43f5e;
+      }
+    }
+  }
+
+  .card-body {
+    h3 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin: 0;
+      color: var(--text-primary);
+    }
+  }
+
+  .card-footer {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-top: 0.25rem;
+    margin-bottom: 0;
+  }
+}
+
+/* Status Badges */
+.status-badge {
+  display: inline-flex;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: capitalize;
+
+  &.completed {
+    background-color: #f0fdf4;
+    color: #16a34a;
+  }
+
+  &.pending {
+    background-color: #fefce8;
+    color: #ca8a04;
+  }
+
+  &.disputed {
+    background-color: #fff1f2;
+    color: #e11d48;
+  }
+
+  &.cancelled {
+    background-color: #f8fafc;
+    color: #64748b;
+  }
+}
+
+.td-id {
+  font-family: 'Roboto Mono', monospace;
+  color: var(--text-secondary, #64748b);
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+.td-cost {
+  font-weight: 600;
+  color: var(--text-primary, #0f172a);
+}

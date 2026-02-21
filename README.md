@@ -1,19 +1,26 @@
-# feetflow
+# Fleet Flow
 
-A fullstack monorepo template with **Angular 20 LTS** frontend and **.NET 10 Clean Architecture** backend.
+🚀 **Live App:** [fleetflow.tachyontracer.in](https://fleetflow.tachyontracer.in)
 
-## Features
+A comprehensive fleet management system built with **Angular 17+** frontend and **.NET** backend. Fleet Flow allows managers to track vehicles, dispatch trips, monitor driver performance, and log maintenance and expenses all in one unified, real-time dashboard.
 
-- **Clean Architecture** — Domain, Application, Infrastructure, API layers
-- **Three-Part Auth** — JWT access tokens, refresh tokens, API keys
-- **RabbitMQ** — Message publishing/consuming with graceful degradation
-- **SignalR** — Real-time notifications with group management
-- **Serilog** — Structured logging with date-based folders and 10MB rolling files
-- **Security** — Rate limiting, security headers, CORS configuration
-- **PostgreSQL** — ADO.NET + Npgsql + Dapper (no EF Core)
-- **Health Checks** — PostgreSQL + RabbitMQ connectivity monitoring
+## Key Capabilities
+
+- **Command Center Dashboard** — Global fleet metrics, live vehicle status, and trip overviews
+- **Vehicle Registry** — Maintain fleet data, specs, conditions, and availability
+- **Trip Dispatcher** — Assign routes, link vehicles with drivers, and track active deliveries
+- **Service Logs** — Record and schedule preventative maintenance for fleet health
+- **Fuel & Expenses** — Log fueling costs, track MPG, and manage trip expenditures
+- **Driver Performance** — Review and analyze driver efficiency and safety metrics
+- **Dark Mode Support** — Clean, modern interface designed with Angular 17+ and SCSS
+
+## Backend Foundation
+
+- **Clean Architecture** — .NET Core Domain, Application, Infrastructure, API layers
+- **Security** — Three-Part Auth (JWT access tokens, refresh tokens, API keys)
+- **Real-Time** — SignalR for live updates
+- **PostgreSQL** — ADO.NET + Npgsql + Dapper for high-performance queries
 - **Docker** — Multi-stage builds, docker-compose with all services
-- **CI/CD** — GitHub Actions with build, test, deploy, and automatic rollback
 - **AI Config** — AGENTS.md, Antigravity settings, Copilot instructions
 
 ## Quick Start
@@ -90,7 +97,6 @@ code frontend.code-workspace   # or backend / fullstack
 │   ├── tests/
 │   ├── migrations/
 │   └── Dockerfile
-├── .github/workflows/         # CI/CD pipelines
 ├── docker-compose.yml
 ├── AGENTS.md                  # AI assistant context
 └── README.md

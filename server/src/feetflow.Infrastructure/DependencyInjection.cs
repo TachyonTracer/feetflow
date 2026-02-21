@@ -7,6 +7,7 @@ using feetflow.Infrastructure.Messaging;
 using feetflow.Infrastructure.Notifications;
 using feetflow.Infrastructure.Persistence;
 using feetflow.Infrastructure.Repositories;
+using feetflow.Infrastructure.Services; // SMTP
 
 namespace feetflow.Infrastructure;
 
@@ -20,12 +21,25 @@ public static class DependencyInjection
 
         services.AddScoped<IRepository<SampleEntity>, SampleRepository>();
 
-        services.AddSingleton<IMessagePublisher, RabbitMqPublisher>();
-        services.AddSingleton<IMessageConsumer, RabbitMqConsumer>();
+        // FleetFlow
+        services.AddScoped<IUnitOfWork, feetflow.Infrastructure.FleetFlow.UnitOfWork>();
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IVehicleRepository, VehicleRepository>();
+        services.AddScoped<IDriverRepository, DriverRepository>();
+        services.AddScoped<ITripRepository, TripRepository>();
+        services.AddScoped<IMaintenanceLogRepository, MaintenanceLogRepository>();
+        services.AddScoped<IFuelLogRepository, FuelLogRepository>();
+        services.AddScoped<IAnalyticsRepository, AnalyticsRepository>();
+
+        services.AddSingleton<IMessagePublisher, NullMessagePublisher>();
+        services.AddSingleton<IMessageConsumer, NullMessageConsumer>();
 
         services.AddScoped<INotificationService, NotificationService>();
 
         services.AddSingleton<DatabaseInitializer>();
+        
+        // Email Service
+        services.AddTransient<IEmailService, SmtpEmailService>();
 
         return services;
     }

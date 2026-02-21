@@ -1,0 +1,97 @@
+<app-data-page-layout [pageTitle]="'Active Trip Dispatch Log'"
+    [pageSubtitle]="'Manage and monitor all active deliveries and trips.'"
+    [searchPlaceholder]="'Search Trip ID, driver, or destination...'" [searchTerm]="searchTerm"
+    (searchTermChange)="searchTerm = $event" [filterOptions]="statusOptions" [filterValue]="currentStatus"
+    (filterChange)="currentStatus = $event; onFilterChanged()" [sortOptions]="sortOptions" [sortValue]="sortBy"
+    (sortChange)="sortBy = $event; onSortChanged()" [actionLabel]="'New Trip'" [actionIcon]="'add'"
+    (actionClick)="openAddTripModal()" [pageSizeOptions]="pageSizeOptions" [isLoading]="isLoadingLogs"
+    [totalCount]="tripTotalCount" [pageNumber]="tripPageNumber" [pageSize]="tripPageSize" [totalPages]="tripTotalPages"
+    [recordLabel]="'trips'" (pageChange)="changeTripPage($event)" (pageSizeChange)="onPageSizeChanged($event)"
+    [columns]="columns" [data]="filteredTrips">
+
+    <ng-template appCustomCell let-row let-col="column">
+        @switch (col.key) {
+        @case ('tripId') {
+        <button class="td-id td-id-link" (click)="openTripDetail(row)">{{ row.id.substring(0,8) | uppercase }}</button>
+        }
+        @case ('vehicleName') {
+        <span class="td-text">{{ getVehicleName(row.vehicleId) }}</span>
+        }
+        @case ('driverName') {
+        <span class="td-text">{{ getDriverName(row.driverId) }}</span>
+        }
+        @case ('cargoWeightKg') {
+        <span class="td-text">{{ row.cargoWeightKg | number:'1.0-0' }}</span>
+        }
+        @case ('route') {
+        <span class="td-route">
+            <span class="route-origin">{{ row.originState }}</span>
+            <span class="material-symbols-outlined route-arrow">arrow_forward</span>
+            <span class="route-dest">{{ row.destinationState }}</span>
+        </span>
+        }
+        @case ('revenue') {
+        <span class="td-text">{{ row.revenue | inrCurrency }}</span>
+        }
+        @case ('status') {
+        <span class="status-badge" [ngClass]="{
+                    'status-draft': row.status === 'Draft',
+                    'status-dispatched': row.status === 'Dispatched',
+                    'status-completed': row.status === 'Completed',
+                    'status-cancelled': row.status === 'Cancelled'
+                }">
+            {{ row.status }}
+        </span>
+        }
+        @case ('actions') {
+        <div class="action-group">
+            <button *ngIf="row.status === 'Draft'" class="action-icon-button" (click)="dispatchTrip(row.id)"
+                title="Dispatch">
+                <span class="material-symbols-outlined">send</span>
+            </button>
+            <button *ngIf="row.status === 'Dispatched'" class="action-icon-button" (click)="openCompleteModal(row.id)"
+                title="Complete Trip">
+                <span class="material-symbols-outlined">check_circle</span>
+            </button>
+            <button *ngIf="row.status !== 'Cancelled' && row.status !== 'Completed'" class="action-icon-button danger"
+                (click)="cancelTrip(row.id)" title="Cancel Trip">
+                <span class="material-symbols-outlined">delete</span>
+            </button>
+        </div>
+        }
+        }
+    </ng-template>
+
+    <ng-container modals>
+        <app-add-new-trip *ngIf="isAddTripModalOpen" [vehicleOptions]="getVehicleOptions()"
+            [driverOptions]="getDriverOptions()" (close)="closeAddTripModal()"
+            (tripCreated)="onTripCreated()"></app-add-new-trip>
+        <app-entity-detail-modal *ngIf="showTripDetail && selectedTrip"
+            [title]="'Trip ' + (selectedTrip.id.substring(0,8) | uppercase)"
+            [subtitle]="selectedTrip.vehicleName ?? '' " [sections]="buildTripSections(selectedTrip)"
+            (close)="closeTripDetail()">
+        </app-entity-detail-modal>
+    </ng-container>
+
+
+
+    <!-- Complete Trip Modal -->
+    <div extraContent class="modal-overlay" *ngIf="showCompleteModal" (click)="showCompleteModal = false">
+        <div class="complete-trip-modal" (click)="$event.stopPropagation()">
+            <h3 class="modal-title">Complete Trip</h3>
+            <div class="form-group">
+                <label class="form-label">End Odometer (km)</label>
+                <input class="form-input" type="number" min="0" [(ngModel)]="completeEndOdometer" placeholder="0" />
+            </div>
+            <div class="form-group">
+                <label class="form-label">Revenue (INR)</label>
+                <input class="form-input" type="number" min="0" [(ngModel)]="completeRevenue" placeholder="0.00"
+                    step="0.01" />
+            </div>
+            <div class="complete-modal-actions">
+                <button class="button-primary" (click)="confirmCompleteTrip()">Confirm</button>
+                <button class="button-secondary" (click)="showCompleteModal = false">Cancel</button>
+            </div>
+        </div>
+    </div>
+</app-data-page-layout>

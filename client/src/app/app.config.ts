@@ -2,29 +2,22 @@ import {
   ApplicationConfig,
   provideBrowserGlobalErrorListeners,
   provideZoneChangeDetection,
-  APP_INITIALIZER,
 } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { authInterceptor } from '@core/interceptors/auth.interceptor';
+import { loadingInterceptor } from '@core/interceptors/loading.interceptor';
 import { routes } from './app.routes';
-import { AppConfigService } from './services/app-config.service';
-
-export function initializeApp(appConfigService: AppConfigService) {
-  return () => appConfigService.loadAppConfig();
-}
+import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    provideCharts(withDefaultRegisterables()),
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
-    provideHttpClient(withInterceptors([authInterceptor])),
-    {
-      provide: APP_INITIALIZER,
-      useFactory: initializeApp,
-      deps: [AppConfigService],
-      multi: true,
-    },
+    provideAnimationsAsync(),
+    provideHttpClient(withInterceptors([loadingInterceptor, authInterceptor])),
   ],
 };

@@ -1,0 +1,135 @@
+<!-- Add New Vehicle Modal (conditionally rendered) -->
+<app-data-page-layout [pageTitle]="'Vehicle Registry'"
+    [pageSubtitle]="'Manage and monitor your entire transport fleet assets.'"
+    [searchPlaceholder]="'Search vehicles by ID, make, or model...'" [searchTerm]="searchTerm"
+    (searchTermChange)="searchTerm = $event" [filterOptions]="statusOptions" [filterValue]="currentStatus"
+    (filterChange)="currentStatus = $event; onFiltersChanged()" [sortOptions]="sortOptions" [sortValue]="sortBy"
+    (sortChange)="sortBy = $event" [actionLabel]="'New Vehicle'" [actionIcon]="'add'" (actionClick)="toggleModal()"
+    [pageSizeOptions]="pageSizeOptionsForSelect" [isLoading]="isLoading" [totalCount]="totalCount"
+    [pageNumber]="pageNumber" [pageSize]="pageSize" [totalPages]="totalPages" [recordLabel]="'vehicles'"
+    (pageChange)="changePage($event)" (pageSizeChange)="onPageSizeChange($event)" [columns]="columns"
+    [data]="displayVehicles">
+
+    <ng-template appCustomCell let-row let-col="column">
+        @switch (col.key) {
+        @case ('srNo') {
+        <button class="td-id td-id-link" (click)="openVehicleDetail(row)">{{ row.id.substring(0,8) | uppercase
+            }}</button>
+        }
+        @case ('status') {
+        <span class="status-badge" [ngClass]="{
+                    'status-active': row.status === 'Available',
+                    'status-maintenance': row.status === 'InShop',
+                    'status-inactive': row.status === 'Retired',
+                    'status-dispatched': row.status === 'OnTrip'
+                }">
+            {{ row.status }}
+        </span>
+        }
+        @case ('vehicleType') {
+        <span class="type-badge">{{ row.vehicleType }}</span>
+        }
+        @case ('maxCapacityKg') {
+        <span class="td-capacity">{{ row.maxCapacityKg | number:'1.0-0' }} kg</span>
+        }
+        @case ('odometerKm') {
+        <span class="td-odometer">{{ row.odometerKm | number:'1.0-0' }} km</span>
+        }
+        @case ('acquisitionCost') {
+        <span class="td-cost">{{ row.acquisitionCost | inrCurrency }}</span>
+        }
+        @case ('actions') {
+        <div class="action-group">
+            <button class="action-icon-button" (click)="openEditModal(row)" title="Edit vehicle">
+                <span class="material-symbols-outlined">edit_square</span>
+            </button>
+            <button class="action-icon-button" title="Retire vehicle" (click)="retireVehicle(row.id)"
+                [disabled]="row.status === 'Retired'">
+                <span class="material-symbols-outlined">block</span>
+            </button>
+            <button class="action-icon-button danger" (click)="deleteVehicle(row.id)" title="Delete vehicle">
+                <span class="material-symbols-outlined">delete</span>
+            </button>
+        </div>
+        }
+        }
+    </ng-template>
+
+    <ng-container modals>
+        <!-- Add Vehicle Modal -->
+        <app-add-new-vehicle *ngIf="isModalOpen" (close)="toggleModal()"
+            (vehicleAdded)="loadVehicles()"></app-add-new-vehicle>
+
+        <!-- Edit Vehicle Modal -->
+        @if (showEditModal) {
+        <div class="modal-overlay" (click)="closeEditModal()">
+            <div class="modal-container" (click)="$event.stopPropagation()">
+                <div class="modal-header">
+                    <h2 class="modal-title">Edit Vehicle</h2>
+                    <button class="modal-close-btn" (click)="closeEditModal()">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="error-banner" *ngIf="editError">
+                        {{ editError }}
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Vehicle Name / Model *</label>
+                            <input type="text" [(ngModel)]="editForm.name" class="form-input"
+                                placeholder="e.g. Logistics Truck 37" />
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">License Plate *</label>
+                            <input type="text" [(ngModel)]="editForm.licensePlate" class="form-input"
+                                placeholder="GJ47XX1037" />
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Vehicle Type</label>
+                            <input type="text" [(ngModel)]="editForm.vehicleType" class="form-input"
+                                placeholder="VAN" />
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Max Capacity (kg)</label>
+                            <input type="number" [(ngModel)]="editForm.maxCapacityKg" class="form-input" />
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Odometer (km)</label>
+                            <input type="number" [(ngModel)]="editForm.odometerKm" class="form-input" />
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Acquisition Cost (₹)</label>
+                            <input type="number" [(ngModel)]="editForm.acquisitionCost" class="form-input" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="button-primary" (click)="saveEditedVehicle()" [disabled]="isUpdating">
+                        <span class="material-symbols-outlined icon-small">save</span>
+                        {{ isUpdating ? 'Saving...' : 'Update Vehicle' }}
+                    </button>
+                    <button class="button-secondary" (click)="closeEditModal()">Cancel</button>
+                </div>
+            </div>
+        </div>
+        }
+
+        <!-- Detail Modal -->
+        <app-entity-detail-modal *ngIf="showVehicleDetail && selectedVehicle"
+            [title]="'Vehicle #' + (selectedVehicle.id.substring(0,8) | uppercase)" [subtitle]="selectedVehicle.name"
+            [sections]="buildVehicleSections(selectedVehicle)" (close)="closeVehicleDetail()">
+        </app-entity-detail-modal>
+    </ng-container>
+
+
+</app-data-page-layout>

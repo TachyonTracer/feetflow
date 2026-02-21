@@ -1,84 +1,70 @@
-<div class="user-management-container">
-    <div class="header-section">
-        <h1>User Management</h1>
-        <button class="btn btn-primary" (click)="openAddForm()" *ngIf="!isAddingUser() && !editingUserId()">
-            + Add New User
-        </button>
-    </div>
-
-    <!-- Global Error Banner -->
-    <div class="error-banner" *ngIf="errorMessage()">
-        {{ errorMessage() }}
-    </div>
-
-    <!-- Add/Edit Form Panel -->
-    <div class="form-panel card" [@if]="isAddingUser() || editingUserId()">
-        <h3 *ngIf="isAddingUser()">Create New User</h3>
-        <h3 *ngIf="editingUserId()">Edit User</h3>
-
-        <div class="form-group">
-            <label for="userName">Name *</label>
-            <input id="userName" type="text" [(ngModel)]="userForm().name" class="form-control"
-                placeholder="Enter user name" required />
-        </div>
-
-        <div class="form-group mt-3">
-            <label for="userDesc">Description</label>
-            <textarea id="userDesc" [(ngModel)]="userForm().description" class="form-control"
-                placeholder="Enter user description" rows="3">
-      </textarea>
-        </div>
-
-        <div class="form-actions mt-4">
-            <button class="btn btn-secondary mr-2" (click)="cancelForm()">Cancel</button>
-
-            <button *ngIf="isAddingUser()" class="btn btn-success" (click)="saveNewUser()"
-                [disabled]="isLoading() || !userForm().name">
-                Save User
+<app-data-page-layout pageTitle="User Management" pageSubtitle="Manage application users, roles, and lifecycle actions."
+    [searchPlaceholder]="'Search users by name, email, or role...'" [searchTerm]="searchTerm"
+    (searchTermChange)="searchTerm = $event; onFiltersChanged()" [filterOptions]="roleOptions"
+    [filterValue]="currentRole" (filterChange)="currentRole = $event; onFiltersChanged()" [sortOptions]="sortOptions"
+    [sortValue]="sortBy" (sortChange)="sortBy = $event; onFiltersChanged()" [columns]="columns" [data]="paginatedUsers"
+    [isLoading]="isLoading()" recordLabel="users" emptyMessage="There are currently no users in the system."
+    [pageSizeOptions]="pageSizeOptions" [pageSize]="pageSize" (pageSizeChange)="onPageSizeChanged($event)"
+    [pageNumber]="pageNumber" [totalPages]="totalPages" [totalCount]="totalCount" (pageChange)="changePage($event)">
+    <!-- Custom Cell Rendering -->
+    <ng-template appCustomCell let-row let-col="column">
+        @switch (col.key) {
+        @case ('fullName') {
+        <span class="font-weight-bold">{{ row.fullName }}</span>
+        }
+        @case ('actions') {
+        <div class="action-group">
+            <button class="action-icon-button" (click)="openEditForm(row)" title="Edit User">
+                <span class="material-symbols-outlined">edit_square</span>
             </button>
-
-            <button *ngIf="editingUserId()" class="btn btn-success" (click)="saveEditedUser()"
-                [disabled]="isLoading() || !userForm().name">
-                Update User
+            <button class="action-icon-button danger" (click)="deleteUser(row.userId)" title="Delete User">
+                <span class="material-symbols-outlined">delete</span>
             </button>
         </div>
-    </div>
+        }
+        }
+    </ng-template>
 
-    <!-- Loading State -->
-    <div class="loading-state" *ngIf="isLoading()">
-        <p>Processing data, please wait...</p>
-    </div>
+    <!-- Modals -->
+    <ng-container extraContent>
+        @if (editingUserId()) {
+        <div class="modal-overlay" (click)="cancelForm()">
+            <div class="modal-container" (click)="$event.stopPropagation()">
+                <div class="modal-header">
+                    <h2 class="modal-title">Edit User Profile</h2>
+                    <button class="modal-close-btn" (click)="cancelForm()">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
 
-    <!-- User Data Table -->
-    <div class="table-container mt-4" *ngIf="!isLoading() && !isAddingUser() && !editingUserId()">
-        <table class="table table-striped custom-table" *ngIf="users().length > 0; else emptyState">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Description</th>
-                    <th class="actions-col">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let user of users()">
-                    <td class="text-muted">{{ user.id }}</td>
-                    <td class="font-weight-bold">{{ user.name }}</td>
-                    <td>{{ user.description || '-' }}</td>
-                    <td class="actions-col">
-                        <button class="btn btn-sm btn-outline-primary" (click)="openEditForm(user)">Edit</button>
-                        <button class="btn btn-sm btn-outline-danger ml-2" (click)="deleteUser(user.id)">Delete</button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+                <div class="modal-body">
+                    <div class="error-banner" *ngIf="errorMessage()">
+                        {{ errorMessage() }}
+                    </div>
 
-        <ng-template #emptyState>
-            <div class="empty-state text-center mt-5">
-                <h4>No Users Found</h4>
-                <p class="text-muted">There are currently no users in the system.</p>
-                <button class="btn btn-primary mt-3" (click)="openAddForm()">Create the first user</button>
+                    <div class="form-group">
+                        <label class="form-label">Full Name <span class="required">*</span></label>
+                        <input type="text" [(ngModel)]="userForm().fullName" class="form-input"
+                            placeholder="Enter full name" />
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Role</label>
+                        <app-searchable-select [options]="roleOptions"
+                            [(ngModel)]="userForm().role"></app-searchable-select>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="button-primary" (click)="saveEditedUser()"
+                        [disabled]="isLoading() || !userForm().fullName">
+                        <span class="material-symbols-outlined icon-small">save</span>
+                        Update User
+                    </button>
+                    <button class="button-secondary" (click)="cancelForm()">Cancel</button>
+                </div>
             </div>
-        </ng-template>
-    </div>
-</div>
+        </div>
+        }
+    </ng-container>
+</app-data-page-layout>

@@ -1,0 +1,198 @@
+/* Shared Variables */
+$primary-color: var(--accent-color, #1e3fae);
+$text-primary: var(--text-primary, #0f172a);
+$text-secondary: #64748b; // slate-500
+$text-muted: #94a3b8; // slate-400
+
+/* Status Colors */
+$emerald-500: #10b981;
+$emerald-100: #d1fae5;
+$emerald-700: #047857;
+
+$amber-500: #f59e0b;
+$amber-100: #fef3c7;
+$amber-700: #b45309;
+
+$rose-500: #f43f5e;
+$rose-100: #ffe4e6;
+$rose-400: #fb7185;
+$rose-700: #be123c;
+
+/* ---- Projected table content styles ----
+   Top-level so Angular view encapsulation matches
+   ng-content projected elements correctly. */
+
+:host ::ng-deep {
+  /* Driver Info */
+  .driver-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+
+    .driver-avatar {
+      height: 2.25rem;
+      width: 2.25rem;
+      border-radius: 9999px;
+      background-color: #f1f5f9; // slate-100
+      object-fit: cover;
+    }
+
+    .driver-details {
+      .driver-name {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: $text-primary;
+      }
+
+      .driver-status {
+        font-size: 0.75rem;
+        color: $text-secondary;
+      }
+    }
+  }
+
+  .font-mono {
+    font-family:
+      ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
+      monospace;
+    font-size: 0.875rem;
+    color: #475569; // slate-600
+  }
+
+  /* Expiry Wrapper */
+  .expiry-cell {
+    display: flex;
+    flex-direction: column;
+
+    .expiring-warning {
+      font-size: 10px;
+      font-weight: 700;
+      color: $rose-500;
+      display: flex;
+      align-items: center;
+      gap: 0.125rem;
+
+      .material-symbols-outlined {
+        font-size: 12px;
+      }
+    }
+  }
+
+  /* Progress / Completion Rate */
+  .progress-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 8rem; // w-32
+
+    .progress-bar-bg {
+      flex: 1;
+      height: 0.375rem; // h-1.5
+      background-color: #f1f5f9; // slate-100
+      border-radius: 9999px;
+      overflow: hidden;
+
+      .progress-bar-fill {
+        height: 100%;
+        border-radius: 9999px;
+
+        &.bg-primary {
+          background-color: $primary-color;
+        }
+      }
+    }
+
+    .progress-text {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #334155; // slate-700
+    }
+  }
+
+  /* Badges */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.25rem 0.625rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+
+    .badge-dot {
+      width: 0.375rem;
+      height: 0.375rem;
+      border-radius: 9999px;
+    }
+
+    &.badge-emerald {
+      background-color: $emerald-100;
+      color: $emerald-700;
+
+      .dot-emerald {
+        background-color: $emerald-500;
+      }
+    }
+
+    &.badge-amber {
+      background-color: $amber-100;
+      color: $amber-700;
+
+      .dot-amber {
+        background-color: $amber-500;
+      }
+    }
+
+    &.badge-rose {
+      background-color: $rose-100;
+      color: $rose-700;
+
+      .dot-rose {
+        background-color: $rose-500;
+      }
+    }
+  }
+
+  .td-actions {
+    text-align: center;
+  }
+
+  .action-group {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+  }
+
+  .driver-avatar-placeholder {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #e2e8f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    .material-symbols-outlined {
+      font-size: 1.2rem;
+      color: $text-secondary;
+    }
+  }
+
+  .driver-status-sub {
+    font-size: 0.75rem;
+    color: $text-muted;
+  }
+
+  .badge-blue {
+    background-color: #dbeafe;
+    color: #1e40af;
+  }
+
+  .expired {
+    color: $rose-500 !important;
+  }
+} // End of :host ::ng-deep
+
+/* Modal cleanup done. Inheriting from styles.scss */

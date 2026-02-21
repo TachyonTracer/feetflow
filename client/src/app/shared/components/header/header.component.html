@@ -1,0 +1,33 @@
+<header class="top-header">
+    <div class="header-inner">
+        <!-- Mobile hamburger menu -->
+        <button class="mobile-menu-btn" (click)="toggleSidebar()">
+            <span class="material-symbols-outlined">menu</span>
+        </button>
+        <div class="logo-section">
+            <div class="logo-icon">
+                <img class="header-icon" alt="FleetFlow logo" src="assets/logo.png" />
+            </div>
+            <h1 class="logo-title">Fleet Flow</h1>
+        </div>
+        <div class="user-actions">
+            <button class="action-btn badge-btn">
+                <span class="material-symbols-outlined">notifications</span>
+                <span class="notification-dot"></span>
+            </button>
+            <button class="action-btn">
+                <span class="material-symbols-outlined">settings</span>
+            </button>
+            <div class="divider"></div>
+            <div class="user-profile">
+                <div class="user-text hidden-mobile">
+                    <p class="name">{{ displayName }}</p>
+                    <p class="role">{{ displayRole }}</p>
+                </div>
+                <div class="user-avatar-initials">
+                    {{ initials }}
+                </div>
+            </div>
+        </div>
+    </div>
+</header>

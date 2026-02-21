@@ -1,0 +1,2002 @@
+{
+    "info": {
+        "name": "FleetFlow API",
+        "version": "1.0",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "variable": [
+        {
+            "key": "baseUrl",
+            "value": "http://localhost:5000",
+            "type": "string"
+        },
+        {
+            "key": "token",
+            "value": "",
+            "type": "string"
+        }
+    ],
+    "item": [
+        {
+            "name": "Analytics",
+            "item": [
+                {
+                    "name": "Get Dashboard",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/analytics/dashboard",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "analytics",
+                                "dashboard"
+                            ]
+                        }
+                    },
+                    "response": [
+                        {
+                            "name": "Success",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/analytics/dashboard",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "analytics",
+                                        "dashboard"
+                                    ]
+                                }
+                            },
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "body": "{\n  \"status\": 200,\n  \"errorMessage\": null,\n  \"result\": {},\n  \"timestamp\": \"2026-02-21T10:30:00Z\"\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Vehicle ROI",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/analytics/vehicle-roi/:vehicleId",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "analytics",
+                                "vehicle-roi",
+                                ":vehicleId"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "vehicleId",
+                                    "value": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                                }
+                            ]
+                        }
+                    },
+                    "response": [
+                        {
+                            "name": "Success",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/analytics/vehicle-roi/:vehicleId",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "analytics",
+                                        "vehicle-roi",
+                                        ":vehicleId"
+                                    ],
+                                    "variable": [
+                                        {
+                                            "key": "vehicleId",
+                                            "value": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                                        }
+                                    ]
+                                }
+                            },
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "body": "{\n  \"status\": 200,\n  \"errorMessage\": null,\n  \"result\": {},\n  \"timestamp\": \"2026-02-21T10:30:00Z\"\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Fuel Efficiency",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/analytics/fuel-efficiency/:vehicleId",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "analytics",
+                                "fuel-efficiency",
+                                ":vehicleId"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "vehicleId",
+                                    "value": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                                }
+                            ]
+                        }
+                    },
+                    "response": [
+                        {
+                            "name": "Success",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/analytics/fuel-efficiency/:vehicleId",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "analytics",
+                                        "fuel-efficiency",
+                                        ":vehicleId"
+                                    ],
+                                    "variable": [
+                                        {
+                                            "key": "vehicleId",
+                                            "value": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                                        }
+                                    ]
+                                }
+                            },
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "body": "{\n  \"status\": 200,\n  \"errorMessage\": null,\n  \"result\": {},\n  \"timestamp\": \"2026-02-21T10:30:00Z\"\n}"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Auth",
+            "item": [
+                {
+                    "name": "Register",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"fullName\": \"string\",\n  \"email\": \"string\",\n  \"password\": \"string\",\n  \"role\": \"Manager\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/Auth/register",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "Auth",
+                                "register"
+                            ]
+                        }
+                    },
+                    "response": [
+                        {
+                            "name": "Success",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"fullName\": \"string\",\n  \"email\": \"string\",\n  \"password\": \"string\",\n  \"role\": \"Manager\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/Auth/register",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "Auth",
+                                        "register"
+                                    ]
+                                }
+                            },
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "body": "{\n  \"status\": 200,\n  \"errorMessage\": null,\n  \"result\": {},\n  \"timestamp\": \"2026-02-21T10:30:00Z\"\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "Login",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"email\": \"string\",\n  \"password\": \"string\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/Auth/login",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "Auth",
+                                "login"
+                            ]
+                        }
+                    },
+                    "response": [
+                        {
+                            "name": "Success",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"email\": \"string\",\n  \"password\": \"string\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/Auth/login",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "Auth",
+                                        "login"
+                                    ]
+                                }
+                            },
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "body": "{\n  \"status\": 200,\n  \"errorMessage\": null,\n  \"result\": {},\n  \"timestamp\": \"2026-02-21T10:30:00Z\"\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "Refresh",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"accessToken\": \"string\",\n  \"refreshToken\": \"string\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/Auth/refresh",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "Auth",
+                                "refresh"
+                            ]
+                        }
+                    },
+                    "response": [
+                        {
+                            "name": "Success",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"accessToken\": \"string\",\n  \"refreshToken\": \"string\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/Auth/refresh",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "Auth",
+                                        "refresh"
+                                    ]
+                                }
+                            },
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "body": "{\n  \"status\": 200,\n  \"errorMessage\": null,\n  \"result\": {},\n  \"timestamp\": \"2026-02-21T10:30:00Z\"\n}"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Drivers",
+            "item": [
+                {
+                    "name": "Get Drivers",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/Drivers?includeDeleted=false",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "Drivers"
+                            ],
+                            "query": [
+                                {
+                                    "key": "includeDeleted",
+                                    "value": "false"
+                                }
+                            ]
+                        }
+                    },
+                    "response": [
+                        {
+                            "name": "Success",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/Drivers?includeDeleted=false",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "Drivers"
+                                    ],
+                                    "query": [
+                                        {
+                                            "key": "includeDeleted",
+                                            "value": "false"
+                                        }
+                                    ]
+                                }
+                            },
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "body": "{\n  \"status\": 200,\n  \"errorMessage\": null,\n  \"result\": {},\n  \"timestamp\": \"2026-02-21T10:30:00Z\"\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "Create Driver",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"fullName\": \"string\",\n  \"licenseNumber\": \"string\",\n  \"licenseCategory\": \"string\",\n  \"licenseExpiry\": \"2026-02-21\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/Drivers",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "Drivers"
+                            ]
+                        }
+                    },
+                    "response": [
+                        {
+                            "name": "Success",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"fullName\": \"string\",\n  \"licenseNumber\": \"string\",\n  \"licenseCategory\": \"string\",\n  \"licenseExpiry\": \"2026-02-21\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/Drivers",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "Drivers"
+                                    ]
+                                }
+                            },
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "body": "{\n  \"status\": 200,\n  \"errorMessage\": null,\n  \"result\": {},\n  \"timestamp\": \"2026-02-21T10:30:00Z\"\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "Update Driver",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"fullName\": \"string\",\n  \"licenseNumber\": \"string\",\n  \"licenseCategory\": \"string\",\n  \"licenseExpiry\": \"2026-02-21\",\n  \"xmin\": 0\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/Drivers/:id",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "Drivers",
+                                ":id"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                                }
+                            ]
+                        }
+                    },
+                    "response": [
+                        {
+                            "name": "Success",
+                            "originalRequest": {
+                                "method": "PUT",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"fullName\": \"string\",\n  \"licenseNumber\": \"string\",\n  \"licenseCategory\": \"string\",\n  \"licenseExpiry\": \"2026-02-21\",\n  \"xmin\": 0\n}"
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/Drivers/:id",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "Drivers",
+                                        ":id"
+                                    ],
+                                    "variable": [
+                                        {
+                                            "key": "id",
+                                            "value": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                                        }
+                                    ]
+                                }
+                            },
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "body": "{\n  \"status\": 200,\n  \"errorMessage\": null,\n  \"result\": {},\n  \"timestamp\": \"2026-02-21T10:30:00Z\"\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "Suspend Driver",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/Drivers/:id/suspend",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "Drivers",
+                                ":id",
+                                "suspend"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                                }
+                            ]
+                        }
+                    },
+                    "response": [
+                        {
+                            "name": "Success",
+                            "originalRequest": {
+                                "method": "PATCH",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/Drivers/:id/suspend",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "Drivers",
+                                        ":id",
+                                        "suspend"
+                                    ],
+                                    "variable": [
+                                        {
+                                            "key": "id",
+                                            "value": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                                        }
+                                    ]
+                                }
+                            },
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "body": "{\n  \"status\": 200,\n  \"errorMessage\": null,\n  \"result\": {},\n  \"timestamp\": \"2026-02-21T10:30:00Z\"\n}"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Fuel",
+            "item": [
+                {
+                    "name": "Create Fuel Log",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"vehicleId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"tripId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"liters\": 0,\n  \"cost\": 0,\n  \"fuelDate\": \"2026-02-21\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/fuel",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "fuel"
+                            ]
+                        }
+                    },
+                    "response": [
+                        {
+                            "name": "Success",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"vehicleId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"tripId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"liters\": 0,\n  \"cost\": 0,\n  \"fuelDate\": \"2026-02-21\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/fuel",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "fuel"
+                                    ]
+                                }
+                            },
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "body": "{\n  \"status\": 200,\n  \"errorMessage\": null,\n  \"result\": {},\n  \"timestamp\": \"2026-02-21T10:30:00Z\"\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Fuel Logs",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/fuel?vehicleId=3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "fuel"
+                            ],
+                            "query": [
+                                {
+                                    "key": "vehicleId",
+                                    "value": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                                }
+                            ]
+                        }
+                    },
+                    "response": [
+                        {
+                            "name": "Success",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/fuel?vehicleId=3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "fuel"
+                                    ],
+                                    "query": [
+                                        {
+                                            "key": "vehicleId",
+                                            "value": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                                        }
+                                    ]
+                                }
+                            },
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "body": "{\n  \"status\": 200,\n  \"errorMessage\": null,\n  \"result\": {},\n  \"timestamp\": \"2026-02-21T10:30:00Z\"\n}"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Maintenance",
+            "item": [
+                {
+                    "name": "Create Maintenance",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"vehicleId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"description\": \"string\",\n  \"cost\": 0,\n  \"serviceDate\": \"2026-02-21\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/maintenance",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "maintenance"
+                            ]
+                        }
+                    },
+                    "response": [
+                        {
+                            "name": "Success",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"vehicleId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"description\": \"string\",\n  \"cost\": 0,\n  \"serviceDate\": \"2026-02-21\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/maintenance",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "maintenance"
+                                    ]
+                                }
+                            },
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "body": "{\n  \"status\": 200,\n  \"errorMessage\": null,\n  \"result\": {},\n  \"timestamp\": \"2026-02-21T10:30:00Z\"\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "Close Maintenance",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/maintenance/:id/close",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "maintenance",
+                                ":id",
+                                "close"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                                }
+                            ]
+                        }
+                    },
+                    "response": [
+                        {
+                            "name": "Success",
+                            "originalRequest": {
+                                "method": "PATCH",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/maintenance/:id/close",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "maintenance",
+                                        ":id",
+                                        "close"
+                                    ],
+                                    "variable": [
+                                        {
+                                            "key": "id",
+                                            "value": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                                        }
+                                    ]
+                                }
+                            },
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "body": "{\n  \"status\": 200,\n  \"errorMessage\": null,\n  \"result\": {},\n  \"timestamp\": \"2026-02-21T10:30:00Z\"\n}"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Samples",
+            "item": [
+                {
+                    "name": "Get Samples",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/Samples",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "Samples"
+                            ]
+                        }
+                    },
+                    "response": [
+                        {
+                            "name": "Success",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/Samples",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "Samples"
+                                    ]
+                                }
+                            },
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "body": "{\n  \"status\": 200,\n  \"errorMessage\": null,\n  \"result\": {},\n  \"timestamp\": \"2026-02-21T10:30:00Z\"\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "Create Sample",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"string\",\n  \"description\": \"string\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/Samples",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "Samples"
+                            ]
+                        }
+                    },
+                    "response": [
+                        {
+                            "name": "Success",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"name\": \"string\",\n  \"description\": \"string\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/Samples",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "Samples"
+                                    ]
+                                }
+                            },
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "body": "{\n  \"status\": 200,\n  \"errorMessage\": null,\n  \"result\": {},\n  \"timestamp\": \"2026-02-21T10:30:00Z\"\n}"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Trips",
+            "item": [
+                {
+                    "name": "Get Trips",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/Trips?page=1&pageSize=20&status=Draft&vehicleId=3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "Trips"
+                            ],
+                            "query": [
+                                {
+                                    "key": "page",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "pageSize",
+                                    "value": "20"
+                                },
+                                {
+                                    "key": "status",
+                                    "value": "Draft"
+                                },
+                                {
+                                    "key": "vehicleId",
+                                    "value": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                                }
+                            ]
+                        }
+                    },
+                    "response": [
+                        {
+                            "name": "Success",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/Trips?page=1&pageSize=20&status=Draft&vehicleId=3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "Trips"
+                                    ],
+                                    "query": [
+                                        {
+                                            "key": "page",
+                                            "value": "1"
+                                        },
+                                        {
+                                            "key": "pageSize",
+                                            "value": "20"
+                                        },
+                                        {
+                                            "key": "status",
+                                            "value": "Draft"
+                                        },
+                                        {
+                                            "key": "vehicleId",
+                                            "value": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                                        }
+                                    ]
+                                }
+                            },
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "body": "{\n  \"status\": 200,\n  \"errorMessage\": null,\n  \"result\": {},\n  \"timestamp\": \"2026-02-21T10:30:00Z\"\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "Create Trip",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"vehicleId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"driverId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"cargoWeightKg\": 0\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/Trips",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "Trips"
+                            ]
+                        }
+                    },
+                    "response": [
+                        {
+                            "name": "Success",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"vehicleId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"driverId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"cargoWeightKg\": 0\n}"
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/Trips",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "Trips"
+                                    ]
+                                }
+                            },
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "body": "{\n  \"status\": 200,\n  \"errorMessage\": null,\n  \"result\": {},\n  \"timestamp\": \"2026-02-21T10:30:00Z\"\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "Dispatch Trip",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/Trips/:id/dispatch",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "Trips",
+                                ":id",
+                                "dispatch"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                                }
+                            ]
+                        }
+                    },
+                    "response": [
+                        {
+                            "name": "Success",
+                            "originalRequest": {
+                                "method": "PATCH",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/Trips/:id/dispatch",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "Trips",
+                                        ":id",
+                                        "dispatch"
+                                    ],
+                                    "variable": [
+                                        {
+                                            "key": "id",
+                                            "value": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                                        }
+                                    ]
+                                }
+                            },
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "body": "{\n  \"status\": 200,\n  \"errorMessage\": null,\n  \"result\": {},\n  \"timestamp\": \"2026-02-21T10:30:00Z\"\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "Complete Trip",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"endOdometer\": 0,\n  \"revenue\": 0\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/Trips/:id/complete",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "Trips",
+                                ":id",
+                                "complete"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                                }
+                            ]
+                        }
+                    },
+                    "response": [
+                        {
+                            "name": "Success",
+                            "originalRequest": {
+                                "method": "PATCH",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"endOdometer\": 0,\n  \"revenue\": 0\n}"
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/Trips/:id/complete",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "Trips",
+                                        ":id",
+                                        "complete"
+                                    ],
+                                    "variable": [
+                                        {
+                                            "key": "id",
+                                            "value": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                                        }
+                                    ]
+                                }
+                            },
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "body": "{\n  \"status\": 200,\n  \"errorMessage\": null,\n  \"result\": {},\n  \"timestamp\": \"2026-02-21T10:30:00Z\"\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "Cancel Trip",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/Trips/:id/cancel",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "Trips",
+                                ":id",
+                                "cancel"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                                }
+                            ]
+                        }
+                    },
+                    "response": [
+                        {
+                            "name": "Success",
+                            "originalRequest": {
+                                "method": "PATCH",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/Trips/:id/cancel",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "Trips",
+                                        ":id",
+                                        "cancel"
+                                    ],
+                                    "variable": [
+                                        {
+                                            "key": "id",
+                                            "value": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                                        }
+                                    ]
+                                }
+                            },
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "body": "{\n  \"status\": 200,\n  \"errorMessage\": null,\n  \"result\": {},\n  \"timestamp\": \"2026-02-21T10:30:00Z\"\n}"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Vehicles",
+            "item": [
+                {
+                    "name": "Get Vehicles",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/Vehicles?page=1&pageSize=20&status=Available&includeDeleted=false",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "Vehicles"
+                            ],
+                            "query": [
+                                {
+                                    "key": "page",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "pageSize",
+                                    "value": "20"
+                                },
+                                {
+                                    "key": "status",
+                                    "value": "Available"
+                                },
+                                {
+                                    "key": "includeDeleted",
+                                    "value": "false"
+                                }
+                            ]
+                        }
+                    },
+                    "response": [
+                        {
+                            "name": "Success",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/Vehicles?page=1&pageSize=20&status=Available&includeDeleted=false",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "Vehicles"
+                                    ],
+                                    "query": [
+                                        {
+                                            "key": "page",
+                                            "value": "1"
+                                        },
+                                        {
+                                            "key": "pageSize",
+                                            "value": "20"
+                                        },
+                                        {
+                                            "key": "status",
+                                            "value": "Available"
+                                        },
+                                        {
+                                            "key": "includeDeleted",
+                                            "value": "false"
+                                        }
+                                    ]
+                                }
+                            },
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "body": "{\n  \"status\": 200,\n  \"errorMessage\": null,\n  \"result\": {},\n  \"timestamp\": \"2026-02-21T10:30:00Z\"\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "Create Vehicle",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"string\",\n  \"licensePlate\": \"string\",\n  \"vehicleType\": \"string\",\n  \"maxCapacityKg\": 0,\n  \"acquisitionCost\": 0,\n  \"odometerKm\": 0\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/Vehicles",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "Vehicles"
+                            ]
+                        }
+                    },
+                    "response": [
+                        {
+                            "name": "Success",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"name\": \"string\",\n  \"licensePlate\": \"string\",\n  \"vehicleType\": \"string\",\n  \"maxCapacityKg\": 0,\n  \"acquisitionCost\": 0,\n  \"odometerKm\": 0\n}"
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/Vehicles",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "Vehicles"
+                                    ]
+                                }
+                            },
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "body": "{\n  \"status\": 200,\n  \"errorMessage\": null,\n  \"result\": {},\n  \"timestamp\": \"2026-02-21T10:30:00Z\"\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Vehicle",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/Vehicles/:id",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "Vehicles",
+                                ":id"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                                }
+                            ]
+                        }
+                    },
+                    "response": [
+                        {
+                            "name": "Success",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/Vehicles/:id",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "Vehicles",
+                                        ":id"
+                                    ],
+                                    "variable": [
+                                        {
+                                            "key": "id",
+                                            "value": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                                        }
+                                    ]
+                                }
+                            },
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "body": "{\n  \"status\": 200,\n  \"errorMessage\": null,\n  \"result\": {},\n  \"timestamp\": \"2026-02-21T10:30:00Z\"\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "Update Vehicle",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"string\",\n  \"licensePlate\": \"string\",\n  \"vehicleType\": \"string\",\n  \"maxCapacityKg\": 0,\n  \"odometerKm\": 0,\n  \"acquisitionCost\": 0,\n  \"xmin\": 0\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/Vehicles/:id",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "Vehicles",
+                                ":id"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                                }
+                            ]
+                        }
+                    },
+                    "response": [
+                        {
+                            "name": "Success",
+                            "originalRequest": {
+                                "method": "PUT",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"name\": \"string\",\n  \"licensePlate\": \"string\",\n  \"vehicleType\": \"string\",\n  \"maxCapacityKg\": 0,\n  \"odometerKm\": 0,\n  \"acquisitionCost\": 0,\n  \"xmin\": 0\n}"
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/Vehicles/:id",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "Vehicles",
+                                        ":id"
+                                    ],
+                                    "variable": [
+                                        {
+                                            "key": "id",
+                                            "value": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                                        }
+                                    ]
+                                }
+                            },
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "body": "{\n  \"status\": 200,\n  \"errorMessage\": null,\n  \"result\": {},\n  \"timestamp\": \"2026-02-21T10:30:00Z\"\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "Delete Vehicle",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/Vehicles/:id",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "Vehicles",
+                                ":id"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                                }
+                            ]
+                        }
+                    },
+                    "response": [
+                        {
+                            "name": "Success",
+                            "originalRequest": {
+                                "method": "DELETE",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/Vehicles/:id",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "Vehicles",
+                                        ":id"
+                                    ],
+                                    "variable": [
+                                        {
+                                            "key": "id",
+                                            "value": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                                        }
+                                    ]
+                                }
+                            },
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "body": "{\n  \"status\": 200,\n  \"errorMessage\": null,\n  \"result\": {},\n  \"timestamp\": \"2026-02-21T10:30:00Z\"\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "Retire Vehicle",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/Vehicles/:id/retire",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "Vehicles",
+                                ":id",
+                                "retire"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                                }
+                            ]
+                        }
+                    },
+                    "response": [
+                        {
+                            "name": "Success",
+                            "originalRequest": {
+                                "method": "PATCH",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/Vehicles/:id/retire",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "Vehicles",
+                                        ":id",
+                                        "retire"
+                                    ],
+                                    "variable": [
+                                        {
+                                            "key": "id",
+                                            "value": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                                        }
+                                    ]
+                                }
+                            },
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "body": "{\n  \"status\": 200,\n  \"errorMessage\": null,\n  \"result\": {},\n  \"timestamp\": \"2026-02-21T10:30:00Z\"\n}"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

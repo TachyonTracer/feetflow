@@ -1,0 +1,95 @@
+<app-data-page-layout [pageTitle]="'Expenses & Fuel Logging'"
+    [pageSubtitle]="'Manage and audit fuel costs across your fleet in real-time.'"
+    [searchPlaceholder]="'Search by Log ID or Vehicle...'" [searchTerm]="searchTerm"
+    (searchTermChange)="searchTerm = $event; onFiltersChanged()" [filterOptions]="vehicleOptions"
+    [filterValue]="selectedVehicleId" (filterChange)="onVehicleChange($event)" [sortOptions]="sortOptions"
+    [sortValue]="sortBy" (sortChange)="sortBy = $event; onFiltersChanged()" [actionLabel]="'Add Fuel Expense'"
+    [actionIcon]="'add'" (actionClick)="toggleModal()" [pageSizeOptions]="pageSizeOptions" [isLoading]="isLoading"
+    [totalCount]="fuelTotalCount" [pageNumber]="fuelPageNumber" [pageSize]="fuelPageSize" [totalPages]="fuelTotalPages"
+    [recordLabel]="'entries'" (pageChange)="changeFuelPage($event)" (pageSizeChange)="onFuelPageSizeChanged($event)"
+    [columns]="columns" [data]="filteredLogs">
+
+    <!-- Summary Cards -->
+    <div topContent class="summary-cards-grid">
+        <div class="metric-card accent-blue">
+            <div class="card-header">
+                <span class="card-title">Total Fuel Cost</span>
+                <div class="card-icon primary">
+                    <span class="material-symbols-outlined">gas_meter</span>
+                </div>
+            </div>
+            <div class="card-body">
+                <h3>{{ totalFuelCost | inrCurrency }}</h3>
+            </div>
+            <p class="card-footer">All logged fuel entries</p>
+        </div>
+
+        <div class="metric-card accent-amber">
+            <div class="card-header">
+                <span class="card-title">Total Misc Expense</span>
+                <div class="card-icon warning">
+                    <span class="material-symbols-outlined">receipt_long</span>
+                </div>
+            </div>
+            <div class="card-body">
+                <h3>{{ totalMiscExpense | inrCurrency }}</h3>
+            </div>
+            <p class="card-footer">Tolls, parking, etc.</p>
+        </div>
+
+        <div class="metric-card accent-emerald">
+            <div class="card-header">
+                <span class="card-title">Trips Tracked</span>
+                <div class="card-icon success">
+                    <span class="material-symbols-outlined">local_shipping</span>
+                </div>
+            </div>
+            <div class="card-body">
+                <h3>{{ tripsCount }}</h3>
+            </div>
+            <p class="card-footer">Unique trips logged</p>
+        </div>
+    </div>
+    <ng-template appCustomCell let-row let-col="column">
+        @switch (col.key) {
+        @case ('tripId') {
+        <span class="td-id">#{{ (row.tripId || 'N/A').substring(0,8) | uppercase }}</span>
+        }
+        @case ('driverName') {
+        <span>{{ getDriverName(row) }}</span>
+        }
+        @case ('vehicleName') {
+        <span>{{ getVehicleName(row.vehicleId) }}</span>
+        }
+        @case ('distance') {
+        <span class="td-text">{{ row.distance | number:'1.2-2' }} km</span>
+        }
+        @case ('cost') {
+        <span class="td-cost">{{ row.cost | inrCurrency }}</span>
+        }
+        @case ('miscExpense') {
+        <span class="td-cost">{{ row.miscExpense | inrCurrency }}</span>
+        }
+        @case ('status') {
+        <span class="status-badge" [class]="(row.status || 'Completed').toLowerCase()">
+            {{ row.status || 'Completed' }}
+        </span>
+        }
+        @case ('actions') {
+        <div class="action-group">
+            <button class="action-icon-button" title="Edit expense" (click)="openEditModal(row)">
+                <span class="material-symbols-outlined">edit_square</span>
+            </button>
+            <button class="action-icon-button danger" title="Delete expense">
+                <span class="material-symbols-outlined">delete</span>
+            </button>
+        </div>
+        }
+        }
+    </ng-template>
+
+    <ng-container modals>
+        <app-add-expenses *ngIf="isAddExpenseModalOpen" [logToEdit]="editingLog" (close)="toggleModal()"
+            (created)="onExpenseCreated()"></app-add-expenses>
+    </ng-container>
+</app-data-page-layout>

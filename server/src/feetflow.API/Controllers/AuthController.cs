@@ -1,6 +1,10 @@
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using feetflow.API.Auth;
+using feetflow.Application.Features.FleetFlow.Auth;
 
 namespace feetflow.API.Controllers;
 
@@ -8,54 +12,98 @@ namespace feetflow.API.Controllers;
 [Route("api/[controller]")]
 public class AuthController : ControllerBase
 {
+    private readonly IMediator _mediator;
     private readonly TokenService _tokenService;
     private readonly ILogger<AuthController> _logger;
 
-    public AuthController(TokenService tokenService, ILogger<AuthController> logger)
+    public AuthController(IMediator mediator, TokenService tokenService, ILogger<AuthController> logger)
     {
+        _mediator = mediator;
         _tokenService = tokenService;
         _logger = logger;
     }
 
-    [HttpPost("login")]
-    public IActionResult Login([FromBody] LoginRequest request)
+    [HttpPost("signup")]
+    [AllowAnonymous]
+    public async Task<IActionResult> Register([FromBody] RegisterRequest request, CancellationToken cancellationToken)
     {
-        // TODO: Replace with actual user validation against your data store
-        // This is a placeholder for the template
-        if (request.Email == "admin@feetflow.com" && request.Password == "admin")
+        var result = await _mediator.Send(new RegisterCommand(
+            request.FullName,
+            request.Email,
+            request.Password,
+            request.Role), cancellationToken);
+
+        if (!result.IsSuccess)
+            return StatusCode(result.StatusCode, result.Error);
+
+        _logger.LogInformation("User registered: {Email}", request.Email);
+        return StatusCode(StatusCodes.Status201Created, new { id = result.Value });
+    }
+
+    [HttpPost("login")]
+    [AllowAnonymous]
+    public async Task<IActionResult> Login([FromBody] LoginRequest request, CancellationToken cancellationToken)
+    {
+        var result = await _mediator.Send(new LoginCommand(request.Email, request.Password, request.Role), cancellationToken);
+
+        if (!result.IsSuccess)
+            return StatusCode(result.StatusCode, result.Error);
+
+        var login = result.Value!;
+        var accessToken = _tokenService.GenerateAccessToken(
+            login.UserId.ToString(),
+            login.Email,
+            new[] { login.Role });
+        var refreshToken = _tokenService.GenerateRefreshToken();
+
+        _logger.LogInformation("User {Email} logged in", login.Email);
+
+        return Ok(new
         {
-            var accessToken = _tokenService.GenerateAccessToken(
-                userId: Guid.NewGuid().ToString(),
-                email: request.Email,
-                roles: ["Admin"]);
+            accessToken,
+            refreshToken,
+            expiresIn = 900
+        });
+    }
 
-            var refreshToken = _tokenService.GenerateRefreshToken();
+    [HttpPost("forgot-password")]
+    [AllowAnonymous]
+    public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest request, CancellationToken cancellationToken)
+    {
+        var result = await _mediator.Send(new ForgotPasswordCommand(request.Email), cancellationToken);
+        if (!result.IsSuccess)
+            return StatusCode(result.StatusCode, result.Error);
+        return Ok();
+    }
 
-            _logger.LogInformation("User {Email} logged in", request.Email);
-
-            return Ok(new
-            {
-                accessToken,
-                refreshToken,
-                expiresIn = 900 // 15 minutes in seconds
-            });
-        }
-
-        return Unauthorized(new { message = "Invalid credentials" });
+    [HttpPost("reset-password")]
+    [AllowAnonymous]
+    public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request, CancellationToken cancellationToken)
+    {
+        var result = await _mediator.Send(new ResetPasswordCommand(request.Token, request.NewPassword), cancellationToken);
+        if (!result.IsSuccess)
+            return StatusCode(result.StatusCode, result.Error);
+        return Ok();
     }
 
     [HttpPost("refresh")]
+    [AllowAnonymous]
     public IActionResult Refresh([FromBody] RefreshRequest request)
     {
         var principal = _tokenService.ValidateToken(request.AccessToken);
         if (principal is null)
-            return Unauthorized(new { message = "Invalid token" });
+            return Unauthorized("Invalid token");
 
-        // TODO: Validate refresh token against stored tokens in data store
         var email = principal.FindFirst(JwtRegisteredClaimNames.Email)?.Value ?? "";
-        var userId = principal.FindFirst(JwtRegisteredClaimNames.Sub)?.Value ?? "";
+        var userId = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                     ?? principal.FindFirst(JwtRegisteredClaimNames.Sub)?.Value
+                     ?? "";
+        var role = principal.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value ?? "Manager";
 
-        var newAccessToken = _tokenService.GenerateAccessToken(userId, email);
+        if (!Guid.TryParse(userId, out _))
+            return Unauthorized("Invalid token subject");
+
+        var newAccessToken = _tokenService.GenerateAccessToken(userId, email, new[] { role });
         var newRefreshToken = _tokenService.GenerateRefreshToken();
 
         return Ok(new
@@ -67,5 +115,8 @@ public class AuthController : ControllerBase
     }
 }
 
-public record LoginRequest(string Email, string Password);
+public record RegisterRequest(string FullName, string Email, string Password, feetflow.Domain.Enums.UserRole Role);
+public record LoginRequest(string Email, string Password, feetflow.Domain.Enums.UserRole Role);
 public record RefreshRequest(string AccessToken, string RefreshToken);
+public record ForgotPasswordRequest(string Email);
+public record ResetPasswordRequest(Guid Token, string NewPassword);

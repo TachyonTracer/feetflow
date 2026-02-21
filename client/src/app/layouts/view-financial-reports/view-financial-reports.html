@@ -1,0 +1,153 @@
+<app-header></app-header>
+
+<div class="analytics-page" #analyticsPage>
+    <div class="page-header d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="page-title">Operational Analytics & Financial Reports</h1>
+            <p class="page-subtitle">Purpose: Data-driven decision making.</p>
+        </div>
+        <div class="d-flex gap-2 align-items-center">
+            <!-- Date Range Picker -->
+            <div class="date-range-wrapper">
+                <mat-form-field appearance="outline" subs_none>
+                    <mat-date-range-input [formGroup]="range" [rangePicker]="picker" (dateChange)="onDateChange()">
+                        <input matStartDate formControlName="start" placeholder="Start date">
+                        <input matEndDate formControlName="end" placeholder="End date">
+                    </mat-date-range-input>
+                    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-date-range-picker #picker></mat-date-range-picker>
+                </mat-form-field>
+            </div>
+
+            <button class="btn-pdf-export d-flex align-items-center gap-2" (click)="exportPdf()"
+                [disabled]="isLoading() || isExporting()">
+                <span class="material-symbols-outlined">{{ isExporting() ? 'sync' : 'picture_as_pdf' }}</span>
+                {{ isExporting() ? 'Exporting...' : 'Export to PDF' }}
+            </button>
+            <button class="btn-csv-export d-flex align-items-center gap-2" (click)="exportCsv()"
+                [disabled]="isLoading()">
+                <span class="material-symbols-outlined">download</span>
+                Monthly Extract (CSV)
+            </button>
+        </div>
+    </div>
+
+    @if (isLoading()) {
+    <div class="loading-state">
+        <span class="material-symbols-outlined spin-animation"
+            style="font-size: 2rem; color: var(--accent-color);">sync</span>
+        <p class="mt-2">Loading analytics data...</p>
+    </div>
+    } @else {
+
+    <!-- Summary Cards -->
+    <div class="summary-cards-grid" *ngIf="summaryData() as summary">
+        <div class="metric-card accent-emerald">
+            <div class="card-header">
+                <span class="card-title">Total Fuel Cost</span>
+                <div class="card-icon success">
+                    <span class="material-symbols-outlined">oil_barrel</span>
+                </div>
+            </div>
+            <div class="card-body">
+                <h3>₹ {{ (summary.totalFuelCost / 100000).toFixed(1) }} L</h3>
+            </div>
+            <p class="card-footer">Total incurred fuel expense</p>
+        </div>
+
+        <div class="metric-card accent-indigo">
+            <div class="card-header">
+                <span class="card-title">Fleet ROI</span>
+                <div class="card-icon indigo">
+                    <span class="material-symbols-outlined">trending_up</span>
+                </div>
+            </div>
+            <div class="card-body">
+                <h3 [ngClass]="{'text-red-500': summary.fleetRoi < 0, 'text-green-500': summary.fleetRoi > 0}">
+                    {{ summary.fleetRoi > 0 ? '+' : '' }}{{ (summary.fleetRoi * 100).toFixed(1) }}%
+                </h3>
+            </div>
+            <p class="card-footer">Profit / Acquisition Cost</p>
+        </div>
+
+        <div class="metric-card accent-amber">
+            <div class="card-header">
+                <span class="card-title">Utilization Rate</span>
+                <div class="card-icon warning">
+                    <span class="material-symbols-outlined">query_stats</span>
+                </div>
+            </div>
+            <div class="card-body">
+                <h3>{{ summary.utilizationRate.toFixed(0) }}%</h3>
+            </div>
+            <p class="card-footer">Active vs Total Fleet</p>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="charts-grid">
+        <div class="chart-container">
+            <div class="chart-header">
+                <h3 class="chart-title">Fuel Efficiency Trend (km/L)</h3>
+                <span class="material-symbols-outlined icon-muted">speed</span>
+            </div>
+            <div class="chart-body">
+                <canvas baseChart [data]="lineChartData()" [options]="lineChartOptions" [type]="lineChartType">
+                </canvas>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <div class="chart-header">
+                <h3 class="chart-title">Top 5 Costliest Vehicles</h3>
+                <span class="material-symbols-outlined icon-muted">request_quote</span>
+            </div>
+            <div class="chart-body">
+                <canvas baseChart [data]="barChartData()" [options]="barChartOptions" [type]="barChartType">
+                </canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Financial Summary Table -->
+    <div class="data-table-card mt-4" *ngIf="summaryData() as summary">
+        <div class="table-header">
+            <h2>Financial Summary of Month</h2>
+        </div>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th class="text-left">Month</th>
+                        <th class="text-right">Revenue</th>
+                        <th class="text-right">Fuel Cost</th>
+                        <th class="text-right">Maintenance</th>
+                        <th class="text-right">Net Profit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let row of summary.monthlyData">
+                        <td class="text-left"><span class="table-month-badge">{{ row.month }}</span></td>
+                        <td class="text-right font-medium text-emerald-600">₹ {{ (row.revenue / 100000).toFixed(1) }}L
+                        </td>
+                        <td class="text-right font-medium text-rose-500">₹ {{ (row.fuelCost / 100000).toFixed(1) }}L
+                        </td>
+                        <td class="text-right font-medium text-rose-500">₹ {{ (row.maintenance / 100000).toFixed(1) }}L
+                        </td>
+                        <td class="text-right font-bold"
+                            [ngClass]="row.netProfit >= 0 ? 'text-emerald-600' : 'text-rose-600'">
+                            ₹ {{ (row.netProfit / 100000).toFixed(1) }}L
+                        </td>
+                    </tr>
+                    <tr *ngIf="!summary.monthlyData.length">
+                        <td colspan="5" class="text-center text-muted py-4">No financial data available to display.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    }
+</div>
+
+<app-footer></app-footer>

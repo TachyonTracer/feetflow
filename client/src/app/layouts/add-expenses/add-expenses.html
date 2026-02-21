@@ -1,0 +1,94 @@
+<div class="modal-overlay" (click)="closeModal()">
+    <div class="modal-container" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h2 class="modal-title">{{ logToEdit ? 'Edit Fuel Expense' : 'New Fuel Expense' }}</h2>
+            <button class="modal-close-btn" (click)="closeModal()">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            @if (errorMessage()) {
+            <div class="error-banner">{{ errorMessage() }}</div>
+            }
+            <!-- Row 1: Trip and Trip Date -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Trip *</label>
+                    <app-searchable-select [options]="tripOptions" [(ngModel)]="formData.tripId"
+                        (ngModelChange)="onTripChange($event)" [searchPlaceholder]="'Search trip...'"
+                        [placeholder]="'Select a trip'" [disabled]="!!logToEdit">
+                    </app-searchable-select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Trip Date *</label>
+                    <input class="form-input" type="date" name="fuelDate" [(ngModel)]="formData.fuelDate" required />
+                </div>
+            </div>
+
+            <!-- Row 2: Vehicle and Driver (Auto-populated and Locked if Trip is selected) -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Vehicle *</label>
+                    <app-searchable-select [options]="vehicleOptions" [(ngModel)]="formData.vehicleId"
+                        [searchPlaceholder]="'Search vehicle...'" [placeholder]="'Select a vehicle'"
+                        [disabled]="!!formData.tripId">
+                    </app-searchable-select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Driver *</label>
+                    <app-searchable-select [options]="driverOptions" [(ngModel)]="formData.driverId"
+                        [searchPlaceholder]="'Search driver...'" [placeholder]="'Select a driver'"
+                        [disabled]="!!formData.tripId">
+                    </app-searchable-select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Distance (km) *</label>
+                    <input class="form-input" type="number" min="0" step="0.1" placeholder="0.0" name="distance"
+                        [(ngModel)]="formData.distance" required />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Fuel Liters *</label>
+                    <input class="form-input" type="number" min="0" step="0.01" placeholder="0.00" name="liters"
+                        [(ngModel)]="formData.liters" required />
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Fuel Cost (₹) *</label>
+                    <input class="form-input" type="number" min="0" step="0.01" placeholder="0.00" name="cost"
+                        [(ngModel)]="formData.cost" required />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Misc Expense (₹) *</label>
+                    <input class="form-input" type="number" min="0" step="0.01" placeholder="0.00" name="miscExpense"
+                        [(ngModel)]="formData.miscExpense" required />
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Status *</label>
+                    <app-searchable-select [options]="statusOptions" [(ngModel)]="formData.status"
+                        [placeholder]="'Select status'">
+                    </app-searchable-select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Notes (Optional)</label>
+                    <input class="form-input" type="text" placeholder="Short notes..." name="notes"
+                        [(ngModel)]="notes" />
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="button-primary" type="button" (click)="submitExpense()" [disabled]="isSubmitting">
+                {{ isSubmitting ? (logToEdit ? 'Updating...' : 'Creating...') : (logToEdit ? 'Update Expense' : 'Create
+                Expense') }}
+            </button>
+            <button class="button-secondary" type="button" (click)="closeModal()">Cancel</button>
+        </div>
+    </div>
+</div>
